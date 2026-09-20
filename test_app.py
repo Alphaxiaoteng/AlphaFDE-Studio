@@ -1,84 +1,71 @@
 # -*- coding: utf-8 -*-
 """
-AlphaFDE Studio 本地自动化验证脚本
+AICUT 创空间全流程测试套件
+验证路由、Gradio 协议探针、Agent Harness 打靶与剪映草稿导出
 """
 import os
-for _v in ["NO_PROXY", "no_proxy"]:
-    if _v in os.environ:
-        os.environ[_v] = ",".join([_p.strip() for _p in os.environ[_v].split(",") if "::" not in _p])
+for _k in ["NO_PROXY", "no_proxy"]:
+    if _k in os.environ:
+        os.environ[_k] = ",".join([_p.strip() for _p in os.environ[_k].split(",") if "::" not in _p])
 
-import urllib.request
+import json
+from fastapi.testclient import TestClient
+from app import app, handle_gradio_match, PRESETS
 
-import time
-import threading
-import sys
-from pipelines import (
-    run_data_governance_pipeline,
-    run_competitor_radar_pipeline,
-    calculate_fde_quote,
-    generate_full_proposal
-)
-from app import export_audit_trail, client_agent_chat, demo
+def test_aicut_studio():
+    client = TestClient(app)
 
-def test_pipelines():
-    print("🧪 1. 测试 FDE 核心方案生成器...")
-    prop = generate_full_proposal("赛道 01：具身智能数据工厂 (Embodied Data Factory)", "需要 LeRobot 格式转换")
-    assert "具身智能数据工厂" in prop, "方案生成失败"
-    assert "系统现场工程架构拓扑" in prop, "缺少拓扑图"
-    print("  ✅ 方案生成器验证通过")
+    print("🧪 1. 测试基础 API 探针与插件列表...")
+    r_health = client.get("/api/health")
+    assert r_health.status_code == 200, f"Health check failed: {r_health.text}"
+    assert r_health.json()["app"] == "aicut"
+    print("  ✅ /api/health 验证通过:", r_health.json())
 
-    print("🧪 2. 测试数据治理清洗流水线...")
-    gov = run_data_governance_pipeline(5000, "具身机械臂 60Hz 遥操作采集流 (RGB-D + 触觉)")
-    assert "治理成效指标" in gov, "流水线输出异常"
-    print("  ✅ 数据治理流水线验证通过")
+    r_keys = client.get("/api/keys")
+    assert r_keys.status_code == 200
+    assert "dashscope" in r_keys.json()["keys"]
+    print("  ✅ /api/keys 验证通过")
 
-    print("🧪 3. 测试大盘竞品痛点雷达...")
-    radar = run_competitor_radar_pipeline("具身机器人异地采集", "开源标注工具")
-    assert "核心差评与业务阻碍聚类分布" in radar, "竞品雷达输出异常"
-    print("  ✅ 竞品痛点雷达验证通过")
+    r_plugins = client.get("/api/plugins")
+    assert r_plugins.status_code == 200
+    assert len(r_plugins.json()["plugins"]) >= 3
+    print("  ✅ /api/plugins 验证通过")
 
-    print("🧪 4. 测试商业报价计算器...")
-    quote = calculate_fde_quote(14, 2, True, True, 100)
-    assert "商业报价单" in quote and "¥" in quote, "报价计算异常"
-    print("  ✅ 报价计算器验证通过")
+    print("🧪 2. 测试 Gradio 核心协议探针 (/config)...")
+    r_config = client.get("/config")
+    assert r_config.status_code == 200, f"/config failed: {r_config.text}"
+    print("  ✅ /config 验证通过 (HTTP 200), 魔搭外层宿主无障碍连接")
 
-    print("🧪 5. 测试甲方 Agent 对话与证据链导出...")
-    history = []
-    for h, _ in client_agent_chat("请问时钟对齐误差是多少？", history, ""):
-        history = h
-    assert len(history) == 2, "对话记录长度不符合预期"
-    assert "甲方 Agent 洞察评分" in history[1]["content"], "缺少评分"
-    trail = export_audit_trail(history)
-    assert "问询留痕与需求洞察证据链" in trail, "证据链导出异常"
-    print("  ✅ 甲方 Agent 模拟与证据链导出验证通过")
+    print("🧪 3. 测试静态 Webview 与资源挂载 (/editor)...")
+    r_editor = client.get("/editor/")
+    assert r_editor.status_code == 200
+    assert "AICUT" in r_editor.text
+    print("  ✅ /editor 验证通过, 成功加载主页面 HTML")
 
-def test_web_server():
-    print("🧪 6. 启动 Gradio 服务并测试 HTTP 200 响应...")
+    r_js = client.get("/assets/index-CcFosPwA.js")
+    assert r_js.status_code == 200
+    assert len(r_js.content) > 100000
+    print(f"  ✅ /assets JS 资源挂载验证通过, 大小: {len(r_js.content)} 字节")
+
+    print("🧪 4. 测试 Agent Harness 语义打靶逻辑与剪映草稿导出...")
+    table, log_text, draft_json = handle_gradio_match(PRESETS[0]["text"])
+    assert "智能匹配镜头资产" in table
+    assert "多用膏" in table or "底妆" in table or "散粉" in table
+    assert len(log_text) > 0
     
-    server_port = 7860
-    # 在后台线程启动 Gradio
-    threading.Thread(target=lambda: demo.launch(server_name="127.0.0.1", server_port=server_port, prevent_thread_lock=True), daemon=True).start()
-    
-    # 轮询探测 HTTP 服务响应
-    connected = False
-    for i in range(15):
-        time.sleep(1)
-        try:
-            req = urllib.request.Request(f"http://127.0.0.1:{server_port}/")
-            with urllib.request.urlopen(req, timeout=3) as resp:
-                if resp.status == 200:
-                    connected = True
-                    print(f"  ✅ 成功探测到 Gradio 服务监听端口 {server_port}，HTTP 响应码: {resp.status}")
-                    break
-        except Exception as e:
-            # 等待服务完全就绪
-            pass
-            
-    assert connected, f"无法在端口 {server_port} 探测到 HTTP 200 响应"
-    demo.close()
-    print("  ✅ Gradio 服务生命周期测试闭环完成")
+    draft = json.loads(draft_json)
+    assert draft["version"] == "5.9.0"
+    assert len(draft["tracks"]) == 2
+    assert len(draft["tracks"][0]["segments"]) > 0
+    print(f"  ✅ Agent Harness 语义打靶与剪映草稿生成通过, 生成镜头片段: {len(draft['tracks'][0]['segments'])} 个")
+
+    print("🧪 5. 测试 POST /api/harness/match 接口...")
+    r_match = client.post("/api/harness/match", json={"lines": [{"text": "早上八点想要好气色", "startSec": 0, "endSec": 2.5}]})
+    assert r_match.status_code == 200
+    assert r_match.json()["success"] is True
+    print("  ✅ /api/harness/match REST API 验证通过")
+
+    print("\n🎉 ALL TESTS PASSED! AICUT 创空间全模块自检 100% 通过！")
 
 if __name__ == "__main__":
-    test_pipelines()
-    test_web_server()
-    print("\n🎉 ALL TESTS PASSED! AlphaFDE 创空间应用全模块自检 100% 通过！")
+    test_aicut_studio()
