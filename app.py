@@ -49,6 +49,12 @@ if os.path.exists(DIST_DIR):
     def get_favicon():
         return FileResponse(os.path.join(DIST_DIR, "favicon.svg"))
 
+    from fastapi.responses import RedirectResponse
+
+    @app.get("/editor")
+    def get_editor():
+        return RedirectResponse(url="/editor/")
+
     app.mount("/editor", StaticFiles(directory=DIST_DIR, html=True), name="editor")
 
 # 后端探针与代理路由
@@ -342,11 +348,11 @@ with gr.Blocks(title="AICUT · 电商口播短视频 AI 智能素材打靶工作
                     <strong style="color: #4ade80; font-size: 15px;">✨ AICUT 网页全功能剪辑工作台已就绪</strong>
                     <span style="color: #94a3b8; font-size: 13px; margin-left: 10px;">包含主轨、画中画轨、字轨、音效轨与实时播放控制器</span>
                 </div>
-                <a href="/editor" target="_blank" style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 13px;">
+                <a href="/editor/" target="_blank" style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 13px;">
                     ↗ 在新窗口全屏独立打开
                 </a>
             </div>
-            <iframe src="/editor" style="width: 100%; height: 860px; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);"></iframe>
+            <iframe src="/editor/" style="width: 100%; height: 860px; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);"></iframe>
             """)
 
         # Tab 2: Agent Harness 智能素材打靶探针
