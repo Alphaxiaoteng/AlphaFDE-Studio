@@ -3,8 +3,15 @@
 AlphaFDE 现场工程方案工坊与路演控制台 (ModelScope Studio)
 针对 FDE 实战松 · 前线交付战 & 魔搭开源贡献奖 专属打造
 """
+import os
+# 防御性清洗 NO_PROXY 中的 IPv6 ::1 避免 httpx URL 解析异常
+for _v in ["NO_PROXY", "no_proxy"]:
+    if _v in os.environ:
+        os.environ[_v] = ",".join([_p.strip() for _p in os.environ[_v].split(",") if "::" not in _p])
+
 import gradio as gr
 import json
+
 import time
 from config import TRACK_SCENARIOS, CLIENT_AGENT_SYSTEM_PROMPT, SAMPLE_CLIENT_QUESTIONS, DASHSCOPE_API_KEY, DASHSCOPE_BASE_URL, MODEL_NAME
 from pipelines import (
@@ -183,7 +190,7 @@ def export_audit_trail(history: list) -> str:
 
 
 # 构建 Gradio 页面
-with gr.Blocks(title="AlphaFDE 现场工程方案工坊与路演控制台", css=CUSTOM_CSS, theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="AlphaFDE 现场工程方案工坊与路演控制台") as demo:
     
     # 顶部 Hero 横幅
     gr.HTML("""
@@ -293,7 +300,7 @@ with gr.Blocks(title="AlphaFDE 现场工程方案工坊与路演控制台", css=
             gr.Markdown("### 🎯 FDE 实战松 · 甲方需求洞察与深度问询演练")
             gr.Markdown("在大赛中，甲方 Agent 会记录你问了什么、第几轮问到关键处，问询留痕直接作为「需求洞察深度」评分证据。")
             
-            chatbot = gr.Chatbot(label="与企业甲方 Agent 现场沟通留痕", type="messages", height=420)
+            chatbot = gr.Chatbot(label="与企业甲方 Agent 现场沟通留痕", height=420)
             
             with gr.Row():
                 client_input = gr.Textbox(
@@ -364,4 +371,4 @@ with gr.Blocks(title="AlphaFDE 现场工程方案工坊与路演控制台", css=
 
 if __name__ == "__main__":
     # 魔搭创空间默认通过 7860 端口启动
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=False, css=CUSTOM_CSS, theme=gr.themes.Soft())
