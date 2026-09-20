@@ -1,0 +1,1 @@
+function e(e){return!!e&&e.transcriptStale!==!0&&Array.isArray(e.transcript)&&e.transcript.length>0}function t(e,t){return Math.round(e/1e3*t)}export{t as n,e as t};
