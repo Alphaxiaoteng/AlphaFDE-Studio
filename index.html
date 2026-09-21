@@ -1,0 +1,3596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>云谷政策雷达智能匹配系统</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    }
+  </style>
+  <style>
+    :root {
+      --bg: #f3f0ea;
+      --paper: #faf8f4;
+      --paper-soft: #f7f4ee;
+      --side-bg: #efebe3;
+      --ink: #161616;
+      --muted: #8a857c;
+      --line: #e0d9ce;
+      --line-strong: #c9bfb0;
+      --accent: #8c1d1d;
+      --accent-soft: #f3e8e6;
+      --ok: #2f5d3a;
+      --ok-bg: #eef5f0;
+      --warn: #8a5a12;
+      --warn-bg: #f7f0e4;
+      --bad: #8c1d1d;
+      --bad-bg: #f7ecec;
+      --seal: #0f6f4f;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --ease: 180ms ease;
+      --shadow-sm: 0 1px 2px rgba(28, 28, 28, 0.04), 0 1px 8px rgba(28, 28, 28, 0.03);
+      --shadow-md: 0 4px 14px rgba(28, 28, 28, 0.07);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(15, 111, 79, 0.04), transparent 55%),
+        linear-gradient(180deg, #faf8f4 0%, var(--bg) 40%, #f3f0ea 100%);
+      color: var(--ink);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .app { display: flex; flex: 1; min-height: 0; }
+    .side {
+      width: 228px;
+      background: linear-gradient(180deg, #f2eee6 0%, var(--side-bg) 100%);
+      border-right: 1px solid var(--line-strong);
+      box-shadow: 4px 0 18px rgba(28, 28, 28, 0.04);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      gap: 4px;
+      z-index: 2;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      padding: 4px 8px 20px; border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .logo {
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--seal);
+      border-radius: 10px;
+      color: var(--seal);
+      background: var(--paper-soft);
+      display: grid; place-items: center;
+      font-family: "Noto Serif SC", serif;
+      font-weight: 700; font-size: 13px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .brand h1 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+    }
+    .brand p { margin: 4px 0 0; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    .nav-btn {
+      display: flex; align-items: flex-start; gap: 10px;
+      text-align: left;
+      border: none;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      line-height: 1.35;
+      transition: background var(--ease), color var(--ease), box-shadow var(--ease), transform var(--ease);
+    }
+    .nav-btn .nav-ico {
+      width: 28px; height: 28px; flex: none;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.55);
+      display: grid; place-items: center;
+      margin-top: 1px;
+      transition: background var(--ease);
+    }
+    .nav-btn .nav-ico svg { width: 16px; height: 16px; display: block; }
+    .nav-btn .nav-txt { min-width: 0; flex: 1; }
+    .nav-btn:hover { background: rgba(255,255,255,0.55); }
+    .nav-btn.active {
+      background: #eef6f2;
+      color: var(--seal);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-btn.active .nav-ico { background: #dff0e8; }
+    .nav-btn small { display: block; color: var(--muted); margin-top: 2px; font-size: 11px; font-weight: 400; }
+    .side-foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+    .side-foot select {
+      width: 100%; margin-top: 8px; padding: 8px 10px;
+      border: 1px solid var(--line); border-radius: var(--radius-sm);
+      background: var(--paper-soft); font-family: inherit; font-size: 12px;
+    }
+    .portal-switch {
+      display: flex; gap: 2px; margin-bottom: 12px; padding: 3px;
+      background: rgba(255,255,255,0.55); border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+    .portal-btn {
+      flex: 1; border: 0; background: transparent; cursor: pointer;
+      font-family: inherit; font-size: 12px; color: var(--muted);
+      padding: 7px 6px; border-radius: calc(var(--radius-sm) - 2px);
+      transition: background var(--ease), color var(--ease);
+    }
+    .portal-btn:hover { color: var(--ink); }
+    .portal-btn.on {
+      background: #eef6f2; color: var(--seal); font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+    .side-foot .foot-block { margin-top: 2px; }
+    .nav-btn[hidden] { display: none !important; }
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: transparent; }
+    .topbar {
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      padding: 14px 22px; border-bottom: 1px solid var(--line);
+      font-size: 12px; color: var(--muted); background: rgba(255,255,255,.55);
+    }
+    .topbar strong { color: var(--ink); font-weight: 500; }
+    .content { flex: 1; overflow: auto; padding: 18px 22px 28px; }
+    textarea, .form-grid input, .form-grid select, .form-grid textarea {
+      flex: 1; border: 1px solid var(--line); background: var(--paper-soft);
+      font-family: inherit; font-size: 13px; padding: 10px 12px; resize: vertical;
+      width: 100%; border-radius: var(--radius-sm);
+    }
+    .draft-inline {
+      margin-top: 10px; padding: 12px; border: 1px solid var(--line);
+      background: #fafcfa; border-radius: var(--radius);
+    }
+    .draft-inline label {
+      display: block; font-size: 11px; color: var(--muted);
+      margin-bottom: 6px; letter-spacing: 0.06em;
+    }
+    .draft-inline pre {
+      margin: 0 0 10px; white-space: pre-wrap; word-break: break-word;
+      font-family: inherit; font-size: 13px; line-height: 1.55; color: var(--ink);
+    }
+    .skills-hero {
+      max-width: 720px; margin: 8px auto 0;
+    }
+    .skills-hero h2 {
+      margin: 0 0 8px; font-family: "Noto Serif SC", serif;
+      font-size: 26px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .skills-hero .lead {
+      margin: 0 0 18px; font-size: 14px; color: var(--muted); line-height: 1.6;
+    }
+    .platform-pills {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .platform-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 1px solid var(--line); background: var(--paper-soft); color: var(--ink);
+      padding: 7px 12px 7px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
+      border-radius: 999px;
+    }
+    .platform-pill svg { width: 16px; height: 16px; flex: none; display: block; }
+    .platform-pill.on {
+      border-color: var(--seal); color: var(--seal); background: #eef6f2; font-weight: 600;
+    }
+    .platform-pill.denied {
+      opacity: 0.48; cursor: not-allowed; color: var(--muted);
+      background: #f0ebe3; border-style: dashed;
+    }
+    .platform-pill.denied.on { font-weight: 500; color: var(--muted); border-color: var(--line); background: #f0ebe3; }
+    .platform-pill .deny-tag {
+      font-size: 10px; color: var(--bad); letter-spacing: 0.04em; margin-left: 2px;
+    }
+    .perms-wrap { max-width: 920px; }
+    .perms-wrap h2 {
+      margin: 0 0 6px; font-family: "Noto Serif SC", serif;
+      font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .perms-table {
+      width: 100%; border-collapse: collapse; margin-top: 14px;
+      font-size: 13px; background: var(--paper-soft); border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--line);
+    }
+    .perms-table th, .perms-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left;
+      vertical-align: middle;
+    }
+    .perms-table th {
+      font-size: 11px; color: var(--muted); font-weight: 500;
+      letter-spacing: 0.04em; background: rgba(255,255,255,0.55);
+    }
+    .perms-table tr:last-child td { border-bottom: none; }
+    .perms-table .user-cell { min-width: 140px; }
+    .perms-table .user-cell strong { display: block; font-weight: 600; }
+    .perms-table .user-cell span { font-size: 11px; color: var(--muted); }
+    .perms-table label.chk {
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer; white-space: nowrap; font-size: 12px;
+    }
+    .perms-table input[type="checkbox"] { accent-color: var(--seal); width: 14px; height: 14px; }
+    .source-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+    .source-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid var(--line); background: var(--paper-soft); color: var(--ink);
+      padding: 3px 8px; font-size: 12px; text-decoration: none;
+      border-radius: 999px;
+    }
+    .source-chip svg { width: 14px; height: 14px; flex: none; display: block; }
+    .source-chip.sample { color: var(--muted); background: #f6f4ef; }
+    .stage-path { margin-top: 6px; font-size: 12px; color: var(--seal); letter-spacing: 0.03em; }
+    .timeline { list-style: none; margin: 8px 0 0; padding: 0; }
+    .timeline li {
+      display: grid; grid-template-columns: 14px 1fr; gap: 10px;
+      position: relative; padding-bottom: 12px;
+    }
+    .timeline li:before {
+      content: ""; position: absolute; left: 6px; top: 10px; bottom: 0; width: 1px; background: var(--line);
+    }
+    .timeline li:last-child:before { display: none; }
+    .tl-dot {
+      width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--seal);
+      background: var(--paper-soft); margin-top: 3px; position: relative; z-index: 1;
+    }
+    .timeline li.current .tl-dot { background: var(--seal); }
+    .timeline li.horizon .tl-dot { border-style: dashed; border-color: var(--muted); }
+    .timeline li.done .tl-dot {
+      background: var(--ok); border-color: var(--ok);
+      display: grid; place-items: center;
+    }
+    .timeline li.done .tl-dot::after {
+      content: "";
+      width: 5px; height: 3px;
+      border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff;
+      transform: rotate(-45deg) translateY(-0.5px);
+    }
+    .timeline li.done strong { color: var(--ok); }
+    .tl-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 11px; color: var(--muted); }
+    .timeline strong { display: block; margin-top: 2px; font-size: 13px; font-weight: 600; }
+    .timeline p { margin: 2px 0 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .tl-note { font-size: 12px; color: var(--muted); margin: 4px 0 0; line-height: 1.5; }
+    .tl-expand {
+      border: 1px dashed var(--line-strong); background: var(--paper-soft); color: var(--seal);
+      padding: 8px 12px; font-size: 12px; cursor: pointer; font-family: inherit;
+      width: 100%; text-align: left; margin: 8px 0 4px;
+      border-radius: var(--radius-sm);
+    }
+    .tl-expand:hover { border-color: var(--seal); }
+    .co-addr { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+    .hl-amt {
+      display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+      min-width: 88px; flex: none; line-height: 1.1;
+    }
+    .hl-amt .num {
+      font-family: "Noto Serif SC", serif; font-size: 28px; font-weight: 700;
+      color: var(--seal); letter-spacing: -0.02em;
+    }
+    .hl-amt .unit { font-size: 11px; color: var(--seal); opacity: 0.85; margin-top: 2px; }
+    .hl-amt .lab { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .hl-amt.inline { align-items: flex-start; margin: 10px 0 6px; }
+    .hl-amt.inline .num { font-size: 36px; }
+    .card-title-row { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+    .card-title-row h3 { flex: 1; margin: 0; }
+    .card-body-row { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+    .card-body-row .cite { flex: 1; }
+    .pub-time { color: var(--seal); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .term-block {
+      background: #1a1b1e; color: #e8e6e1; border: 1px solid #2c2e33;
+      border-radius: var(--radius);
+      padding: 16px 18px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 13px; line-height: 1.65; overflow-x: auto;
+    }
+    .term-block .prompt { color: #7dcea0; user-select: none; }
+    .term-block .cmd { color: #f0eee8; }
+    .term-block .hint-line { color: #8a8f98; margin-top: 10px; display: block; }
+    .skills-note {
+      margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.6;
+    }
+    .skills-note code {
+      background: #f3f0ea; padding: 1px 6px; font-size: 11px;
+    }
+    .hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.55; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .chip {
+      border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+      padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit;
+      border-radius: 999px;
+      transition: background var(--ease), border-color var(--ease), color var(--ease), box-shadow var(--ease), transform var(--ease);
+    }
+    .chip:hover { border-color: var(--line-strong); box-shadow: var(--shadow-sm); }
+    .chip.on { border-color: var(--seal); color: var(--seal); background: #eef6f2; box-shadow: var(--shadow-sm); }
+    .stats {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+    }
+    .stat {
+      border: 1px solid var(--line); background: var(--paper);
+      padding: 10px 14px; min-width: 88px;
+      border-radius: var(--radius);
+    }
+    .stat b {
+      display: block; font-family: "Noto Serif SC", serif;
+      font-size: 20px; font-weight: 600; color: var(--seal);
+    }
+    .stat span { font-size: 11px; color: var(--muted); }
+    .list { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+    .card {
+      border: 1px solid var(--line); padding: 14px 14px; cursor: pointer;
+      background: var(--paper);
+      transition: background var(--ease), border-color var(--ease), box-shadow var(--ease), transform var(--ease);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      animation: cardIn 220ms ease both;
+    }
+    .card:nth-child(1) { animation-delay: 0ms; }
+    .card:nth-child(2) { animation-delay: 30ms; }
+    .card:nth-child(3) { animation-delay: 60ms; }
+    .card:nth-child(4) { animation-delay: 90ms; }
+    .card:nth-child(5) { animation-delay: 120ms; }
+    .card:nth-child(6) { animation-delay: 150ms; }
+    .card:hover {
+      background: #fffdf9;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-strong);
+    }
+    .card.active {
+      background: #eef6f2;
+      border-color: #b7d4c6;
+      box-shadow: 0 2px 10px rgba(15, 111, 79, 0.08);
+      transform: none;
+    }
+    .card h3 {
+      margin: 0 0 6px; font-size: 15px; font-weight: 650;
+      font-family: "Noto Serif SC", serif; letter-spacing: 0.03em; color: var(--ink);
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 12px; color: var(--muted); align-items: center; }
+    .cite { margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .gap { margin-top: 8px; font-size: 12px; color: var(--warn); background: var(--warn-bg); padding: 8px 10px; border-radius: var(--radius-sm); }
+    .dual-box {
+      margin-top: 10px; padding: 10px 12px; border: 1px solid var(--line);
+      background: #fafcfa; font-size: 12px; line-height: 1.55; color: var(--ink);
+      border-radius: var(--radius-sm);
+    }
+    .dual-box strong { color: var(--seal); font-weight: 600; }
+    .badge {
+      display: inline-block; font-size: 11px; padding: 2px 8px;
+      border: 1px solid var(--line); letter-spacing: 0.04em;
+      border-radius: 999px;
+    }
+    .badge.ok { color: var(--ok); background: var(--ok-bg); border-color: #c5dbc9; }
+    .badge.warn { color: var(--warn); background: var(--warn-bg); border-color: #e6d5b0; }
+    .badge.bad { color: var(--bad); background: var(--bad-bg); border-color: #e4c4c4; }
+    .badge.muted { color: var(--muted); background: #f5f3ee; }
+    .badge.seal { color: var(--seal); background: #eef6f2; border-color: #b7d4c6; }
+    .card.expired { opacity: 0.55; }
+    .card.expired:hover { opacity: 0.75; }
+    .card-title-row {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+    }
+    .card-title-row h3 { flex: 1; margin: 0; }
+    .warn-strip {
+      border: 1px solid #e6d5b0; background: var(--warn-bg);
+      padding: 10px 12px; margin-bottom: 12px;
+    }
+    .warn-strip .warn-head {
+      font-size: 12px; font-weight: 600; color: var(--warn); margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+    .warn-strip .warn-item {
+      display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline;
+      padding: 6px 8px; cursor: pointer; border: 1px solid transparent;
+      font-size: 12px; color: var(--ink);
+    }
+    .warn-strip .warn-item:hover { background: #fff; border-color: #e6d5b0; }
+    .warn-strip .warn-item .days { color: var(--warn); font-weight: 600; }
+    .warn-strip .warn-item .doc { color: var(--muted); }
+    .split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; align-items: start; }
+    .split.radar-layout { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .split { grid-template-columns: 1fr; }
+    }
+    .split-list {
+      border: 1px solid var(--line); background: var(--paper-soft);
+      max-height: calc(100vh - 300px); overflow: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .split.radar-layout .split-list { max-height: calc(100vh - 250px); }
+    .split-detail {
+      min-height: 200px; border: 1px solid var(--line); background: var(--paper);
+      padding: 16px 18px; border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-stack {
+      margin-bottom: 14px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pm-official {
+      margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .pm-official .act { text-decoration: none; }
+    .pm-body-missing {
+      margin: 0 0 10px; padding: 10px 12px;
+      background: var(--warn-bg); color: var(--warn);
+      border-radius: var(--radius-sm); font-size: 13px;
+    }
+    .dash-panel {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 16px 18px; margin-bottom: 14px;
+    }
+    .dash-panel h2 {
+      margin: 0 0 12px; font-family: "Noto Serif SC", serif;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .dash-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;
+    }
+    .dash-stat {
+      background: var(--paper-soft); border: 1px solid var(--line);
+      border-radius: var(--radius-sm); padding: 12px 14px;
+    }
+    .dash-stat b {
+      display: block; font-family: "Noto Serif SC", serif;
+      font-size: 24px; font-weight: 650; color: var(--seal); line-height: 1.1;
+    }
+    .dash-stat span { font-size: 11px; color: var(--muted); }
+    .dash-demo {
+      display: inline-block; font-size: 10px; color: var(--warn);
+      background: var(--warn-bg); border: 1px solid #e6d5b0;
+      padding: 1px 7px; border-radius: 999px; margin-left: 8px;
+      vertical-align: middle;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .funnel-row { display: grid; grid-template-columns: 72px 1fr 36px; gap: 10px; align-items: center; font-size: 12px; }
+    .funnel-row .bar-track {
+      height: 10px; background: #efebe3; border-radius: 999px; overflow: hidden;
+    }
+    .funnel-row .bar-fill {
+      height: 100%; background: var(--seal); border-radius: 999px;
+      transition: width 280ms ease;
+    }
+    .dash-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;
+    }
+    @media (max-width: 960px) {
+      .dash-row { grid-template-columns: 1fr; }
+    }
+    .dash-row > .dash-panel { margin-bottom: 0; }
+    .dash-growth-hint {
+      margin: 8px 0 0; font-size: 12px; color: var(--muted); line-height: 1.55;
+    }
+    .memo-box, .evidence-box {
+      margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line);
+      background: var(--paper-soft); border-radius: var(--radius);
+    }
+    .memo-box h4, .evidence-box h4 {
+      margin: 0 0 8px; font-size: 13px; font-family: "Noto Serif SC", serif; font-weight: 600;
+    }
+    .memo-item { font-size: 12px; color: var(--ink); margin: 0 0 6px; line-height: 1.5; }
+    .memo-item .role { color: var(--muted); }
+    .memo-more { margin: 2px 0 0; }
+    .memo-more summary {
+      cursor: pointer; font-size: 12px; color: var(--seal); list-style: none;
+      user-select: none;
+    }
+    .memo-more summary::-webkit-details-marker { display: none; }
+    .memo-more[open] summary { margin-bottom: 6px; }
+    .evidence-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ev-dot {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--paper);
+    }
+    .ev-dot i {
+      width: 7px; height: 7px; border-radius: 50%; display: inline-block;
+    }
+    .ev-dot.verified i { background: var(--ok); }
+    .ev-dot.pending i { background: var(--warn); }
+    .ev-dot.gap i { background: var(--bad); }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes modalFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.97) translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .policy-modal-overlay { animation: modalFade 180ms ease both; }
+    .policy-modal { animation: modalPop 200ms ease both; }
+    @media (prefers-reduced-motion: reduce) {
+      .card, .nav-btn, .chip, .policy-modal-overlay, .policy-modal {
+        animation: none !important; transition: none !important;
+      }
+      .card:hover { transform: none; }
+    }
+    .policy-modal-overlay {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(28, 28, 28, 0.28);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; backdrop-filter: blur(2px);
+    }
+    .policy-modal {
+      position: relative; width: min(1080px, 100%);
+      max-height: min(88vh, 820px);
+      background: var(--paper-soft); border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 18px 48px rgba(28, 28, 28, 0.12);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .policy-modal-close {
+      position: absolute; top: 10px; right: 12px; z-index: 2;
+      border: none; background: transparent; color: var(--muted);
+      font-size: 22px; line-height: 1; cursor: pointer; padding: 4px 8px;
+      font-family: inherit;
+    }
+    .policy-modal-close:hover { color: var(--ink); }
+    .policy-modal-cols {
+      display: grid; grid-template-columns: 1.15fr 0.85fr;
+      min-height: 0; flex: 1; overflow: hidden;
+    }
+    @media (max-width: 820px) {
+      .policy-modal-cols { grid-template-columns: 1fr; overflow: auto; }
+    }
+    .policy-modal-left, .policy-modal-right {
+      padding: 22px 24px; min-height: 0; overflow: auto;
+    }
+    .policy-modal-left {
+      border-right: 1px solid var(--line); background: var(--paper-soft);
+      display: flex; flex-direction: column;
+    }
+    .policy-modal-right { background: #f3f0ea; display: flex; flex-direction: column; gap: 14px; }
+    .pm-head h2 {
+      margin: 0 0 6px; padding-right: 28px;
+      font-size: 16px; font-family: "Noto Serif SC", serif; font-weight: 600; line-height: 1.4;
+    }
+    .pm-doc { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 14px; }
+    .policy-modal-left .policy-body {
+      margin-top: 0; max-height: none; border: none; background: transparent; padding: 0;
+    }
+    .pm-logos {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      padding-bottom: 4px; border-bottom: 1px solid var(--line);
+    }
+    .pm-logo-btn {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 4px;
+      border: none; background: transparent; cursor: pointer; padding: 2px;
+      font-family: inherit; color: var(--ink); max-width: 68px;
+      border-radius: 8px;
+    }
+    .pm-logo-btn .co-avatar { width: 40px; height: 40px; transition: box-shadow 0.15s ease; }
+    .pm-logo-btn span {
+      font-size: 10px; color: var(--muted); line-height: 1.2;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 64px;
+    }
+    .pm-logo-btn:hover span { color: var(--seal); }
+    .pm-logo-btn.is-active .co-avatar {
+      box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--seal);
+    }
+    .pm-logo-btn.is-active span { color: var(--seal); font-weight: 600; }
+    .pm-sec { margin: 0; }
+    .pm-sec h3 {
+      margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--seal);
+      letter-spacing: 0.06em; font-family: inherit;
+    }
+    .pm-sec p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink); }
+    .pm-sec ul {
+      margin: 0; padding-left: 1.15em; font-size: 13px; line-height: 1.55; color: var(--ink);
+    }
+    .pm-sec li { margin: 3px 0; }
+    .pm-foot {
+      margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line);
+    }
+    .pm-foot .pm-time { font-size: 11px; color: var(--muted); margin: 0 0 10px; }
+    .pm-empty-logos { font-size: 12px; color: var(--muted); }
+    .detail h2 {
+      margin: 0 0 8px; font-size: 17px; font-family: "Noto Serif SC", serif; font-weight: 600;
+    }
+    .empty { padding: 36px 16px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .act {
+      border: 1px solid var(--line-strong); background: var(--paper-soft); color: var(--ink);
+      padding: 8px 14px; font-size: 12px; cursor: pointer; font-family: inherit;
+      border-radius: 999px;
+    }
+    .act:hover { border-color: var(--seal); color: var(--seal); }
+    .act.primary { background: var(--seal); color: #fff; border-color: var(--seal); }
+    .act.primary:hover { background: #0c5c42; }
+    .act:disabled { opacity: .4; cursor: not-allowed; }
+    .match { border-top: 1px solid var(--line); padding: 14px 0; }
+    .corp-section { margin: 22px 0 8px; }
+    .corp-section > h3 {
+      font-size: 14px; margin: 0 0 10px; font-family: "Noto Serif SC", serif; font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .corp-section > .sec-sub { margin: -4px 0 12px; font-size: 12px; color: var(--muted); }
+    .corp-staff-list { display: flex; flex-direction: column; gap: 0; }
+    .corp-staff-row {
+      display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+      gap: 10px; border-top: 1px solid var(--line); padding: 12px 0;
+    }
+    .corp-staff-row:first-child { border-top: none; padding-top: 0; }
+    .corp-staff-row .name { font-size: 14px; font-weight: 600; }
+    .corp-staff-row .meta-line { margin-top: 4px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .corp-staff-form {
+      margin-top: 12px; padding: 14px; border: 1px solid var(--line);
+      border-radius: var(--radius); background: var(--paper-soft);
+    }
+    .corp-staff-form .form-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
+    }
+    .corp-staff-form label {
+      display: flex; flex-direction: column; gap: 4px;
+      font-size: 11px; color: var(--muted); letter-spacing: 0.04em;
+    }
+    .corp-staff-form input {
+      border: 1px solid var(--line); background: #fff; font-family: inherit;
+      font-size: 13px; padding: 8px 10px; border-radius: var(--radius-sm); color: var(--ink);
+    }
+    .corp-event .cite { margin-top: 6px; }
+    .sop-track {
+      margin-top: 12px;
+      padding: 12px 14px 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #faf8f4 0%, #f5f2eb 100%);
+    }
+    .sop-nodes {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 0; position: relative;
+    }
+    .sop-node {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      position: relative; z-index: 1; min-width: 0;
+    }
+    .sop-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 11px; left: calc(50% + 12px); right: calc(-50% + 12px);
+      height: 2px; background: var(--line-strong);
+      z-index: 0;
+    }
+    .sop-node.done:not(:last-child)::after,
+    .sop-node.current:not(:last-child)::after { background: #9bbfae; }
+    .sop-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--line-strong); background: #fff;
+      display: grid; place-items: center;
+      font-size: 11px; color: var(--muted); font-weight: 600;
+      position: relative; z-index: 1;
+    }
+    .sop-node.done .sop-dot {
+      border-color: var(--seal); background: var(--seal); color: #fff;
+    }
+    .sop-node.current .sop-dot {
+      border-color: var(--seal); background: #fff; color: var(--seal);
+      box-shadow: 0 0 0 3px rgba(15, 111, 79, 0.12);
+    }
+    .sop-node.pending .sop-dot { opacity: 0.55; }
+    .sop-node.rejected .sop-dot {
+      border-color: var(--bad); background: var(--bad); color: #fff;
+    }
+    .sop-lab {
+      margin-top: 6px; font-size: 11px; color: var(--muted);
+      text-align: center; line-height: 1.25; letter-spacing: 0.02em;
+      max-width: 4.5em;
+    }
+    .sop-node.done .sop-lab { color: var(--ok); }
+    .sop-node.current .sop-lab { color: var(--seal); font-weight: 600; }
+    .sop-node.rejected .sop-lab { color: var(--bad); font-weight: 600; }
+    .sop-actions { margin-top: 10px; }
+    .bars { margin: 12px 0; }
+    .bar-row { display: grid; grid-template-columns: 48px 1fr 36px; gap: 8px; align-items: center; font-size: 12px; margin-bottom: 6px; color: var(--muted); }
+    .bar-track { height: 6px; background: #eee9e0; }
+    .bar-fill { height: 100%; background: var(--seal); }
+    .form-grid { display: grid; gap: 10px; margin-top: 8px; }
+    .form-grid label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .toast {
+      position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(12px);
+      background: var(--ink); color: #fff; padding: 8px 14px; font-size: 12px;
+      opacity: 0; pointer-events: none; transition: .25s ease; z-index: 50; letter-spacing: 0.04em;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .op-seal {
+      position: fixed; right: 22px; bottom: 22px; z-index: 40;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 2px solid var(--seal); background: #fff; color: var(--seal);
+      display: grid; place-items: center;
+      font-family: "Noto Serif SC", serif; font-weight: 700; font-size: 15px;
+      box-shadow: 0 2px 10px rgba(15, 111, 79, 0.12);
+      cursor: default; user-select: none;
+    }
+    .op-seal:focus-visible { outline: 2px solid var(--seal); outline-offset: 2px; }
+    .topbar:empty, .topbar:has(> :empty:only-child) { display: none; }
+    .topbar.quiet { display: none; }
+    .topbar.warn {
+      display: flex; justify-content: flex-end;
+      padding: 10px 22px; border-bottom: 1px solid #e6d5b0;
+      font-size: 12px; color: var(--warn); background: var(--warn-bg);
+    }
+    .busy { opacity: .55; pointer-events: none; }
+    .size-tag { font-family: "Noto Serif SC", serif; letter-spacing: 0.06em; }
+    .co-row { display: flex; align-items: flex-start; gap: 12px; }
+    .co-row > div { min-width: 0; flex: 1; }
+    .co-avatar {
+      width: 40px; height: 40px; flex: none;
+      border-radius: 12px; object-fit: cover;
+      border: 1px solid var(--line); background: var(--paper-soft);
+      display: block;
+    }
+    .co-avatar.fallback {
+      display: grid; place-items: center;
+      font-family: "Noto Serif SC", serif; font-weight: 600;
+      font-size: 15px; color: var(--seal); background: #eef6f2;
+    }
+    .co-avatar.lg { width: 52px; height: 52px; border-radius: 14px; }
+    .detail-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 4px; }
+    .detail-head h2 { margin: 0; }
+    .code-pill { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+    .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .filter-stack .filter-row:last-child { margin-bottom: 0; }
+    .filter-row .lbl { font-size: 11px; color: var(--muted); margin-right: 2px; letter-spacing: 0.06em; }
+    .policy-body {
+      margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line);
+      background: var(--paper-soft); font-size: 13px; line-height: 1.7;
+      max-height: 320px; overflow: auto;
+      border-radius: var(--radius-sm);
+      font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      color: var(--ink);
+    }
+    .policy-body h2, .policy-body h3 {
+      margin: 14px 0 6px; font-family: "Noto Serif SC", serif; font-weight: 600;
+      line-height: 1.35; color: var(--ink);
+    }
+    .policy-body h2 { font-size: 15px; }
+    .policy-body h3 { font-size: 14px; }
+    .policy-body h2:first-child, .policy-body h3:first-child { margin-top: 0; }
+    .policy-body p { margin: 0 0 8px; }
+    .policy-body ul { margin: 0 0 10px; padding-left: 1.25em; }
+    .policy-body li { margin: 2px 0; }
+    .policy-body strong { font-weight: 600; }
+    .policy-body a { color: var(--seal); text-decoration: underline; text-underline-offset: 2px; }
+    .policy-body blockquote {
+      margin: 0 0 10px; padding: 6px 10px; border-left: 3px solid var(--line);
+      color: var(--muted); background: #f3f1ec;
+    }
+    .portfolio-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px; margin-top: 8px;
+    }
+    .portfolio-card {
+      border: 1px solid var(--line); background: var(--paper-soft);
+      overflow: hidden; border-radius: var(--radius);
+      position: relative;
+    }
+    .portfolio-cover { height: 56px; position: relative; }
+    .portfolio-cover .frame-ico {
+      position: absolute; right: 8px; bottom: 8px;
+      width: 18px; height: 18px; opacity: 0.85;
+    }
+    .portfolio-card strong { display: block; padding: 8px 10px 0; font-size: 13px; }
+    .portfolio-card p { margin: 4px 10px 10px; font-size: 11px; color: var(--muted); line-height: 1.45; }
+    .team-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .team-chip {
+      display: flex; align-items: flex-start; gap: 8px;
+      border: 1px solid var(--line); background: var(--paper-soft);
+      padding: 8px 10px; font-size: 12px; border-radius: var(--radius);
+    }
+    .team-chip .person-ico {
+      width: 22px; height: 22px; flex: none; margin-top: 1px;
+      color: var(--seal);
+    }
+    .team-chip .person-ico svg { width: 22px; height: 22px; display: block; }
+    .team-chip b { display: block; font-size: 12px; color: var(--seal); }
+    .head-ico {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--muted);
+    }
+    .head-ico svg { width: 14px; height: 14px; color: var(--seal); flex: none; }
+    .match-row {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--line);
+    }
+    .match-row .left { flex: 1; min-width: 140px; }
+
+    .media-banner {
+      margin-bottom: 12px; padding: 10px 12px; border: 1px solid var(--line);
+      background: #f7f0e4; color: var(--warn); font-size: 12px; line-height: 1.55;
+    }
+    .media-banner.ok {
+      background: #eef5f0; color: var(--ok); border-color: #c5dbc9;
+    }
+    .media-banner code {
+      background: rgba(0,0,0,.05); padding: 1px 5px; font-size: 11px;
+    }
+    .media-sources {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+      font-size: 11px; color: var(--muted);
+    }
+    .media-sources span {
+      border: 1px solid var(--line); padding: 3px 8px; background: #fff;
+    }
+    .media-sources span.on { color: var(--ok); border-color: #c5dbc9; background: #eef5f0; }
+    .media-sources span.off { color: var(--warn); background: #f7f0e4; }
+    .media-card-row { display: flex; gap: 12px; align-items: flex-start; }
+    .media-thumb {
+      width: 96px; height: 72px; flex: none; object-fit: cover;
+      border: 1px solid var(--line); background: #f3f0ea;
+    }
+    .media-thumb.ph {
+      display: grid; place-items: center; font-size: 11px; color: var(--muted);
+    }
+    .media-detail-media {
+      margin: 12px 0; border: 1px solid var(--line); background: #faf8f4;
+      overflow: hidden; max-width: 100%;
+    }
+    .media-detail-media img, .media-detail-media video {
+      display: block; width: 100%; max-height: 360px; object-fit: contain; background: #111;
+    }
+
+    /* 智能招商测算台专用样式 */
+    .attract-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .attract-quick-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      background: #f4f8f5; border: 1px solid #cce5d8; padding: 10px 14px; border-radius: var(--radius);
+    }
+    .attract-quick-bar span { font-size: 12px; color: var(--seal); font-weight: 600; }
+    .quick-preset-btn {
+      background: #fff; border: 1px solid var(--seal); color: var(--seal);
+      padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
+      transition: all .2s;
+    }
+    .quick-preset-btn:hover { background: var(--seal); color: #fff; }
+    .attract-main-grid {
+      display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: start;
+    }
+    @media (max-width: 960px) {
+      .attract-main-grid { grid-template-columns: 1fr; }
+    }
+    .attract-form-card {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow-sm);
+    }
+    .attract-form-card h3 {
+      margin: 0 0 12px; font-size: 14px; font-family: "Noto Serif SC", serif;
+      color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 8px;
+    }
+    .attract-form-group { margin-bottom: 12px; }
+    .attract-form-group label {
+      display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 500;
+    }
+    .attract-form-group input, .attract-form-group select, .attract-form-group textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px;
+      font-size: 12px; font-family: inherit; background: var(--paper-soft); box-sizing: border-box;
+    }
+    .attract-form-group textarea { height: 56px; resize: vertical; }
+    .btn-calc {
+      width: 100%; background: var(--seal); color: #fff; border: none; padding: 10px;
+      border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: opacity .2s; margin-top: 8px;
+    }
+    .btn-calc:hover { opacity: .9; }
+    .report-card {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm); position: relative;
+    }
+    .report-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 16px;
+    }
+    .report-title-box h2 {
+      margin: 0; font-size: 17px; font-family: "Noto Serif SC", serif; letter-spacing: .05em; color: var(--ink);
+    }
+    .report-title-box p { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
+    .report-badge {
+      border: 1px solid var(--seal); color: var(--seal); background: #eef6f2;
+      padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 2px;
+      letter-spacing: .05em;
+    }
+    .metrics-summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metric-sub-card {
+      background: var(--paper-soft); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px;
+    }
+    .metric-sub-card.highlight {
+      background: #eef6f2; border-color: #cce5d8;
+    }
+    .metric-sub-card label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .metric-sub-card .val {
+      font-size: 17px; font-weight: 700; color: var(--ink); font-family: "Noto Serif SC", serif;
+    }
+    .metric-sub-card.highlight .val { color: var(--seal); }
+    .metric-sub-card small { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+    .report-section-title {
+      font-size: 13px; font-weight: 700; color: var(--ink); margin: 16px 0 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .report-section-title::before {
+      content: ""; display: inline-block; width: 3px; height: 12px; background: var(--seal);
+    }
+    .policy-eval-table {
+      width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px;
+    }
+    .policy-eval-table th, .policy-eval-table td {
+      border: 1px solid var(--line); padding: 7px 9px; text-align: left;
+    }
+    .policy-eval-table th { background: var(--paper-soft); color: var(--muted); font-weight: 600; font-size: 11px; }
+    .tag-state {
+      display: inline-block; padding: 1px 6px; font-size: 11px; border-radius: 2px; font-weight: 600;
+    }
+    .tag-state.fit { background: #eef5f0; color: var(--ok); border: 1px solid #c5dbc9; }
+    .tag-state.audit { background: #fbf5e8; color: var(--warn); border: 1px solid #e7d5b5; }
+    .tag-state.drop { background: #fdf2f2; color: var(--bad); border: 1px solid #f1c5c5; }
+    .wechat-draft-box {
+      background: #f8faf9; border: 1px dashed var(--seal); border-radius: 6px;
+      padding: 12px 14px; margin-bottom: 16px; position: relative;
+    }
+    .wechat-draft-box h4 {
+      margin: 0 0 6px; font-size: 12px; color: var(--seal); display: flex; align-items: center; justify-content: space-between;
+    }
+    .wechat-draft-box p {
+      margin: 0; font-size: 12px; line-height: 1.6; color: #2c3e50; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .report-actions {
+      display: flex; gap: 10px; justify-content: flex-end; padding-top: 14px; border-top: 1px solid var(--line);
+    }
+    .btn-secondary {
+      background: #fff; border: 1px solid var(--line); padding: 7px 12px; font-size: 12px;
+      border-radius: 4px; cursor: pointer; color: var(--ink);
+    }
+    .btn-secondary:hover { background: var(--paper-soft); }
+    .btn-primary {
+      background: var(--seal); border: 1px solid var(--seal); color: #fff; padding: 7px 14px;
+      font-size: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;
+    }
+    .btn-primary:hover { opacity: .9; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="logo">云谷</div>
+        <div>
+          <h1>云谷政策雷达智能匹配系统</h1>
+          <p>双益初筛 · 责任可追</p>
+        </div>
+      </div>
+      <button class="nav-btn active" data-view="dashboard" data-portal-nav="ops">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.2" y="8.2" width="3" height="5.2" rx="0.6" fill="#0f6f4f"/><rect x="6.5" y="5.2" width="3" height="8.2" rx="0.6" fill="#0f6f4f" opacity=".75"/><rect x="10.8" y="3" width="3" height="10.4" rx="0.6" fill="#0f6f4f" opacity=".5"/></svg></span>
+        <span class="nav-txt">看板<small>总览 · 成效 · 图表</small></span>
+      </button>
+      <button class="nav-btn" data-view="radar" data-portal-nav="ops">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.2" fill="#0f6f4f"/><path d="M8 2.2a5.8 5.8 0 0 1 5.8 5.8M8 4.4a3.6 3.6 0 0 1 3.6 3.6" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/><path d="M8 2.2a5.8 5.8 0 0 0-5.8 5.8M8 4.4A3.6 3.6 0 0 0 4.4 8" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round" opacity=".45"/></svg></span>
+        <span class="nav-txt">政策雷达<small>收政策 · 看原文</small></span>
+      </button>
+      <button class="nav-btn" data-view="companies" data-portal-nav="ops">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.2" r="2.4" fill="#0f6f4f"/><path d="M3.2 13.2c.5-2.4 2.1-3.6 4.8-3.6s4.3 1.2 4.8 3.6" stroke="#0f6f4f" stroke-width="1.35" stroke-linecap="round"/></svg></span>
+        <span class="nav-txt">企业运营<small>画像 · 作品</small></span>
+      </button>
+      <button class="nav-btn" data-view="skills" data-portal-nav="ops">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="9" rx="2" stroke="#0f6f4f" stroke-width="1.3"/><path d="M5 7.2h6M5 9.5h3.5" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+        <span class="nav-txt">Skills 接入<small>一句话接入</small></span>
+      </button>
+      <button class="nav-btn" data-view="perms" data-portal-nav="ops">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="4.2" height="5.5" rx="0.8" stroke="#0f6f4f" stroke-width="1.3"/><path d="M5.1 7V5.6a2.9 2.9 0 0 1 5.8 0V7" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/><rect x="8.8" y="7" width="4.2" height="5.5" rx="0.8" stroke="#0f6f4f" stroke-width="1.3" opacity=".55"/></svg></span>
+        <span class="nav-txt">权限管理<small>用户 · Skill 授权</small></span>
+      </button>
+      <button class="nav-btn" data-view="corp_policies" data-portal-nav="corp" hidden>
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M4 3.2h8v9.6H4z" stroke="#0f6f4f" stroke-width="1.3"/><path d="M6 6h4M6 8.5h2.8" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+        <span class="nav-txt">符合的政策<small>匹配 · 确认接受</small></span>
+      </button>
+      <button class="nav-btn" data-view="corp_events" data-portal-nav="corp" hidden>
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.8" y="3.5" width="10.4" height="9.2" rx="1.4" stroke="#0f6f4f" stroke-width="1.3"/><path d="M5.2 2.8v2M10.8 2.8v2M2.8 7h10.4" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+        <span class="nav-txt">符合的大会<small>公开活动 · 只读</small></span>
+      </button>
+      <button class="nav-btn" data-view="corp_staff" data-portal-nav="corp" hidden>
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.2" r="2.4" fill="#0f6f4f"/><path d="M3.2 13.2c.5-2.4 2.1-3.6 4.8-3.6s4.3 1.2 4.8 3.6" stroke="#0f6f4f" stroke-width="1.35" stroke-linecap="round"/></svg></span>
+        <span class="nav-txt">企业人员<small>对接 · 本机配置</small></span>
+      </button>
+      <div class="side-foot">
+        <div class="portal-switch" role="group" aria-label="端切换">
+          <button type="button" class="portal-btn on" data-portal="ops">运营后台</button>
+          <button type="button" class="portal-btn" data-portal="corp">企业端</button>
+        </div>
+        <div id="opsFootBlock" class="foot-block">
+          当前专员
+          <select id="operator">
+            <option value="OP-01">运营专员·甲 / OP-01</option>
+            <option value="OP-02">运营专员·乙 / OP-02</option>
+          </select>
+        </div>
+        <div id="corpFootBlock" class="foot-block" hidden>
+          当前企业
+          <select id="portalCompany"></select>
+        </div>
+      </div>
+    </aside>
+
+    <section class="main">
+      <div class="topbar quiet" id="topbar">
+        <span id="apiStatus"></span>
+      </div>
+      <div class="content" id="content"></div>
+    </section>
+  </div>
+
+  <div class="op-seal" id="opSeal" title="运营专员" aria-label="运营专员">甲</div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const API = "";
+    const SIZE_LABELS = {
+      opc: "OPC 一人公司",
+      s_3_20: "3–20 人",
+      m_20_100: "20–100 人",
+    };
+    let view = "dashboard";
+    let lastOpsView = "dashboard";
+    let portalMode = localStorage.getItem("portalMode") || "ops"; // "ops" | "corp"
+    let portalCompanyId = localStorage.getItem("portalCompanyId") || "";
+    let corpPayload = null;
+    let corpStaffEditId = null; // null=收起表单；""=新增；id=编辑
+    const CORP_STAFF_KEY_PREFIX = "corpStaff:";
+    let radarChannel = "";
+    let benefitFilter = "both";
+    let showHistoryArchive = false;
+    let radarSort = "smart"; // smart | window | newest
+    let sizeBand = "";
+    let mediaQ = "";
+    let mediaSource = "all";
+    let mediaTime = "since";
+    let expandTimelineHistory = false;
+    let mediaItems = [];
+    let mediaMeta = null;
+    let selectedMedia = null;
+    let radarItems = [];
+    let radarMatchItems = [];
+    let policyBodyText = "";
+    let companies = [];
+    let selectedRadar = null;
+    let modalFocusCompanyId = null;
+    let selectedCompany = null;
+    let matchPayload = null;
+    let loading = false;
+    let skillsPlatform = "千问办公";
+    const apiBase = (typeof window !== "undefined" && window.location && window.location.origin) ? window.location.origin : "http://127.0.0.1:8766";
+    const isMs = apiBase.includes("ms.show") || apiBase.includes("modelscope");
+    const SKILLS_INSTALL = isMs ? `curl -fsSL -A "Mozilla/5.0" ${apiBase}/skills.md` : `curl -fsSL ${apiBase}/skills.md`;
+    const SKILL_PLATFORMS = ["千问办公", "Qoder", "Claude Code", "Codex", "Trae", "豆包", "Workbuddy"];
+    const SKILL_PERMS_KEY = "skillPerms";
+    const PERM_USERS = [
+      { id: "OP-01", label: "运营专员·甲", role: "运营" },
+      { id: "OP-02", label: "运营专员·乙", role: "运营" },
+      { id: "CORP-W", label: "企业对接·王*", role: "企业对接" },
+      { id: "CORP-L", label: "企业经办·李*", role: "企业对接" },
+    ];
+    const CORP_VIEWS = ["corp_policies", "corp_events", "corp_staff"];
+
+    function isCorpView(v) {
+      return v === "corp" || CORP_VIEWS.includes(v);
+    }
+
+    function defaultSkillPerms() {
+      const allOn = () => Object.fromEntries(SKILL_PLATFORMS.map((p) => [p, true]));
+      const pick = (allowed) => Object.fromEntries(SKILL_PLATFORMS.map((p) => [p, allowed.includes(p)]));
+      return {
+        "OP-01": allOn(),
+        "OP-02": pick(["千问办公", "Qoder", "Trae", "豆包", "Workbuddy"]),
+        "CORP-W": pick(["千问办公", "豆包"]),
+        "CORP-L": pick(["Qoder", "Workbuddy"]),
+      };
+    }
+
+    function loadSkillPerms() {
+      try {
+        const raw = localStorage.getItem(SKILL_PERMS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch (_) { /* ignore */ }
+      return defaultSkillPerms();
+    }
+
+    function saveSkillPerms(map) {
+      try { localStorage.setItem(SKILL_PERMS_KEY, JSON.stringify(map || {})); } catch (_) { /* ignore */ }
+    }
+
+    function hasSkillPerm(userId, skill) {
+      const map = loadSkillPerms();
+      const row = map[userId];
+      if (!row || typeof row !== "object") return true;
+      return !!row[skill];
+    }
+
+    function currentOperatorId() {
+      const el = document.getElementById("operator");
+      return (el && el.value) || "OP-01";
+    }
+    const PLATFORM_MARKS = {
+      "千问办公": `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="qwen-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6336E7"/><stop offset="100%" stop-color="#6F69F7"/></linearGradient></defs><path d="M12.604 1.34c.393.69.784 1.382 1.174 2.075a.18.18 0 00.157.091h5.552c.174 0 .322.11.446.327l1.454 2.57c.19.337.24.478.024.837-.26.43-.513.864-.76 1.3l-.367.658c-.106.196-.223.28-.04.512l2.652 4.637c.172.301.111.494-.043.77-.437.785-.882 1.564-1.335 2.34-.159.272-.352.375-.68.37-.777-.016-1.552-.01-2.327.016a.099.099 0 00-.081.05 575.097 575.097 0 01-2.705 4.74c-.169.293-.38.363-.725.364-.997.003-2.002.004-3.017.002a.537.537 0 01-.465-.271l-1.335-2.323a.09.09 0 00-.083-.049H4.982c-.285.03-.553-.001-.805-.092l-1.603-2.77a.543.543 0 01-.002-.54l1.207-2.12a.198.198 0 000-.197 550.951 550.951 0 01-1.875-3.272l-.79-1.395c-.16-.31-.173-.496.095-.965.465-.813.927-1.625 1.387-2.436.132-.234.304-.334.584-.335a338.3 338.3 0 012.589-.001.124.124 0 00.107-.063l2.806-4.895a.488.488 0 01.422-.246c.524-.001 1.053 0 1.583-.006L11.704 1c.341-.003.724.032.9.34zm-3.432.403a.06.06 0 00-.052.03L6.254 6.788a.157.157 0 01-.135.078H3.253c-.056 0-.07.025-.041.074l5.81 10.156c.025.042.013.062-.034.063l-2.795.015a.218.218 0 00-.2.116l-1.32 2.31c-.044.078-.021.118.068.118l5.716.008c.046 0 .08.02.104.061l1.403 2.454c.046.081.092.082.139 0l5.006-8.76.783-1.382a.055.055 0 01.096 0l1.424 2.53a.122.122 0 00.107.062l2.763-.02a.04.04 0 00.035-.02.041.041 0 000-.04l-2.9-5.086a.108.108 0 010-.113l.293-.507 1.12-1.977c.024-.041.012-.062-.035-.062H9.2c-.059 0-.073-.026-.043-.077l1.434-2.505a.107.107 0 000-.114L9.225 1.774a.06.06 0 00-.053-.031zm6.29 8.02c.046 0 .058.02.034.06l-.832 1.465-2.613 4.585a.056.056 0 01-.05.029.058.058 0 01-.05-.029L8.498 9.841c-.02-.034-.01-.052.028-.054l.216-.012 6.722-.012z" fill="url(#qwen-grad)" fill-rule="nonzero"/></svg>`,
+      "Qoder": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.376 14.458v-4.056c0-2.304-1.003-4.154-2.748-5.075L11.612.574l-.046.086-.045.086c1.68.886 2.644 2.673 2.644 4.902v4.056a7.928 7.928 0 01-.014.454l-.005.061c-.005.081-.01.164-.018.245a4.897 4.897 0 01-.011.1l-.01.076c-.008.068-.015.135-.025.203l-.018.113-.01.058a9.99 9.99 0 01-.098.513l-.007.03a7.209 7.209 0 01-.074.294l-.024.086c-.027.099-.056.197-.087.296l-.027.085a9.592 9.592 0 01-.111.323l-.033.085-.018.046c-.032.082-.064.166-.098.248-.019.048-.04.096-.061.145l-.007.017a6 6 0 01-.084.187c-.024.056-.05.11-.077.165-.03.061-.058.122-.089.182a9.423 9.423 0 01-.176.332c-.03.056-.062.111-.094.167-.031.053-.062.108-.095.16-.033.055-.066.11-.101.164-.033.053-.065.104-.1.155-.034.055-.07.107-.111.169l-.099.144a15.193 15.193 0 01-.34.457c-.04.05-.08.102-.121.151l-.107.128-.007.008a6.987 6.987 0 01-.262.298l-.149.16-.116.12a9.562 9.562 0 01-.204.198l-.03.03-.072.069a9.05 9.05 0 01-.263.235l-.025.022-.029.026-.042.035a11.7 11.7 0 01-.22.18l-.07.055-.018.013a8.904 8.904 0 01-.194.146c-.029.02-.057.042-.086.063a7.7 7.7 0 01-.22.152l-.057.04a8.865 8.865 0 01-.293.185l-.062.037a10.424 10.424 0 01-.307.173l-.037.02-.196.103-.108.052-.012.006a6.196 6.196 0 01-.315.143c-.065.028-.13.054-.196.08l-.035.014-.086.034c-.07.026-.143.05-.215.075l-.039.014-.064.023a8.056 8.056 0 01-.323.097l-.63.173a7.285 7.285 0 01-.33.08l-.07.015c-.053.012-.104.023-.157.032l-.065.011-.085.015a2.332 2.332 0 01-.194.027l-.085.01a4.715 4.715 0 01-.16.018l-.034.003a4.861 4.861 0 01-.246.016h-.033a2.714 2.714 0 01-.155.005h-.106a3.384 3.384 0 01-.225-.007H4.86l-.15-.012-.066-.006a5.586 5.586 0 01-.187-.02l-.04-.005a5.14 5.14 0 01-.219-.035l-.054-.01a6.943 6.943 0 01-.347-.082l-.03-.008-.038-.01a5.034 5.034 0 01-.269-.086l-.063-.023a4.216 4.216 0 01-.188-.073l-.071-.031-.016-.007a4.959 4.959 0 01-.16-.074l-.026-.013a.164.164 0 00-.014-.007l-.671-.351.486.486h.016l8.995 4.742.093.048.03.014.02.01c.056.026.111.052.169.076l.016.008.073.032.195.076.022.008a.718.718 0 01.03.012l.014.004a4.693 4.693 0 00.323.1l.027.007c.073.02.147.038.22.055l.018.004.027.006.066.013.088.016c.075.014.15.026.226.038l.042.004c.064.009.128.016.193.022l.126.012.06.003.05.002.098.005c.046.002.094.002.14.003h.12c.05 0 .1-.002.161-.005h.033l.07-.004a6.17 6.17 0 00.184-.014l.033-.003a.753.753 0 00.058-.005l.108-.012.081-.01.08-.01.129-.021.082-.014.071-.012c.054-.01.107-.021.16-.033l.066-.013.059-.013c.096-.022.192-.046.287-.073l.63-.172a7.354 7.354 0 00.397-.122l.04-.015c.075-.025.149-.051.222-.078.032-.011.062-.024.093-.037l.03-.012c.067-.027.135-.054.2-.082l.128-.056.195-.09.021-.01.102-.05c.068-.034.135-.069.202-.105l.037-.02.073-.038c.08-.044.16-.092.24-.139l.026-.015a8.086 8.086 0 00.322-.2l.065-.045 1.98.902a1.748 1.748 0 002.472-1.59v-7.33l.004.004z" fill="#00AA3B"/><path d="M11.617.576a3.904 3.904 0 00-.093-.047c-.016-.009-.033-.016-.05-.024a5.854 5.854 0 00-.166-.077l-.09-.04a4.094 4.094 0 00-.194-.074c-.017-.006-.035-.015-.053-.02l-.013-.005a5.18 5.18 0 00-.277-.088l-.07-.019a4.034 4.034 0 00-.219-.053c-.015-.003-.03-.008-.044-.012L10.253.1l-.057-.011a5.177 5.177 0 00-.225-.036L9.928.047a5.972 5.972 0 00-.191-.022L9.669.02a1.33 1.33 0 00-.058-.005L9.515.009a4.058 4.058 0 00-.111-.005C9.354 0 9.304 0 9.254 0h-.109c-.052 0-.106.004-.16.004L8.884.01A5.32 5.32 0 008.7.022l-.083.006h-.008c-.05.005-.1.013-.15.019l-.12.014c-.056.008-.112.018-.169.028-.037.006-.074.011-.11.018a7.054 7.054 0 00-.572.133l-.63.172c-.111.031-.22.064-.33.1-.037.011-.072.025-.108.037a12.91 12.91 0 00-.345.126c-.067.027-.133.054-.2.083l-.128.055a11.916 11.916 0 00-.318.15 7.376 7.376 0 00-.311.163c-.082.045-.16.092-.24.14a9.424 9.424 0 00-.35.218l-.016.01-.06.04a9.242 9.242 0 00-.51.37 12.54 12.54 0 00-.315.254l-.043.034-.01.007-.045.041c-.09.078-.18.158-.268.24l-.106.101c-.07.067-.139.135-.207.204l-.056.054-.063.067-.153.164-.12.133-.148.17c-.024.03-.049.057-.073.086l-.043.053a5.96 5.96 0 00-.123.155l-.118.151c-.04.053-.08.106-.118.16l-.075.101-.038.056-.107.155-.11.164a9.91 9.91 0 00-.168.265c-.012.02-.023.043-.037.063a12.43 12.43 0 00-.192.335l-.09.168c-.019.034-.04.07-.057.105-.011.022-.02.043-.032.065l-.092.188-.08.167a19.15 19.15 0 00-.083.192c-.017.038-.035.076-.05.115-.008.016-.014.034-.021.051-.035.083-.067.167-.1.253l-.051.134c-.04.11-.077.22-.113.33l-.02.057c0 .002 0 .005-.002.007l-.008.026c-.032.1-.06.2-.09.301l-.023.089c-.027.1-.052.2-.075.301l-.007.03a7.63 7.63 0 00-.057.267l-.008.048c-.015.074-.026.148-.038.223L.082 8.4c-.011.078-.02.156-.029.234-.006.051-.013.103-.017.154a6.57 6.57 0 00-.02.26c-.003.044-.007.086-.009.13-.004.128-.007.257-.007.386v4.056c0 1.478.42 2.741 1.138 3.692A4.75 4.75 0 002.73 18.67l9.015 4.753c-1.656-.874-2.728-2.685-2.73-5.051v-4.056c0-.13.004-.26.01-.39.002-.043.006-.085.01-.128.005-.088.01-.174.019-.261l.017-.155c.01-.077.018-.155.029-.234l.026-.164c.013-.074.025-.15.039-.223.02-.105.04-.21.064-.313l.008-.031c.023-.1.048-.201.075-.301l.023-.088c.028-.1.058-.202.09-.302l.008-.025.021-.063c.036-.11.073-.22.113-.33l.052-.134c.031-.085.065-.169.1-.253.022-.056.047-.111.07-.166a13.856 13.856 0 01.164-.358c.03-.063.06-.126.092-.188l.088-.172a9.22 9.22 0 01.187-.338l.096-.164c.034-.057.069-.112.104-.168l.1-.159a10.49 10.49 0 01.567-.786l.123-.155.116-.139c.05-.057.098-.115.148-.171a14.092 14.092 0 01.272-.297 9.706 9.706 0 01.432-.425c.088-.083.177-.163.268-.241l.054-.048a10.08 10.08 0 01.553-.435l.092-.068c.075-.053.15-.105.226-.156.019-.013.038-.028.06-.04a9.18 9.18 0 01.362-.227c.08-.047.16-.094.241-.139l.11-.058a7.643 7.643 0 01.521-.256l.126-.056a7.509 7.509 0 01.546-.208l.107-.037c.11-.036.22-.069.33-.1l.63-.172c.095-.026.191-.05.287-.072l.097-.02c.062-.014.125-.029.187-.04l.114-.018c.055-.01.11-.02.166-.028.04-.006.08-.01.12-.014.053-.007.105-.014.157-.019l.083-.006c.061-.005.123-.01.184-.013.034-.003.067-.003.101-.004l.16-.006h.11a3.187 3.187 0 01.261.008l.153.01.067.007c.064.006.128.013.192.022l.043.005a5.232 5.232 0 01.281.047l.141.03c.073.016.146.035.218.053l.07.019c.094.026.187.055.278.087l.067.025a4.326 4.326 0 01.449.19l.143.072L11.617.576z" fill="#00AA3B"/></svg>`,
+      "Claude Code": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757"/></svg>`,
+      "Codex": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.946-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z" fill="#000000"/></svg>`,
+      "Trae": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 20.541H3.428v-3.426H0V3.4h24V20.54zM3.428 17.115h17.144V6.827H3.428v10.288zm8.573-5.196l-2.425 2.424-2.424-2.424 2.424-2.424 2.425 2.424zm6.857-.001l-2.424 2.423-2.425-2.423 2.425-2.425 2.424 2.425z" fill="#12A36A"/></svg>`,
+      "豆包": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.31 15.756c.172-3.75 1.883-5.999 2.549-6.739-3.26 2.058-5.425 5.658-6.358 8.308v1.12C1.501 21.513 4.226 24 7.59 24a6.59 6.59 0 002.2-.375c.353-.12.7-.248 1.039-.378.913-.899 1.65-1.91 2.243-2.992-4.877 2.431-7.974.072-7.763-4.5l.002.001z" fill="#1E37FC"/><path d="M22.57 10.283c-1.212-.901-4.109-2.404-7.397-2.8.295 3.792.093 8.766-2.1 12.773a12.782 12.782 0 01-2.244 2.992c3.764-1.448 6.746-3.457 8.596-5.219 2.82-2.683 3.353-5.178 3.361-6.66a2.737 2.737 0 00-.216-1.084v-.002z" fill="#37E1BE"/><path d="M14.303 1.867C12.955.7 11.248 0 9.39 0 7.532 0 5.883.677 4.545 1.807 2.791 3.29 1.627 5.557 1.5 8.125v9.201c.932-2.65 3.097-6.25 6.357-8.307.5-.318 1.025-.595 1.569-.829 1.883-.801 3.878-.932 5.746-.706-.222-2.83-.718-5.002-.87-5.617h.001z" fill="#A569FF"/><path d="M17.305 4.961a199.47 199.47 0 01-1.08-1.094c-.202-.213-.398-.419-.586-.622l-1.333-1.378c.151.615.648 2.786.869 5.617 3.288.395 6.185 1.898 7.396 2.8-1.306-1.275-3.475-3.487-5.266-5.323z" fill="#1E37FC"/></svg>`,
+      "Workbuddy": `<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="wb-p0" x1="20" y1="0" x2="20" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#0EC8A9"/><stop offset="1" stop-color="#01C886"/></linearGradient><linearGradient id="wb-p1" x1="14.6" y1="11" x2="33.4" y2="43.5" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.8"/><stop offset="0.44" stop-color="white"/></linearGradient><clipPath id="wb-clip"><rect width="40" height="40" rx="20" fill="white"/></clipPath></defs><g clip-path="url(#wb-clip)"><rect width="40" height="40" rx="20" fill="url(#wb-p0)"/><path d="M28.59 3.13c.39-.35.42-.37.7-.38.47-.04.9.19 1.63.85 1.7 1.54 4.06 4.71 5.53 7.42l.57 1.05.8.4c.77.39 2.04 1.19 2.57 1.62.24.2.27.2.52.1 1.13-.44 2.74.14 4.16 1.51 1.28 1.22 2.51 3.32 2.98 5.07.07.28.16.89.19 1.34.11 1.58-.4 2.85-1.38 3.42-.2.12-.21.15-.2.65.04 2.37-.59 4.74-1.88 7.04-1.45 2.59-4.03 5.27-7.52 7.8-1.88 1.36-6.31 3.95-8.32 4.86-4.8 2.16-8.66 2.99-12 2.58-2-.24-4.26-1.02-5.6-1.92-.35-.24-.41-.26-.68-.18-1.43.41-3.3-.43-4.9-2.2-.63-.71-1.66-2.44-1.99-3.37-.77-2.17-.62-4.13.4-5.3.27-.3.28-.31.22-.82-.09-.83-.14-2.06-.09-2.85l.03-.74-1.11-1.97C.4 25.04-.69 22.47-1.11 20.5c-.23-1.07-.21-1.55.06-1.9.17-.22.71-.44 1.37-.56 1.66-.29 5.27-.03 9.29.68l.42.07.92-.81c1.52-1.35 2.54-2.11 4.4-3.27 1.95-1.22 4.14-2.22 6.61-3.01l.8-.26.43-1.14c1.56-4.12 3.16-7.16 4.3-8.17zm-13.07 21.11c-1.77 1.02-2.65 1.53-3.3 2.1-2.62 2.31-3.6 5.97-2.49 9.29.28.82.79 1.7 1.8 3.46 1.02 1.77 1.53 2.65 2.1 3.3 2.32 2.62 5.98 3.6 9.29 2.48.82-.27 1.7-.78 3.46-1.8l10.15-5.86c1.76-1.02 2.65-1.53 3.3-2.1 2.62-2.31 3.6-5.97 2.48-9.29-.27-.81-.78-1.7-1.8-3.46-1.02-1.77-1.53-2.65-2.1-3.3-2.31-2.63-5.97-3.61-9.29-2.49-.81.28-1.7.78-3.46 1.8L15.52 24.24z" fill="url(#wb-p1)"/><rect x="16.5" y="31.33" width="4.01" height="8.33" rx="2" transform="rotate(-30 16.5 31.33)" fill="white"/><rect x="27.31" y="25.09" width="4.01" height="8.33" rx="2" transform="rotate(-30 27.31 25.09)" fill="white"/></g></svg>`,
+    };
+    const STAGE_SHORT = { opc: "OPC 1人", s_3_20: "3–20人", m_20_100: "20–100人" };
+    const CHANNELS = [
+      { id: "", label: "全部" },
+      { id: "政府政策", label: "政府政策" },
+      { id: "公开活动", label: "公开活动" },
+    ];
+    const MEDIA_SOURCES = [
+      { id: "all", label: "全部来源" },
+      { id: "allnet", label: "allnet.hot" },
+      { id: "rss", label: "RSS" },
+      { id: "tikhub", label: "TikHub" },
+      { id: "sample", label: "仅样例" },
+    ];
+    const MEDIA_KW = ["", "政策", "园区", "企服", "OPC", "算力", "雏鹰", "补贴", "杭州"];
+    const MEDIA_TIME = [
+      { id: "7", label: "近7天", days: 7 },
+      { id: "30", label: "近30天", days: 30 },
+      { id: "since", label: "自2025-09", since: "2025-09-01" },
+      { id: "all", label: "全部", days: 180 },
+    ];
+    const TL_SINCE = "2025-09";
+
+    function companyLabel(c) {
+      if (!c) return "";
+      return c.alias || c.display_name || c.company_code || c.code || "";
+    }
+
+    const PERSON_SVG = `<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="5.2" r="2.4" fill="currentColor"/><path d="M3.2 13.2c.5-2.4 2.1-3.6 4.8-3.6s4.3 1.2 4.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg>`;
+    const FRAME_SVG = `<svg class="frame-ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="#fff" stroke-width="1.4"/><path d="M4.5 10.5 6.8 8l2.2 2.2 1.5-1.5 2 2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    function companyAvatar(c, sizeClass) {
+      if (!c) return "";
+      const cls = `co-avatar${sizeClass ? " " + sizeClass : ""}`;
+      if (c.logo) {
+        const src = c.logo.startsWith("/") ? c.logo : `/${c.logo}`;
+        return `<img class="${cls}" src="${esc(src)}" alt="" width="40" height="40" loading="lazy" />`;
+      }
+      const ch = (companyLabel(c) || "?").trim().charAt(0);
+      return `<span class="${cls} fallback" aria-hidden="true">${esc(ch)}</span>`;
+    }
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    /** 极简 markdown→html：##/###、列表 -、**粗体**、段落、链接、引用 */
+    function mdInline(s) {
+      let t = esc(s);
+      t = t.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, (_, label, href) =>
+        `<a href="${href}" target="_blank" rel="noopener">${label}</a>`
+      );
+      t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      return t;
+    }
+
+    function mdToHtml(md) {
+      const lines = String(md ?? "").replace(/\r\n/g, "\n").split("\n");
+      const out = [];
+      let inUl = false;
+      let para = [];
+      const flushPara = () => {
+        if (!para.length) return;
+        out.push(`<p>${mdInline(para.join(" "))}</p>`);
+        para = [];
+      };
+      const closeUl = () => {
+        if (!inUl) return;
+        out.push("</ul>");
+        inUl = false;
+      };
+      for (const raw of lines) {
+        const line = raw.replace(/\s+$/, "");
+        if (!line.trim()) {
+          flushPara();
+          closeUl();
+          continue;
+        }
+        const h = line.match(/^(#{1,3})\s+(.+)$/);
+        if (h) {
+          flushPara();
+          closeUl();
+          const lvl = h[1].length === 1 ? 2 : h[1].length; // # 也当 h2，跟正文观感一致
+          out.push(`<h${lvl}>${mdInline(h[2])}</h${lvl}>`);
+          continue;
+        }
+        const bq = line.match(/^>\s?(.*)$/);
+        if (bq) {
+          flushPara();
+          closeUl();
+          out.push(`<blockquote><p>${mdInline(bq[1])}</p></blockquote>`);
+          continue;
+        }
+        const li = line.match(/^[-*]\s+(.+)$/);
+        if (li) {
+          flushPara();
+          if (!inUl) { out.push("<ul>"); inUl = true; }
+          out.push(`<li>${mdInline(li[1])}</li>`);
+          continue;
+        }
+        closeUl();
+        para.push(line);
+      }
+      flushPara();
+      closeUl();
+      return out.join("") || `<p>${esc("（无正文）")}</p>`;
+    }
+
+    function sourceMark(mark) {
+      if (mark === "qinqing") return `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#0f6f4f"/><path d="M5 8.2h6M8 5.1v6.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+      if (mark === "hangzhou" || mark === "xihu") return `<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.2" y="1.2" width="13.6" height="13.6" rx="2" fill="#8c1d1d"/><path d="M4.2 11.2V5.2h3.1a2.1 2.1 0 0 1 0 4.2H4.2" fill="none" stroke="#fff" stroke-width="1.3"/></svg>`;
+      if (mark === "shanghai") return `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#1d4e89"/><circle cx="8" cy="8" r="2.1" fill="#fff"/></svg>`;
+      if (mark === "gov") return `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6.5 8 3l6 3.5V7H2V6.5Z" fill="#8c1d1d"/><path d="M3.2 8h1.4v4.2H3.2zM7.3 8h1.4v4.2H7.3zM11.4 8h1.4v4.2h-1.4zM2 12.6h12v1.2H2z" fill="#8c1d1d"/></svg>`;
+      return `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="#8a8175" stroke-width="1.4" stroke-dasharray="2 2"/></svg>`;
+    }
+
+    function sourceChip(src) {
+      if (!src) return "";
+      const mark = sourceMark(src.mark);
+      const label = src.name || src.platform || "来源";
+      if (src.verified && src.url) {
+        return `<a class="source-chip" href="${esc(src.url)}" target="_blank" rel="noopener">${mark}<span>${esc(label)}</span></a>`;
+      }
+      return `<span class="source-chip sample">${mark}<span>样例 · 不附链接</span></span>`;
+    }
+
+    function sourceBlock(item) {
+      if (!item) return "";
+      const bits = [sourceChip(item.source), sourceChip(item.source_also)].filter(Boolean);
+      const note = item.source && item.source.note ? `<span class="cite" style="margin:0">${esc(item.source.note)}</span>` : "";
+      if (!bits.length && !note) return "";
+      return `<div class="source-row"><span class="badge muted">信息来源</span>${bits.join("")}${note}</div>`;
+    }
+
+    function timelineHtml(events) {
+      if (!events || !events.length) return `<p class="cite">暂无沿革</p>`;
+      const isEarly = (at) => {
+        const s = String(at || "");
+        if (!s || s === "此后" || s === "当前" || s.startsWith("此后")) return false;
+        // YYYY-MM 或 YYYY-MM-DD：字面比较即可
+        return s < TL_SINCE;
+      };
+      const early = events.filter((ev) => isEarly(ev.at));
+      const recent = events.filter((ev) => !isEarly(ev.at));
+      const renderLi = (ev) => {
+        const st = String(ev.status || "").toLowerCase();
+        const isDone = st === "done" || st === "completed" || st === "passed";
+        const cls = isDone ? "done" : (ev.horizon ? "horizon" : (ev.current ? "current" : ""));
+        const statusBadge = isDone
+          ? `<span class="badge ok">已完成</span>`
+          : (ev.current ? `<span class="badge seal">进行中</span>` : "");
+        return `<li class="${cls}"><span class="tl-dot" aria-hidden="true"></span><div>
+          <div class="tl-meta"><time>${esc(ev.at)}</time><span class="badge muted">${esc(ev.kind)}</span><span class="badge">${esc(STAGE_SHORT[ev.stage] || "")}</span>${statusBadge}</div>
+          <strong>${esc(ev.title)}</strong>
+          ${ev.note ? `<p>${esc(ev.note)}</p>` : ""}
+        </div></li>`;
+      };
+      let expand = "";
+      if (early.length && !expandTimelineHistory) {
+        expand = `<button type="button" class="tl-expand" data-tl-expand>展开沿革（${early.length} 条 · 2025-09 前已收起）</button>`;
+      } else if (early.length && expandTimelineHistory) {
+        expand = `<button type="button" class="tl-expand" data-tl-collapse>收起 2025-09 前沿革</button>`;
+      }
+      const shown = expandTimelineHistory ? [...early, ...recent] : recent;
+      return `<p class="tl-note">匹配仍只看当前档；全记录展示窗自 ${TL_SINCE} 起。</p>
+        ${expand}
+        <ol class="timeline">${shown.map(renderLi).join("")}</ol>`;
+    }
+
+    function matchCountOf(r, override) {
+      if (override != null && override >= 0) return override;
+      if (r && r.match_count != null) return Number(r.match_count) || 0;
+      const ids = new Set();
+      (r.company_ids || []).forEach((id) => { if (id) ids.add(String(id)); });
+      (r.related_codes || []).forEach((code) => { if (code) ids.add(String(code)); });
+      return ids.size;
+    }
+
+    function scopeRank(r) {
+      const s = (r && r.scope) || "";
+      if (s === "national") return 0;
+      if (s === "provincial") return 1;
+      if (s === "city") return 2;
+      if (s === "district") return 3;
+      // 启发式：文号含国/财建/工信部/发改
+      const blob = `${r.doc_no || ""}${r.agency || ""}${r.title || ""}`;
+      if (/国务院|财政部|科技部|工信部|发改委|国家/.test(blob)) return 0;
+      if (/省|浙政/.test(blob)) return 1;
+      if (/市|杭/.test(blob)) return 2;
+      return 3;
+    }
+
+    function sortRadarItems(items) {
+      const urg = { urgent: 0, watch: 1, ok: 2, expired: 3 };
+      const list = (items || []).slice();
+      if (radarSort === "window") {
+        list.sort((a, b) => {
+          const da = a.days_left != null ? a.days_left : 1e9;
+          const db = b.days_left != null ? b.days_left : 1e9;
+          return da - db || (urg[a.urgency] ?? 9) - (urg[b.urgency] ?? 9);
+        });
+        return list;
+      }
+      if (radarSort === "newest") {
+        list.sort((a, b) => String(b.window_start || b.id).localeCompare(String(a.window_start || a.id)));
+        return list;
+      }
+      // smart
+      list.sort((a, b) => {
+        const mc = matchCountOf(b) - matchCountOf(a);
+        if (mc) return mc;
+        const u = (urg[a.urgency] ?? 9) - (urg[b.urgency] ?? 9);
+        if (u) return u;
+        const dual = (b.dual_benefit ? 1 : 0) - (a.dual_benefit ? 1 : 0);
+        if (dual) return dual;
+        const ent = (b.helps_enterprise ? 1 : 0) - (a.helps_enterprise ? 1 : 0);
+        if (ent) return ent;
+        const sc = scopeRank(a) - scopeRank(b);
+        if (sc) return sc;
+        const da = a.days_left != null ? a.days_left : 1e9;
+        const db = b.days_left != null ? b.days_left : 1e9;
+        return da - db;
+      });
+      return list;
+    }
+
+    function highlightBlock(r, inline, overrideCount) {
+      const n = matchCountOf(r, overrideCount);
+      if (!n) return "";
+      return `<div class="hl-amt${inline ? " inline" : ""}" title="初筛匹配企业数">
+        <span class="num">${esc(String(n))}</span>
+        <span class="unit">家</span>
+        <span class="lab">匹配企业</span>
+      </div>`;
+    }
+
+    function formatPubRel(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return String(iso).slice(0, 16);
+      const diff = Date.now() - d.getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 60) return mins <= 1 ? "刚刚" : `${mins} 分钟前`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours} 小时前`;
+      const days = Math.floor(hours / 24);
+      if (days < 7) return `${days} 天前`;
+      if (days < 30) return `${Math.floor(days / 7)} 周前`;
+      return String(iso).slice(0, 10);
+    }
+
+    function stripShowPlayer(text) {
+      return String(text || "").replace(/showPlayer\s*\(\s*\{[\s\S]*?\}\s*\)\s*;?/gi, "").trim();
+    }
+
+
+    function paint(html) {
+      document.getElementById("content").innerHTML = html;
+    }
+
+    function setApiStatus(msg, isWarn) {
+      const bar = document.getElementById("topbar");
+      const el = document.getElementById("apiStatus");
+      if (!msg) {
+        el.textContent = "";
+        bar.className = "topbar quiet";
+        return;
+      }
+      el.textContent = msg;
+      bar.className = isWarn ? "topbar warn" : "topbar quiet";
+    }
+
+    function syncOpSeal() {
+      const sel = document.getElementById("operator");
+      const seal = document.getElementById("opSeal");
+      if (!sel || !seal) return;
+      const label = (sel.options[sel.selectedIndex] || {}).text || "";
+      const ch = /甲|乙|丙|丁/.exec(label);
+      seal.textContent = ch ? ch[0] : "专";
+      seal.title = label.split("/")[0].trim() || "运营专员";
+      seal.setAttribute("aria-label", seal.title);
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 1800);
+    }
+
+    async function copyText(text, okMsg) {
+      if (!text) { toast("暂无内容可复制"); return; }
+      await navigator.clipboard.writeText(text);
+      toast(okMsg || "已复制到剪贴板");
+    }
+
+    function draftBlock(text, matchId) {
+      if (!text) return "";
+      const escaped = String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      return `<div class="draft-inline">
+        <label>触达草稿（复制到既有微信 · 系统不代发）</label>
+        <pre>${escaped}</pre>
+        <div class="actions" style="margin-top:0">
+          <button class="act primary" data-copy-draft="${matchId || ""}">复制草稿</button>
+        </div>
+      </div>`;
+    }
+
+    function bindDraftCopy(draftMap) {
+      document.querySelectorAll("[data-copy-draft]").forEach((el) => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const id = el.getAttribute("data-copy-draft");
+          const text = (id && draftMap[id]) || Object.values(draftMap)[0] || "";
+          copyText(text, "草稿已复制");
+        };
+      });
+    }
+
+    async function api(path, opts = {}) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const studioToken = urlParams.get("studio_token");
+      let url = (API || "") + path;
+      if (studioToken && !url.includes("studio_token=")) {
+        url += (url.includes("?") ? "&" : "?") + "studio_token=" + encodeURIComponent(studioToken);
+      }
+      const finalOpts = { ...opts };
+      finalOpts.headers = { ...(finalOpts.headers || {}) };
+      if (studioToken) {
+        finalOpts.headers["X-Studio-Token"] = studioToken;
+      }
+      const res = await fetch(url, finalOpts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || res.statusText);
+      return data;
+    }
+
+    function stateBadge(state) {
+      if (state === "符合" || state === "已审核" || state === "passed") return "ok";
+      if (state === "待核验" || state === "待检验" || state === "待审核" || state === "active") return "warn";
+      if (state === "rejected") return "bad";
+      return "bad";
+    }
+
+    function sopStatusBadge(m) {
+      const st = m.sop_status || "active";
+      if (st === "passed") return `<span class="badge ok">已通过</span>`;
+      if (st === "rejected") return `<span class="badge bad">未通过</span>`;
+      const step = (m.sop_steps || [])[m.current ?? m.sop_step ?? 0];
+      const lab = step ? step.label : "发送";
+      return `<span class="badge warn">${esc(lab)}</span>`;
+    }
+
+    function sopTrackHtml(m) {
+      const steps = m.sop_steps || [];
+      if (!steps.length) return "";
+      const nodes = steps.map((s) => {
+        const st = s.state || "pending";
+        const mark = st === "done" ? "✓" : (st === "rejected" ? "!" : String((s.index ?? 0) + 1));
+        return `<div class="sop-node ${esc(st)}">
+          <div class="sop-dot">${mark}</div>
+          <div class="sop-lab">${esc(s.label || "")}</div>
+        </div>`;
+      }).join("");
+      return `<div class="sop-track"><div class="sop-nodes">${nodes}</div></div>`;
+    }
+
+    function sopActions(m, cid) {
+      const company = cid || m.company_id || "";
+      const st = m.sop_status || "active";
+      const primary = m.primary_action;
+      const step = m.current ?? m.sop_step ?? 0;
+      let btns = "";
+      if (st === "active" && primary) {
+        const act = step === 1 ? "accept" : "next";
+        btns += `<button class="act primary" data-sop="${act}" data-mid="${m.id}" data-cid="${company}">${esc(primary)}</button>`;
+      } else if (st === "passed") {
+        btns += `<span class="badge ok">办理已通过</span>`;
+      } else if (st === "rejected") {
+        btns += `<span class="badge bad">未通过 / 驳回</span>`;
+      }
+      if (m.can_back || st === "rejected" || st === "passed") {
+        const backLabel = st === "active" ? "退回上一步" : "重置进度";
+        btns += `<button class="act" data-sop="reset" data-mid="${m.id}" data-cid="${company}">${backLabel}</button>`;
+      }
+      if (m.can_reject) {
+        btns += `<button class="act" data-sop="reject" data-mid="${m.id}" data-cid="${company}">驳回</button>`;
+      }
+      return `<div class="actions match-actions sop-actions">${btns}</div>`;
+    }
+
+    function setBusy(on) {
+      loading = on;
+      document.getElementById("content").classList.toggle("busy", on);
+    }
+
+    function benefitChips() {
+      const opts = [
+        { id: "both", label: "园企双益" },
+        { id: "park", label: "助园" },
+        { id: "enterprise", label: "助企" },
+        { id: "all", label: "全部口径" },
+      ];
+      return opts.map((o) =>
+        `<button class="chip ${benefitFilter === o.id ? "on" : ""}" data-benefit="${o.id}">${o.label}</button>`
+      ).join("");
+    }
+
+    function channelChips() {
+      return CHANNELS.map((o) =>
+        `<button class="chip ${radarChannel === o.id ? "on" : ""}" data-channel="${o.id}">${o.label}</button>`
+      ).join("");
+    }
+
+    async function loadRadar() {
+      const q = new URLSearchParams();
+      if (radarChannel) q.set("channel", radarChannel);
+      if (showHistoryArchive) {
+        q.set("benefit", "all");
+        q.set("include_expired", "1");
+      } else {
+        q.set("benefit", benefitFilter);
+      }
+      const data = await api(`/api/policy_radar?${q}`);
+      radarItems = data.items || [];
+      setApiStatus("");
+      return data;
+    }
+
+    let dashboardData = null;
+    async function loadDashboard() {
+      dashboardData = await api("/api/dashboard");
+      setApiStatus("");
+      return dashboardData;
+    }
+
+        async function loadRadarMatches(radarId) {
+      if (!radarId) { radarMatchItems = []; return; }
+      const q = new URLSearchParams({ radar_id: radarId, benefit: benefitFilter });
+      const data = await api(`/api/policy_match_for?${q}`);
+      radarMatchItems = data.items || [];
+    }
+
+    async function loadPolicyBody(radarId) {
+      if (!radarId) { policyBodyText = ""; return; }
+      try {
+        const data = await api(`/api/policy_body?id=${encodeURIComponent(radarId)}`);
+        policyBodyText = data.text || "";
+      } catch {
+        policyBodyText = "";
+      }
+    }
+
+    async function loadCompanies() {
+      const q = sizeBand ? `?size_band=${encodeURIComponent(sizeBand)}` : "";
+      const data = await api(`/api/companies${q}`);
+      companies = data.companies || [];
+      return data;
+    }
+
+    function demoCompanies() {
+      return (companies || []).filter((c) => {
+        if (!c || !c.id) return false;
+        const id = String(c.id);
+        if (id.startsWith("attract_") || id.startsWith("corp_attr_")) return false;
+        return true;
+      });
+    }
+
+    function populatePortalCompanySelect() {
+      const sel = document.getElementById("portalCompany");
+      if (!sel) return;
+      const list = demoCompanies();
+      const preferred = "corp_m_1";
+      if (!portalCompanyId || !list.some((c) => c.id === portalCompanyId)) {
+        portalCompanyId = list.some((c) => c.id === preferred)
+          ? preferred
+          : (list[0] && list[0].id) || "";
+      }
+      sel.innerHTML = list.map((c) => {
+        const name = c.display_name || c.alias || c.code || c.id;
+        return `<option value="${esc(c.id)}"${c.id === portalCompanyId ? " selected" : ""}>${esc(name)}</option>`;
+      }).join("");
+      if (portalCompanyId) localStorage.setItem("portalCompanyId", portalCompanyId);
+    }
+
+    async function loadCorpHome(cid) {
+      const id = cid || portalCompanyId;
+      if (!id) { corpPayload = null; return null; }
+      try {
+        corpPayload = await api(`/api/corp_home?company_id=${encodeURIComponent(id)}`);
+      } catch {
+        const match = await api(`/api/policy_match?company_id=${encodeURIComponent(id)}`);
+        const co = (companies || []).find((x) => x.id === id) || {};
+        if (match && match.company) {
+          match.company.address = match.company.address || co.address || "";
+          match.company.contact_lead = match.company.contact_lead || co.contact_lead || "";
+          match.company.headcount_range = match.company.headcount_range || co.headcount_range || "";
+        }
+        corpPayload = match;
+      }
+      // 兜底：旧 API 无 events 时，从前端 radar + matches 拆公开活动
+      if (corpPayload && !Array.isArray(corpPayload.events)) {
+        const all = corpPayload.matches || [];
+        const policies = [];
+        const events = [];
+        all.forEach((m) => {
+          const r = m.radar || (radarItems || []).find((x) => x.id === ((m.radar && m.radar.id) || "")) || {};
+          if (isPublicEvent(r) || isPublicEvent(m.radar)) {
+            events.push({
+              id: m.id,
+              match_id: m.id,
+              radar_id: (m.radar && m.radar.id) || r.id || "",
+              title: (m.radar && m.radar.title) || r.title || "",
+              event_start: r.event_start || r.window_start || "",
+              event_end: r.event_end || r.window_end || "",
+              value_one_liner: r.value_one_liner || (m.radar && m.radar.enterprise_help) || m.citation || "",
+              channel: "公开活动",
+              radar: m.radar || r,
+            });
+          } else {
+            policies.push(m);
+          }
+        });
+        corpPayload.matches = policies;
+        corpPayload.events = events;
+      }
+      return corpPayload;
+    }
+
+    function corpStaffKey(cid) {
+      return CORP_STAFF_KEY_PREFIX + (cid || portalCompanyId || "unknown");
+    }
+
+    function demoCorpStaff(cid) {
+      const label = (companies || []).find((x) => x.id === cid);
+      const tag = (label && (label.alias || label.display_name)) || "本企业";
+      return [
+        {
+          id: "demo_1",
+          name: "王*",
+          role: "对接人",
+          title: "商务负责人",
+          contact: "微信 · wang****（脱敏样例）",
+          note: `${tag} · 演示预置`,
+        },
+        {
+          id: "demo_2",
+          name: "周**",
+          role: "经办",
+          title: "行政岗",
+          contact: "手机 · 138****6621（脱敏样例）",
+          note: "园区企服窗口可留言",
+        },
+      ];
+    }
+
+    function loadCorpStaff(cid) {
+      const key = corpStaffKey(cid);
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr) && arr.length) return arr;
+        }
+      } catch (_) { /* ignore */ }
+      const seed = demoCorpStaff(cid);
+      try { localStorage.setItem(key, JSON.stringify(seed)); } catch (_) { /* ignore */ }
+      return seed;
+    }
+
+    function saveCorpStaff(cid, list) {
+      try { localStorage.setItem(corpStaffKey(cid), JSON.stringify(list || [])); } catch (_) { /* ignore */ }
+    }
+
+    function corpAcceptAction(m) {
+      if (!m || (m.sop_status || "active") !== "active") return false;
+      const step = m.current ?? m.sop_step ?? 0;
+      const primary = String(m.primary_action || "");
+      return step === 1 || /接受|accept/i.test(primary);
+    }
+
+    function applyPortalMode() {
+      localStorage.setItem("portalMode", portalMode);
+      if (portalCompanyId) localStorage.setItem("portalCompanyId", portalCompanyId);
+      const opsFoot = document.getElementById("opsFootBlock");
+      const corpFoot = document.getElementById("corpFootBlock");
+      if (opsFoot) opsFoot.hidden = portalMode === "corp";
+      if (corpFoot) corpFoot.hidden = portalMode !== "corp";
+      document.querySelectorAll(".portal-btn").forEach((btn) => {
+        btn.classList.toggle("on", btn.getAttribute("data-portal") === portalMode);
+      });
+      const brandSub = document.querySelector(".brand p");
+      const seal = document.getElementById("opSeal");
+      const stale = document.getElementById("corpNavBtn");
+      if (stale) stale.remove();
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        const portal = btn.getAttribute("data-portal-nav") || "ops";
+        btn.hidden = portal !== portalMode;
+      });
+      if (portalMode === "corp") {
+        if (brandSub) brandSub.textContent = "企业端 · 演示";
+        if (seal) seal.style.display = "none";
+      } else {
+        if (brandSub) brandSub.textContent = "双益初筛 · 责任可追";
+        if (seal) seal.style.display = "";
+        syncOpSeal();
+      }
+      syncNav();
+    }
+
+    async function switchPortal(mode) {
+      if (mode !== "ops" && mode !== "corp") return;
+      if (portalMode === "ops" && !isCorpView(view)) lastOpsView = view;
+      portalMode = mode;
+      applyPortalMode();
+      setBusy(true);
+      try {
+        if (mode === "corp") {
+          populatePortalCompanySelect();
+          view = "corp_policies";
+          await loadCorpHome(portalCompanyId);
+          render();
+        } else {
+          view = lastOpsView && !isCorpView(lastOpsView) && lastOpsView !== "attract"
+            ? lastOpsView
+            : "dashboard";
+          if (view === "dashboard") await loadDashboard();
+          else if (view === "radar") await loadRadar();
+          else if (view === "companies") await loadCompanies();
+          render();
+        }
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function loadMediaHot() {
+      const q = new URLSearchParams();
+      if (mediaQ) q.set("q", mediaQ);
+      if (mediaSource && mediaSource !== "all") q.set("source", mediaSource);
+      const t = MEDIA_TIME.find((x) => x.id === mediaTime) || MEDIA_TIME[2];
+      if (t.days != null) q.set("days", String(t.days));
+      if (t.since) q.set("since", t.since);
+      const data = await api(`/api/media_hotspots?${q}`);
+      mediaItems = data.items || [];
+      mediaMeta = data;
+      if (selectedMedia && !mediaItems.some((x) => x.id === selectedMedia)) {
+        selectedMedia = mediaItems[0] ? mediaItems[0].id : null;
+      } else if (!selectedMedia && mediaItems[0]) {
+        selectedMedia = mediaItems[0].id;
+      }
+      setApiStatus("");
+      return data;
+    }
+
+    async function openCompany(id, opts = {}) {
+      selectedCompany = id;
+      expandTimelineHistory = false;
+      setBusy(true);
+      try {
+        const [profile, match] = await Promise.all([
+          api(`/api/company_profile?company_id=${encodeURIComponent(id)}`),
+          api(`/api/policy_match?company_id=${encodeURIComponent(id)}`),
+        ]);
+        matchPayload = { profile, match };
+        if (view !== "companies") {
+          view = "companies";
+          syncNav();
+        }
+        render();
+        if (opts.scroll !== false) {
+          requestAnimationFrame(() => {
+            document.querySelector(".split-detail")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        }
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function refreshAfterMatchAction(cid) {
+      if (portalMode === "corp" || isCorpView(view)) {
+        await loadCorpHome(cid || portalCompanyId);
+        render();
+      } else if (view === "radar" && selectedRadar) {
+        await loadRadarMatches(selectedRadar);
+        render();
+      } else if (cid) {
+        await openCompany(cid, { scroll: false });
+      } else {
+        render();
+      }
+    }
+
+    async function confirmMatch(matchId, action, companyId) {
+      const cid = companyId || selectedCompany;
+      const operator = document.getElementById("operator").value;
+      setBusy(true);
+      try {
+        const out = await api("/api/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ company_id: cid, match_id: matchId, action, operator }),
+        });
+        if (out.draft) toast("已确认 · 草稿已生成，可复制推送");
+        else if (action === "reject") toast("已驳回 · 已记入操作日志");
+        else if (action === "escalate") toast("已升级主管 · 已记入操作日志");
+        await refreshAfterMatchAction(cid);
+      } catch (e) {
+        toast(e.message || "操作失败");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function bindBenefitChips(reload) {
+      document.querySelectorAll("[data-benefit]").forEach((el) => {
+        el.onclick = async () => {
+          benefitFilter = el.getAttribute("data-benefit");
+          setBusy(true);
+          try { await reload(); } finally { setBusy(false); }
+        };
+      });
+    }
+
+    function bindConfirmActions(fallbackCid) {
+      document.querySelectorAll("[data-confirm]").forEach((el) => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          confirmMatch(el.getAttribute("data-confirm"), "confirm", el.getAttribute("data-cid") || fallbackCid);
+        };
+      });
+      document.querySelectorAll("[data-submit],[data-return]").forEach((el) => {
+        el.onclick = async (e) => {
+          e.stopPropagation();
+          const action = el.hasAttribute("data-submit") ? "submit" : "return";
+          const matchId = el.getAttribute("data-submit") || el.getAttribute("data-return");
+          const cid = el.getAttribute("data-cid") || fallbackCid;
+          setBusy(true);
+          try {
+            await api("/api/review", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ company_id: cid, match_id: matchId, action }),
+            });
+            toast(action === "submit" ? "已送审 · 进入待审核" : "已退回 · 待检验");
+            await refreshAfterMatchAction(cid);
+          } catch (err) {
+            toast(err.message || "操作失败");
+          } finally {
+            setBusy(false);
+          }
+        };
+      });
+      document.querySelectorAll("[data-sop]").forEach((el) => {
+        el.onclick = async (e) => {
+          e.stopPropagation();
+          const action = el.getAttribute("data-sop");
+          const matchId = el.getAttribute("data-mid");
+          const cid = el.getAttribute("data-cid") || fallbackCid;
+          const opEl = document.getElementById("operator");
+          const operator = (opEl && opEl.value) || "OP-01";
+          setBusy(true);
+          try {
+            const out = await api("/api/sop", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                company_id: cid,
+                match_id: matchId,
+                action,
+                operator,
+              }),
+            });
+            if (action === "next" && out.draft) toast("已发送 · 草稿可复制（系统不代发微信）");
+            else if (action === "next") toast("节点已推进");
+            else if (action === "accept") toast(portalMode === "corp" ? "已确认接受" : "已标记企业接受");
+            else if (action === "reject") toast("已驳回 · 终态未通过");
+            else if (action === "reset") toast("已退回上一步");
+            await refreshAfterMatchAction(cid);
+          } catch (err) {
+            toast(err.message || "SOP 操作失败");
+          } finally {
+            setBusy(false);
+          }
+        };
+      });
+    }
+
+    function closeRadarModal() {
+      selectedRadar = null;
+      radarMatchItems = [];
+      policyBodyText = "";
+      modalFocusCompanyId = null;
+      render();
+    }
+
+    async function openCorpPolicyModal(radarId) {
+      if (!radarId) return;
+      selectedRadar = radarId;
+      modalFocusCompanyId = portalCompanyId || null;
+      setBusy(true);
+      try {
+        await Promise.all([loadRadarMatches(radarId), loadPolicyBody(radarId)]);
+        if (portalMode === "corp" && portalCompanyId) {
+          radarMatchItems = (radarMatchItems || []).filter((m) => m.company_id === portalCompanyId);
+        }
+        render();
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function policyOfficialUrl(item, bodyText) {
+      const direct = (item && (item.source_url || (item.source && item.source.url))) || "";
+      if (direct) return direct;
+      const m = String(bodyText || "").match(/https?:\/\/[^\s)）\]>"']+/);
+      return m ? m[0].replace(/[.,;；。]+$/, "") : "";
+    }
+
+    function normTitleKey(s) {
+      return String(s || "").replace(/\s+/g, "").replace(/[（(].*?[）)]/g, "").trim().toLowerCase();
+    }
+
+    /** 去掉与弹窗头重复的首行 #/## 标题；灰盒出处行去掉裸 URL，保留短说明。 */
+    function scrubPolicyBodyMd(md, title) {
+      let text = String(md ?? "").replace(/\r\n/g, "\n");
+      const lines = text.split("\n");
+      let i = 0;
+      while (i < lines.length && !String(lines[i]).trim()) i++;
+      if (i < lines.length) {
+        const hm = String(lines[i]).match(/^#{1,2}\s+(.+)$/);
+        if (hm && title) {
+          const head = hm[1].trim();
+          if (head === String(title).trim() || normTitleKey(head) === normTitleKey(title)) {
+            lines.splice(i, 1);
+            while (i < lines.length && !String(lines[i]).trim()) lines.splice(i, 1);
+          }
+        }
+      }
+      text = lines.join("\n");
+      text = text.replace(
+        /(>?\s*)([^>\n]*?)(官方出处|栏目入口)[：:]\s*https?:\/\/[^\s)）\]>"']+/g,
+        (_, prefix, before) => {
+          const note = String(before || "").trim().replace(/[。．.]+$/, "");
+          const short = note || "摘录样例，非正式全文";
+          return `${prefix}${short}。`;
+        }
+      );
+      text = text.replace(/(官方出处|栏目入口)[：:]\s*https?:\/\/[^\s)）\]>"']+/g, "");
+      text = text.replace(/([。．])\s*[。．]+/g, "$1");
+      return text.trim();
+    }
+
+    function resolveModalFocusMatch(matches) {
+      const list = matches || [];
+      if (!list.length) {
+        modalFocusCompanyId = null;
+        return null;
+      }
+      if (portalMode === "corp" && portalCompanyId) {
+        const pinned = list.find((m) => m.company_id === portalCompanyId);
+        if (pinned) {
+          modalFocusCompanyId = portalCompanyId;
+          return pinned;
+        }
+      }
+      if (!modalFocusCompanyId || !list.some((m) => m.company_id === modalFocusCompanyId)) {
+        modalFocusCompanyId = list[0].company_id;
+      }
+      return list.find((m) => m.company_id === modalFocusCompanyId) || list[0];
+    }
+
+    function whySuitableLines(matches) {
+      const lines = (matches || []).slice(0, 3).map((m) => {
+        const name = companyLabel(m) || m.company_code || "";
+        const band = SIZE_LABELS[m.size_band] || m.headcount_range || "";
+        const dir = m.direction || "";
+        const scene = m.scene || "";
+        const bits = [dir, band].filter(Boolean).join(" · ");
+        if (scene) return `${name}${bits ? `（${bits}）` : ""}：${scene}`;
+        if (bits) return `${name}：${bits}`;
+        return name ? `${name}进入初筛匹配。` : "";
+      }).filter(Boolean);
+      return lines;
+    }
+
+    function needDoBullets(item, matches) {
+      const gaps = [];
+      const seen = new Set();
+      (matches || []).forEach((m) => {
+        const g = String(m.gap || "").trim();
+        if (g && !seen.has(g)) { seen.add(g); gaps.push(g); }
+      });
+      if (gaps.length) return gaps.slice(0, 3);
+      const hard = (item && item.hard_criteria) || [];
+      if (hard.length) return hard.slice(0, 3);
+      return ["补齐待检字段后申报"];
+    }
+
+    function benefitBullets(item) {
+      const out = [];
+      const seen = new Set();
+      const push = (s) => {
+        const t = String(s || "").trim();
+        if (!t || seen.has(t)) return;
+        seen.add(t);
+        out.push(t);
+      };
+      push(item && item.enterprise_help);
+      push(item && item.subsidy_detail);
+      if (out.length < 2) push(item && item.value_one_liner);
+      return out.slice(0, 2);
+    }
+
+    /** 当前选中企业：citation / enterprise_help / 场景 等对本企好处 */
+    function companyBenefitBullets(item, match) {
+      const out = [];
+      const seen = new Set();
+      const push = (s) => {
+        const t = String(s || "").trim();
+        if (!t || seen.has(t)) return;
+        seen.add(t);
+        out.push(t);
+      };
+      push(match && match.citation);
+      push(item && item.enterprise_help);
+      push(match && match.scene);
+      if (!out.length) push(item && item.subsidy_detail);
+      if (!out.length) push(item && item.value_one_liner);
+      return out.slice(0, 3);
+    }
+
+    function buildPolicyModalLeftBody(item, url) {
+      const scrubbed = scrubPolicyBodyMd(policyBodyText, item && item.title);
+      const officialLink = url
+        ? `<div class="pm-official"><a class="act primary" href="${esc(url)}" target="_blank" rel="noopener">在官网打开</a></div>`
+        : "";
+      if (scrubbed) {
+        return `<div class="policy-body">${mdToHtml(scrubbed)}</div>${officialLink}`;
+      }
+      return `<div class="policy-body">
+          <p>${esc(item.citation || item.value_one_liner || item.enterprise_help || "暂无出处摘要")}</p>
+          ${item.subsidy_detail ? `<p><strong>资金/扶持：</strong>${esc(item.subsidy_detail)}</p>` : ""}
+          ${(item.hard_criteria || []).length ? `<ul>${(item.hard_criteria || []).map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+        </div>${officialLink}`;
+    }
+
+    function buildPolicyModalRight(item, modalMatches, opts = {}) {
+      const focus = resolveModalFocusMatch(modalMatches);
+      const focusList = focus ? [focus] : [];
+      const why = whySuitableLines(focusList);
+      const needDo = needDoBullets(item, focusList);
+      const benefits = focus
+        ? companyBenefitBullets(item, focus)
+        : benefitBullets(item);
+      const timeHint = policyTimeHint(item);
+      const logos = (modalMatches || []).length
+        ? modalMatches.map((m) => {
+            const co = {
+              id: m.company_id,
+              code: m.company_code,
+              alias: m.alias,
+              display_name: m.display_name,
+              logo: m.logo,
+            };
+            const on = focus && m.company_id === focus.company_id ? " is-active" : "";
+            const clickable = opts.logoClickable !== false && !(portalMode === "corp" && portalCompanyId);
+            if (!clickable) {
+              return `<span class="pm-logo-btn${on}" title="${esc(companyLabel(co))}">${companyAvatar(co)}<span>${esc(companyLabel(co))}</span></span>`;
+            }
+            return `<button type="button" class="pm-logo-btn${on}" data-focus-company="${esc(m.company_id)}" title="${esc(companyLabel(co))}">
+              ${companyAvatar(co)}
+              <span>${esc(companyLabel(co))}</span>
+            </button>`;
+          }).join("")
+        : `<span class="pm-empty-logos">${esc(opts.emptyLogos || "当前筛选下暂无匹配企业")}</span>`;
+
+      const primaryCid = opts.showEnterCompany && focus ? focus.company_id : null;
+      const whyEmpty = opts.whyEmpty || "暂无匹配企业场景，待补齐画像后再看适配度。";
+
+      return `
+        <div class="pm-logos">${logos}</div>
+        <section class="pm-sec">
+          <h3>对本企的好处</h3>
+          <ul>${(benefits.length ? benefits : ["见左侧原文要点"]).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+        </section>
+        <section class="pm-sec">
+          <h3>为何适合</h3>
+          ${why.length ? why.map((line) => `<p>${esc(line)}</p>`).join("") : `<p>${esc(whyEmpty)}</p>`}
+        </section>
+        <section class="pm-sec">
+          <h3>需要怎么做</h3>
+          <ul>${needDo.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+        </section>
+        <div class="pm-foot">
+          ${timeHint ? `<p class="pm-time">${esc(timeHint)}</p>` : ""}
+          ${primaryCid ? `<div class="actions"><button type="button" class="act primary" data-goto-company="${esc(primaryCid)}">进入企业画像</button></div>` : ""}
+        </div>`;
+    }
+
+    function policyTimeHint(item) {
+      if (!item) return "";
+      if (isPublicEvent(item)) {
+        const range = eventTimeRange(item);
+        return range ? `活动时间 ${range}` : "";
+      }
+      if (item.urgency === "expired") {
+        return item.window_end ? `申报截止 ${item.window_end} · 已过窗` : "窗口已关闭";
+      }
+      if (item.days_left != null) return `剩 ${item.days_left} 天`;
+      if (item.window_end) return `申报截止 ${item.window_end}`;
+      return item.window || "";
+    }
+
+    async function selectRadar(id) {
+      selectedRadar = id;
+      policyBodyText = "";
+      modalFocusCompanyId = null;
+      setBusy(true);
+      try {
+        await Promise.all([loadRadarMatches(id), loadPolicyBody(id)]);
+        render();
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function isPublicEvent(r) {
+      return !!(r && (r.channel === "公开活动" || String(r.track || "").includes("公开活动")));
+    }
+
+    function eventTimeRange(r) {
+      const a = String(r.event_start || r.window_start || "").slice(0, 10);
+      const b = String(r.event_end || r.window_end || "").slice(0, 10);
+      if (!a && !b) return "";
+      if (a && b && a === b) return a;
+      if (a && b) return `${a} ~ ${b}`;
+      return a || b;
+    }
+
+    function eventTimeLine(r, asHtml) {
+      const range = eventTimeRange(r);
+      if (!range) return "";
+      return asHtml
+        ? `<p class="cite event-time"><strong>活动时间</strong>　${esc(range)}</p>`
+        : `活动时间：${range}`;
+    }
+
+    function renderDashboard() {
+      const d = dashboardData || {};
+      const ov = d.overview || {};
+      const cm = d.committee || {};
+      const fun = d.funnel || {};
+      const funLabels = d.funnel_labels || {};
+      const sop = d.sop_progress || {};
+      const sopLabels = d.sop_progress_labels || {};
+      const todos = d.todos || {};
+      const todoLabels = d.todo_labels || {};
+      const demo = d.demo ? `<span class="dash-demo">演示口径</span>` : "";
+      const matching = cm.matching ?? ov.matching ?? "—";
+      const passed = cm.passed ?? ov.sop_passed ?? fun.passed ?? "—";
+      const touched = cm.touched ?? fun.sent ?? "—";
+      const accepted = cm.accepted ?? fun.accepted ?? "—";
+      const sopOrder = ["send", "accept", "apply", "processing", "passed"];
+      const maxSop = Math.max(1, ...sopOrder.map((k) => Number(sop[k] || 0)));
+      const sopRows = sopOrder.map((k) => {
+        const n = Number(sop[k] || 0);
+        const lab = sopLabels[k] || k;
+        return `<div class="funnel-row">
+          <span>${esc(lab)}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(100 * n / maxSop)}%"></div></div>
+          <strong>${n}</strong>
+        </div>`;
+      }).join("");
+      paint(`
+        <div class="dash-panel">
+          <h2>总览数字</h2>
+          <div class="dash-grid">
+            <div class="dash-stat"><b>${ov.companies ?? "—"}</b><span>在园企业</span></div>
+            <div class="dash-stat"><b>${ov.active_policies ?? "—"}</b><span>现行政策</span></div>
+            <div class="dash-stat"><b>${matching}</b><span>匹配进行中</span></div>
+            <div class="dash-stat"><b>${passed}</b><span>SOP 已通过</span></div>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h2>增长 / 成效摘要${demo}</h2>
+          <div class="dash-grid">
+            <div class="dash-stat"><b>${cm.subsidy_wan ?? "—"}</b><span>${esc(cm.subsidy_label || "累计撬动扶持（万元）")}</span></div>
+            <div class="dash-stat"><b>${cm.cultivated ?? "—"}</b><span>${esc(cm.cultivated_label || "梯度培育入库")}</span></div>
+            <div class="dash-stat"><b>${matching}</b><span>${esc(cm.matching_label || "匹配进行中")}</span></div>
+            <div class="dash-stat"><b>${touched}</b><span>${esc(cm.touched_label || funLabels.sent || "本季触达")}</span></div>
+            <div class="dash-stat"><b>${accepted}</b><span>${esc(cm.accepted_label || funLabels.accepted || "企业接受")}</span></div>
+            <div class="dash-stat"><b>${passed}</b><span>${esc(cm.passed_label || funLabels.passed || "已通过")}</span></div>
+          </div>
+          <p class="dash-growth-hint">读法：匹配进行中 → 触达 / 接受 → 已通过；撬动扶持与培育入库为脱敏样例汇总，回答「带来什么」。${esc(d.demo_note || "")}</p>
+        </div>
+        <div class="dash-row">
+          <div class="dash-panel">
+            <h2>本周待办</h2>
+            <div class="dash-grid">
+              <div class="dash-stat"><b>${todos.pending_send ?? 0}</b><span>${esc(todoLabels.pending_send || "待发送匹配")}</span></div>
+              <div class="dash-stat"><b>${todos.pending_accept ?? 0}</b><span>${esc(todoLabels.pending_accept || "待企业接受")}</span></div>
+            </div>
+          </div>
+          <div class="dash-panel">
+            <h2>SOP 进度分布</h2>
+            <div class="funnel">${sopRows}</div>
+          </div>
+        </div>
+      `);
+    }
+
+        function renderRadar() {
+      const sorted = sortRadarItems(radarItems);
+      const cards = sorted.map((r) => {
+        const active = selectedRadar === r.id ? "active" : "";
+        const expired = r.urgency === "expired" ? "expired" : "";
+        const tag = r.doc_no || (r.source && r.source.name) || r.agency || r.channel || "";
+        const pub = isPublicEvent(r);
+        let corner = "";
+        if (pub) {
+          const range = eventTimeRange(r);
+          if (r.urgency === "expired") {
+            corner = `<span class="badge muted">已过期</span>`;
+          } else if (range) {
+            corner = `<span class="badge muted">${esc(range)}</span>`;
+          }
+        } else if (r.lifecycle_status === "superseded") {
+          corner = `<span class="badge bad" style="background:#fee2e2;color:#dc2626;border-color:#fca5a5;font-weight:600">⚠️ 已被新规替代</span>`;
+        } else if (r.lifecycle_status === "expired" || r.urgency === "expired") {
+          corner = `<span class="badge muted">窗口已关闭</span>`;
+        } else if (r.lifecycle_status === "expiring" || (r.days_left != null && (r.urgency === "urgent" || r.urgency === "watch"))) {
+          const cls = r.urgency === "urgent" ? "bad" : "warn";
+          corner = r.days_left != null
+            ? `<span class="badge ${cls}">剩 ${r.days_left} 天</span>`
+            : `<span class="badge warn">申报即将截止</span>`;
+        } else if (r.lifecycle_status === "active") {
+          corner = `<span class="badge ok">申报受理中</span>`;
+        } else if (r.days_left != null && (r.urgency === "urgent" || r.urgency === "watch")) {
+          const cls = r.urgency === "urgent" ? "bad" : "warn";
+          corner = `<span class="badge ${cls}">剩 ${r.days_left} 天</span>`;
+        } else if (r.days_left != null && r.days_left >= 0) {
+          corner = `<span class="badge muted">剩 ${r.days_left} 天</span>`;
+        }
+        const scopeBadge = r.scope === "national"
+          ? `<span class="badge ok">全国</span>`
+          : (r.scope === "provincial" ? `<span class="badge muted">省级</span>` : "");
+        const timeHint = pub && eventTimeRange(r)
+          ? `<div class="cite event-time" style="margin-top:4px">活动时间：${esc(eventTimeRange(r))}</div>`
+          : "";
+        return `<div class="card ${active} ${expired}" data-radar="${r.id}">
+          <div class="card-title-row">
+            <h3>${esc(r.title)}</h3>
+            ${corner}
+          </div>
+          <div class="meta">${scopeBadge}<span class="badge muted">${esc(tag)}</span></div>
+          <div class="card-body-row">
+            <div>
+              <div class="cite">${esc(r.value_one_liner || "")}</div>
+              ${timeHint}
+            </div>
+            ${highlightBlock(r, false)}
+          </div>
+        </div>`;
+      }).join("");
+
+      const item = sorted.find((x) => x.id === selectedRadar) || radarItems.find((x) => x.id === selectedRadar);
+      let modal = "";
+      if (item) {
+        const modalMatches = (portalMode === "corp" && portalCompanyId)
+          ? (radarMatchItems || []).filter((m) => m.company_id === portalCompanyId)
+          : radarMatchItems;
+        const url = policyOfficialUrl(item, policyBodyText);
+        const leftBody = buildPolicyModalLeftBody(item, url);
+        const rightBody = buildPolicyModalRight(item, modalMatches, {
+          showEnterCompany: portalMode !== "corp",
+        });
+        modal = `
+          <div class="policy-modal-overlay" data-close-modal>
+            <div class="policy-modal" role="dialog" aria-modal="true" aria-label="政策详情" data-modal-panel>
+              <button type="button" class="policy-modal-close" data-close-modal aria-label="关闭">×</button>
+              <div class="policy-modal-cols">
+                <div class="policy-modal-left">
+                  <div class="pm-head">
+                    <h2>${esc(item.title)}</h2>
+                    <div class="pm-doc">${esc([item.doc_no, item.agency].filter(Boolean).join(" · "))}</div>
+                  </div>
+                  ${leftBody}
+                </div>
+                <div class="policy-modal-right">
+                  ${rightBody}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const sortChips = [
+        { id: "smart", label: "智能排序" },
+        { id: "window", label: "仅剩窗口" },
+        { id: "newest", label: "最新录入" },
+      ].map((o) =>
+        `<button class="chip ${radarSort === o.id ? "on" : ""}" data-radar-sort="${o.id}">${o.label}</button>`
+      ).join("");
+
+      paint(`
+        <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+          <span>点选政策或活动查看详情与匹配企业</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <a href="/POLICY_COLLECTION_SOP.md" target="_blank" class="chip" style="color:var(--seal);font-weight:600;text-decoration:none;border-color:var(--seal);padding:3px 8px;font-size:11px;">📖 政策采集SOP</a>
+            <a href="/CLI_DOCKER_SOP.md" target="_blank" class="chip" style="color:#2563eb;font-weight:600;text-decoration:none;border-color:#93c5fd;padding:3px 8px;font-size:11px;">🐳 CLI与Docker部署SOP</a>
+            <button type="button" class="chip ${showHistoryArchive ? "on" : ""}" id="btn-toggle-archive" style="font-size:11px;${showHistoryArchive ? "background:#fee2e2;border-color:#fca5a5;color:#991b1b;" : ""}">
+              ${showHistoryArchive ? "📋 正在查看全量对照（含已废止/过期）" : "✓ 现行有效（点击查看历史对照）"}
+            </button>
+          </div>
+        </div>
+        <div class="filter-stack">
+          <div class="filter-row"><span class="lbl">渠道</span>${channelChips()}</div>
+          <div class="filter-row"><span class="lbl">受益</span>${benefitChips()}</div>
+          <div class="filter-row"><span class="lbl">排序</span>${sortChips}</div>
+        </div>
+        <div class="split radar-layout">
+          <div class="split-list list">${cards || '<div class="empty">当前筛选无条目</div>'}</div>
+        </div>
+        ${modal}
+      `);
+
+      const toggleArchiveBtn = document.getElementById("btn-toggle-archive");
+      if (toggleArchiveBtn) {
+        toggleArchiveBtn.onclick = async () => {
+          showHistoryArchive = !showHistoryArchive;
+          selectedRadar = null;
+          radarMatchItems = [];
+          policyBodyText = "";
+          setBusy(true);
+          try {
+            await loadRadar();
+            render();
+          } finally {
+            setBusy(false);
+          }
+        };
+      }
+
+      bindBenefitChips(async () => {
+        selectedRadar = null; radarMatchItems = []; policyBodyText = ""; modalFocusCompanyId = null;
+        await loadRadar(); render();
+      });
+      document.querySelectorAll("[data-channel]").forEach((el) => {
+        el.onclick = async () => {
+          radarChannel = el.getAttribute("data-channel");
+          selectedRadar = null; radarMatchItems = []; policyBodyText = ""; modalFocusCompanyId = null;
+          setBusy(true);
+          try { await loadRadar(); render(); } finally { setBusy(false); }
+        };
+      });
+      document.querySelectorAll("[data-radar-sort]").forEach((el) => {
+        el.onclick = () => {
+          radarSort = el.getAttribute("data-radar-sort") || "smart";
+          render();
+        };
+      });
+      document.querySelectorAll("[data-radar]").forEach((el) => {
+        el.onclick = () => selectRadar(el.getAttribute("data-radar"));
+      });
+      document.querySelectorAll("[data-focus-company]").forEach((el) => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const cid = el.getAttribute("data-focus-company");
+          if (!cid || cid === modalFocusCompanyId) return;
+          modalFocusCompanyId = cid;
+          render();
+        };
+      });
+      document.querySelectorAll(".policy-modal-right [data-goto-company]").forEach((el) => {
+        el.onclick = (e) => {
+          e.stopPropagation();
+          const cid = el.getAttribute("data-goto-company");
+          selectedRadar = null;
+          radarMatchItems = [];
+          policyBodyText = "";
+          modalFocusCompanyId = null;
+          openCompany(cid);
+        };
+      });
+      document.querySelectorAll("[data-close-modal]").forEach((el) => {
+        el.onclick = (e) => {
+          if (el.hasAttribute("data-modal-panel")) return;
+          if (el.classList.contains("policy-modal-overlay") && e.target !== el) return;
+          closeRadarModal();
+        };
+      });
+      const panel = document.querySelector("[data-modal-panel]");
+      if (panel) {
+        panel.onclick = (e) => e.stopPropagation();
+      }
+    }
+
+    function renderCompanies() {
+      const filters = [
+        { id: "", label: "全部规模" },
+        { id: "opc", label: "OPC 1人" },
+        { id: "s_3_20", label: "3–20人" },
+        { id: "m_20_100", label: "20–100人" },
+      ].map((o) =>
+        `<button class="chip ${sizeBand === o.id ? "on" : ""}" data-size="${o.id}">${o.label}</button>`
+      ).join("");
+
+      const cards = companies.map((c) => {
+        const active = selectedCompany === c.id ? "active" : "";
+        const head = c.headcount_range || SIZE_LABELS[c.size_band] || "";
+        return `<div class="card ${active}" data-company="${c.id}">
+          <div class="co-row">
+            ${companyAvatar(c)}
+            <div>
+              <h3>${esc(companyLabel(c))}</h3>
+              <p class="cite" style="margin:2px 0 0">${esc(c.direction || "")}</p>
+              ${c.address ? `<div class="co-addr">${esc(c.address)}</div>` : ""}
+              <div class="meta" style="margin-top:6px">
+                ${head ? `<span class="head-ico">${PERSON_SVG}<span>${esc(head)}</span></span>` : ""}
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+
+      let detail = `<div class="empty">左侧点选脱敏企业<br/>无真实公司名 · 非 CRM</div>`;
+      if (matchPayload && matchPayload.profile && matchPayload.match) {
+        const c = matchPayload.profile.company;
+        const fieldName = {
+          entity_type: "主体", lease_area_band: "面积", tax_local: "税务",
+          social_insurance: "社保", rd_ratio_band: "研发占比", biz_type: "业务",
+          platform_data: "数据来源", coop_interest: "合作意向", stage: "阶段",
+        };
+        const pendingFields = Object.entries(c.fields || {})
+          .filter(([, f]) => !f.confirmed)
+          .map(([k, f]) => `<div class="cite">${fieldName[k] || k}：${esc(f.value)} · 待检验</div>`)
+          .join("");
+        const memos = c.attraction_memos || [];
+        const memoItem = (m) =>
+          `<div class="memo-item">${esc(m.item || "")}<span class="role"> · ${esc(m.role || "")}</span></div>`;
+        const memoHtml = !memos.length
+          ? `<div class="cite">暂无招商备忘样例</div>`
+          : memoItem(memos[0])
+            + (memos[1] ? memoItem(memos[1]) : "")
+            + (memos.length > 2
+              ? `<details class="memo-more"><summary>更多 ${memos.length - 2} 条</summary>${memos.slice(2).map(memoItem).join("")}</details>`
+              : "");
+        const matches = (matchPayload.match.matches || []).map((m) => `
+          <div class="match" data-goto-radar="${esc(m.radar && m.radar.id || "")}" style="cursor:pointer">
+            <div class="meta">${sopStatusBadge(m)}</div>
+            <h3 style="font-size:15px;margin:8px 0 0;font-family:'Noto Serif SC',serif">${esc(m.radar.title || "")}</h3>
+            <div class="cite">${esc(m.radar.enterprise_help || m.citation)}</div>
+            ${m.gap ? `<div class="gap">${esc(m.gap)}</div>` : ""}
+            ${sopTrackHtml(m)}
+            ${sopActions(m, selectedCompany)}
+            ${draftBlock(m.draft, m.id)}
+          </div>`).join("");
+
+        detail = `
+          <div class="detail-head">
+            ${companyAvatar(c, "lg")}
+            <div>
+              <h2>${esc(companyLabel(c))}</h2>
+              <p class="cite" style="margin-top:0">${esc(c.direction)} · ${esc(c.headcount_range || "")} · ${esc(c.funding_stage || "")}</p>
+              ${c.address ? `<p class="co-addr" style="margin:4px 0 0">${esc(c.address)}</p>` : ""}
+              <p class="co-addr" style="margin:2px 0 0">一号位 · ${esc(c.contact_lead || "园区企服对接（样例）")}</p>
+            </div>
+          </div>
+          <p class="cite"><strong>场景</strong>　${esc(c.scene || c.direction || "")}</p>
+          <div class="memo-box">
+            <h4>招商备忘</h4>
+            ${memoHtml}
+          </div>
+          <div class="evidence-box">
+            <h4>凭据箱</h4>
+            <div class="evidence-row">
+              ${(c.evidence || []).length
+                ? (c.evidence || []).slice(0, 5).map((e) =>
+                    `<span class="ev-dot ${esc(e.status || "")}"><i></i>${esc(e.key || "")} · ${esc(e.label || e.status || "")}</span>`
+                  ).join("")
+                : Object.entries(c.fields || {}).slice(0, 5).map(([k, f]) => {
+                    const st = f.confirmed ? "verified" : "pending";
+                    const lab = f.confirmed ? "已核验" : "待上传";
+                    return `<span class="ev-dot ${st}"><i></i>${esc(fieldName[k] || k)} · ${lab}</span>`;
+                  }).join("") || `<span class="cite">暂无</span>`}
+            </div>
+          </div>
+          ${pendingFields || ""}
+          <h3 style="font-size:14px;margin:14px 0 0;font-family:'Noto Serif SC',serif">全记录</h3>
+          ${timelineHtml(c.timeline)}
+          <h3 style="font-size:14px;margin:18px 0 0;font-family:'Noto Serif SC',serif">当前可匹配</h3>
+          ${matches || '<div class="empty">无匹配</div>'}`;
+      }
+
+      paint(`
+        <div class="hint">点选企业看画像与当前匹配</div>
+        <div class="filters">${filters}</div>
+        <div class="split">
+          <div class="split-list list">${cards || '<div class="empty">该规模暂无样例</div>'}</div>
+          <div class="split-detail">${detail}</div>
+        </div>
+      `);
+
+      document.querySelectorAll("[data-size]").forEach((el) => {
+        el.onclick = async () => {
+          sizeBand = el.getAttribute("data-size");
+          selectedCompany = null; matchPayload = null;
+          setBusy(true);
+          try { await loadCompanies(); render(); } finally { setBusy(false); }
+        };
+      });
+      document.querySelectorAll("[data-company]").forEach((el) => {
+        el.onclick = () => openCompany(el.getAttribute("data-company"));
+      });
+      document.querySelectorAll("[data-goto-radar]").forEach((el) => {
+        el.onclick = async (e) => {
+          if (e.target.closest(".match-actions")) return;
+          const rid = el.getAttribute("data-goto-radar");
+          if (!rid) return;
+          view = "radar";
+          syncNav();
+          setBusy(true);
+          try {
+            await loadRadar();
+            await selectRadar(rid);
+          } finally { setBusy(false); }
+        };
+      });
+      bindConfirmActions(selectedCompany);
+      const draftMap = {};
+      ((matchPayload && matchPayload.match && matchPayload.match.matches) || []).forEach((m) => {
+        if (m.draft) draftMap[m.id] = m.draft;
+      });
+      if (Object.keys(draftMap).length) bindDraftCopy(draftMap);
+      document.querySelectorAll("[data-tl-expand]").forEach((el) => {
+        el.onclick = () => { expandTimelineHistory = true; render(); };
+      });
+      document.querySelectorAll("[data-tl-collapse]").forEach((el) => {
+        el.onclick = () => { expandTimelineHistory = false; render(); };
+      });
+    }
+
+    function corpPortalHeadHtml(c, head) {
+      return `
+        <div class="detail-head" style="margin-bottom:16px">
+          ${companyAvatar(c, "lg")}
+          <div>
+            <h2>${esc(companyLabel(c) || "企业")}</h2>
+            <p class="cite" style="margin-top:0">${esc(head)}${c.address ? " · " + esc(c.address) : ""}</p>
+            ${c.contact_lead ? `<p class="cite" style="margin:4px 0 0">${esc(c.contact_lead)}</p>` : ""}
+          </div>
+        </div>`;
+    }
+
+    function corpPolicyModalHtml(payload, c) {
+      if (!selectedRadar) return "";
+      const fromEvents = (payload.events || [])
+        .map((ev) => ev.radar)
+        .find((r) => r && r.id === selectedRadar);
+      const item = (radarItems || []).find((x) => x.id === selectedRadar)
+        || ((payload.matches || []).map((m) => m.radar).find((r) => r && r.id === selectedRadar))
+        || fromEvents
+        || (payload.events || []).find((ev) => (ev.radar_id || ev.id) === selectedRadar);
+      const modalItem = item && item.title ? item : (item ? {
+        id: item.radar_id || item.id,
+        title: item.title,
+        value_one_liner: item.value_one_liner,
+        enterprise_help: item.value_one_liner,
+        channel: "公开活动",
+        event_start: item.event_start,
+        event_end: item.event_end,
+      } : null);
+      if (!modalItem) return "";
+      const modalMatches = (radarMatchItems || []).filter((m) => !portalCompanyId || m.company_id === portalCompanyId);
+      const url = policyOfficialUrl(modalItem, policyBodyText);
+      const leftBody = buildPolicyModalLeftBody(modalItem, url);
+      const rightBody = buildPolicyModalRight(modalItem, modalMatches, {
+        showEnterCompany: false,
+        logoClickable: false,
+        emptyLogos: companyLabel(c) || "本企业",
+        whyEmpty: "对照贵司画像初筛匹配。",
+      });
+      return `
+        <div class="policy-modal-overlay" data-close-modal>
+          <div class="policy-modal" role="dialog" aria-modal="true" aria-label="政策详情" data-modal-panel>
+            <button type="button" class="policy-modal-close" data-close-modal aria-label="关闭">×</button>
+            <div class="policy-modal-cols">
+              <div class="policy-modal-left">
+                <div class="pm-head">
+                  <h2>${esc(modalItem.title || "")}</h2>
+                  <div class="pm-doc">${esc([modalItem.doc_no, modalItem.agency].filter(Boolean).join(" · "))}</div>
+                </div>
+                ${leftBody}
+              </div>
+              <div class="policy-modal-right">
+                ${rightBody}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function bindCorpPortalChrome(cid) {
+      document.querySelectorAll("[data-goto-radar]").forEach((el) => {
+        el.onclick = async (e) => {
+          if (e.target.closest(".match-actions")) return;
+          const rid = el.getAttribute("data-goto-radar");
+          if (!rid) return;
+          await openCorpPolicyModal(rid);
+        };
+      });
+      bindConfirmActions(cid);
+      document.querySelectorAll("[data-close-modal]").forEach((el) => {
+        el.onclick = (e) => {
+          if (el.classList.contains("policy-modal-overlay") && e.target !== el) return;
+          closeRadarModal();
+        };
+      });
+      const panel = document.querySelector("[data-modal-panel]");
+      if (panel) panel.onclick = (e) => e.stopPropagation();
+    }
+
+    function renderCorpStaff(payload, c, cid, head) {
+      const staff = loadCorpStaff(cid);
+      const editing = corpStaffEditId !== null;
+      const editRow = editing && corpStaffEditId
+        ? staff.find((s) => s.id === corpStaffEditId) || {}
+        : {};
+      const staffRows = staff.map((s) => `
+        <div class="corp-staff-row">
+          <div>
+            <div class="name">${esc(s.name || "—")}
+              <span class="badge muted">${esc(s.role || "对接")}</span>
+            </div>
+            <div class="meta-line">${esc([s.title, s.contact].filter(Boolean).join(" · "))}</div>
+            ${s.note ? `<div class="meta-line">${esc(s.note)}</div>` : ""}
+          </div>
+          <div class="actions" style="margin:0">
+            <button type="button" class="act" data-staff-edit="${esc(s.id)}">编辑</button>
+          </div>
+        </div>`).join("") || `<div class="empty">暂无人员 · 可添加对接人</div>`;
+      const staffForm = editing ? `
+        <div class="corp-staff-form">
+          <p class="cite" style="margin:0 0 10px">${corpStaffEditId ? "编辑人员（演示 · 仅存本机）" : "添加人员（演示 · 仅存本机）"}</p>
+          <div class="form-grid">
+            <label>姓名（可脱敏）<input id="staffName" value="${esc(editRow.name || "")}" placeholder="如 王*" /></label>
+            <label>角色<input id="staffRole" value="${esc(editRow.role || "对接人")}" placeholder="对接人 / 经办" /></label>
+            <label>岗位<input id="staffTitle" value="${esc(editRow.title || "")}" placeholder="如 行政负责人" /></label>
+            <label>手机/微信（脱敏样例）<input id="staffContact" value="${esc(editRow.contact || "")}" placeholder="微信 · xxx**** 或 手机 · 138****0000" /></label>
+          </div>
+          <div class="actions">
+            <button type="button" class="act primary" id="staffSave">保存</button>
+            <button type="button" class="act" id="staffCancel">取消</button>
+          </div>
+          <p class="cite" style="margin:10px 0 0">仅演示配置，不代发微信、不落库服务器。</p>
+        </div>` : "";
+      paint(`
+        <div class="hint">企业端 · 企业人员 · 演示口径 · 仅存本机</div>
+        ${corpPortalHeadHtml(c, head)}
+        <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-size:15px">企业人员</h3>
+        <p class="cite" style="margin:0 0 12px">对接人与岗位配置 · key ${esc(corpStaffKey(cid))}</p>
+        <div class="corp-staff-list">${staffRows}</div>
+        ${staffForm}
+        ${!editing ? `<div class="actions"><button type="button" class="act primary" id="staffAdd">添加人员</button></div>` : ""}
+      `);
+      const addBtn = document.getElementById("staffAdd");
+      if (addBtn) addBtn.onclick = () => { corpStaffEditId = ""; render(); };
+      document.querySelectorAll("[data-staff-edit]").forEach((el) => {
+        el.onclick = () => {
+          corpStaffEditId = el.getAttribute("data-staff-edit") || "";
+          render();
+        };
+      });
+      const cancelBtn = document.getElementById("staffCancel");
+      if (cancelBtn) cancelBtn.onclick = () => { corpStaffEditId = null; render(); };
+      const saveBtn = document.getElementById("staffSave");
+      if (saveBtn) {
+        saveBtn.onclick = () => {
+          const name = (document.getElementById("staffName") || {}).value || "";
+          const role = (document.getElementById("staffRole") || {}).value || "对接人";
+          const title = (document.getElementById("staffTitle") || {}).value || "";
+          const contact = (document.getElementById("staffContact") || {}).value || "";
+          if (!String(name).trim()) { toast("请填写姓名（可脱敏）"); return; }
+          const list = loadCorpStaff(cid).slice();
+          if (corpStaffEditId) {
+            const idx = list.findIndex((s) => s.id === corpStaffEditId);
+            if (idx >= 0) {
+              list[idx] = { ...list[idx], name: name.trim(), role: role.trim(), title: title.trim(), contact: contact.trim() };
+            }
+          } else {
+            list.push({
+              id: "s_" + Date.now().toString(36),
+              name: name.trim(),
+              role: role.trim(),
+              title: title.trim(),
+              contact: contact.trim(),
+            });
+          }
+          saveCorpStaff(cid, list);
+          corpStaffEditId = null;
+          toast("人员已保存（本机）");
+          render();
+        };
+      }
+    }
+
+    function renderCorpPolicies(payload, c, cid, head) {
+      const policyCards = (payload.matches || []).map((m) => {
+        const rid = (m.radar && m.radar.id) || "";
+        const help = (m.radar && m.radar.enterprise_help) || m.citation || "";
+        const acceptBtn = corpAcceptAction(m)
+          ? `<div class="actions match-actions sop-actions"><button class="act primary" data-sop="accept" data-mid="${esc(m.id)}" data-cid="${esc(cid)}">确认接受</button></div>`
+          : "";
+        return `<div class="match" data-goto-radar="${esc(rid)}" style="cursor:pointer">
+          <div class="meta">${sopStatusBadge(m)}</div>
+          <h3 style="font-size:15px;margin:8px 0 0;font-family:'Noto Serif SC',serif">${esc((m.radar && m.radar.title) || "")}</h3>
+          <div class="cite">${esc(help)}</div>
+          ${sopTrackHtml(m)}
+          ${acceptBtn}
+        </div>`;
+      }).join("");
+      paint(`
+        <div class="hint">企业端 · 符合的政策 · 演示口径</div>
+        ${corpPortalHeadHtml(c, head)}
+        <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-size:15px">符合的政策</h3>
+        <p class="cite" style="margin:0 0 12px">政府政策初筛 · 可确认接受推进 SOP</p>
+        ${policyCards || '<div class="empty">暂无匹配政策</div>'}
+        ${corpPolicyModalHtml(payload, c)}
+      `);
+      bindCorpPortalChrome(cid);
+    }
+
+    function renderCorpEvents(payload, c, cid, head) {
+      const eventCards = (payload.events || []).map((ev) => {
+        const rid = ev.radar_id || (ev.radar && ev.radar.id) || "";
+        const fake = {
+          event_start: ev.event_start,
+          event_end: ev.event_end,
+          window_start: ev.event_start,
+          window_end: ev.event_end,
+        };
+        const when = eventTimeRange(fake) || eventTimeRange(ev.radar || {}) || "";
+        const benefit = ev.value_one_liner || ev.citation || (ev.radar && ev.radar.enterprise_help) || "";
+        return `<div class="match corp-event" data-goto-radar="${esc(rid)}" style="cursor:pointer">
+          <div class="meta"><span class="badge ok">公开活动</span>${when ? `<span class="badge muted">${esc(when)}</span>` : ""}</div>
+          <h3 style="font-size:15px;margin:8px 0 0;font-family:'Noto Serif SC',serif">${esc(ev.title || "")}</h3>
+          <div class="cite">${esc(benefit)}</div>
+        </div>`;
+      }).join("");
+      paint(`
+        <div class="hint">企业端 · 符合的大会 · 演示口径 · 只读</div>
+        ${corpPortalHeadHtml(c, head)}
+        <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-size:15px">符合的大会</h3>
+        <p class="cite" style="margin:0 0 12px">与本企业 match_rules 关联的公开活动</p>
+        ${eventCards || '<div class="empty">暂无匹配大会</div>'}
+        ${corpPolicyModalHtml(payload, c)}
+      `);
+      bindCorpPortalChrome(cid);
+    }
+
+    function renderCorpPortal() {
+      if (view === "corp") view = "corp_policies";
+      const payload = corpPayload || {};
+      const c = payload.company || {};
+      const cid = c.id || portalCompanyId;
+      const head = c.headcount_range || SIZE_LABELS[c.size_band] || "";
+      if (view === "corp_staff") renderCorpStaff(payload, c, cid, head);
+      else if (view === "corp_events") renderCorpEvents(payload, c, cid, head);
+      else renderCorpPolicies(payload, c, cid, head);
+    }
+
+    function renderPerms() {
+      const map = loadSkillPerms();
+      const headCells = SKILL_PLATFORMS.map((p) => `<th>${esc(p)}</th>`).join("");
+      const rows = PERM_USERS.map((u) => {
+        const defaults = defaultSkillPerms()[u.id] || {};
+        const row = map[u.id] || defaults;
+        const cells = SKILL_PLATFORMS.map((p) => {
+          const checked = row[p] !== false && !!(row[p] ?? defaults[p]);
+          return `<td><label class="chk"><input type="checkbox" data-perm-user="${esc(u.id)}" data-perm-skill="${esc(p)}" ${checked ? "checked" : ""}/><span>${checked ? "开" : "关"}</span></label></td>`;
+        }).join("");
+        return `<tr>
+          <td class="user-cell"><strong>${esc(u.label)}</strong><span>${esc(u.id)} · ${esc(u.role)}</span></td>
+          ${cells}
+        </tr>`;
+      }).join("");
+      paint(`
+        <div class="perms-wrap">
+          <h2>权限管理</h2>
+          <p class="cite" style="margin:0 0 8px">演示口径 · 用户 × Skill 授权 · 存本机 localStorage（${esc(SKILL_PERMS_KEY)}）· 不接真实 IAM</p>
+          <div class="hint">切换专员后到「Skills 接入」可看到无权限平台呈灰态。</div>
+          <table class="perms-table">
+            <thead><tr><th>用户 / 角色</th>${headCells}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="actions" style="margin-top:14px">
+            <button type="button" class="act primary" id="permsSave">保存授权</button>
+            <button type="button" class="act" id="permsReset">恢复演示默认</button>
+          </div>
+        </div>
+      `);
+      const syncLabels = () => {
+        document.querySelectorAll("[data-perm-user]").forEach((inp) => {
+          const span = inp.parentElement && inp.parentElement.querySelector("span");
+          if (span) span.textContent = inp.checked ? "开" : "关";
+        });
+      };
+      document.querySelectorAll("[data-perm-user]").forEach((inp) => {
+        inp.onchange = syncLabels;
+      });
+      const saveBtn = document.getElementById("permsSave");
+      if (saveBtn) {
+        saveBtn.onclick = () => {
+          const next = loadSkillPerms();
+          document.querySelectorAll("[data-perm-user]").forEach((inp) => {
+            const uid = inp.getAttribute("data-perm-user");
+            const skill = inp.getAttribute("data-perm-skill");
+            if (!uid || !skill) return;
+            if (!next[uid]) next[uid] = {};
+            next[uid][skill] = !!inp.checked;
+          });
+          saveSkillPerms(next);
+          toast("权限已保存（本机演示）");
+          render();
+        };
+      }
+      const resetBtn = document.getElementById("permsReset");
+      if (resetBtn) {
+        resetBtn.onclick = () => {
+          saveSkillPerms(defaultSkillPerms());
+          toast("已恢复演示默认授权");
+          render();
+        };
+      }
+    }
+
+    function renderSkills() {
+      const opId = currentOperatorId();
+      if (!hasSkillPerm(opId, skillsPlatform)) {
+        const first = SKILL_PLATFORMS.find((p) => hasSkillPerm(opId, p));
+        if (first) skillsPlatform = first;
+      }
+      const pills = SKILL_PLATFORMS.map((p) => {
+        const allowed = hasSkillPerm(opId, p);
+        const on = skillsPlatform === p ? "on" : "";
+        const denied = allowed ? "" : "denied";
+        const tag = allowed ? "" : `<span class="deny-tag">无权限</span>`;
+        return `<button class="platform-pill ${on} ${denied}" data-platform="${esc(p)}" data-allowed="${allowed ? "1" : "0"}">${PLATFORM_MARKS[p] || ""}<span>${esc(p)}</span>${tag}</button>`;
+      }).join("");
+      const allowedNow = hasSkillPerm(opId, skillsPlatform);
+      paint(`
+        <div class="skills-hero">
+          <h2>一句话接入你的 Agent</h2>
+          <p class="lead">把云谷政策雷达智能匹配系统能力接到你正在用的 Agent。系统只出草稿，不代发微信。</p>
+          <p class="cite" style="margin:0 0 12px">当前专员 ${esc(opId)} · Skill 授权为演示口径（见「权限管理」）</p>
+          <div class="platform-pills">${pills}</div>
+          <div class="term-block">
+            <div><span class="prompt">$</span> <span class="cmd">${SKILLS_INSTALL}</span></div>
+            <span class="hint-line"># 当前选择：${esc(skillsPlatform)}${allowedNow ? "" : " · 无权限"}</span>
+          </div>
+          <div class="actions" style="margin-top:12px">
+            <button class="act primary" id="copyInstall" ${allowedNow ? "" : "disabled"}>复制安装命令</button>
+          </div>
+          <p class="skills-note">完整契约见 <a href="${apiBase}/skills.md" target="_blank" style="color:var(--accent);text-decoration:underline"><code>${apiBase}/skills.md</code></a> · API 基址 <code>${apiBase}</code></p>
+        </div>
+      `);
+      document.querySelectorAll("[data-platform]").forEach((el) => {
+        el.onclick = () => {
+          if (el.getAttribute("data-allowed") !== "1") {
+            toast("当前专员无此 Skill 权限（演示）");
+            return;
+          }
+          skillsPlatform = el.getAttribute("data-platform");
+          renderSkills();
+        };
+      });
+      const copyBtn = document.getElementById("copyInstall");
+      if (copyBtn) {
+        copyBtn.onclick = () => {
+          if (!hasSkillPerm(opId, skillsPlatform)) {
+            toast("当前专员无此 Skill 权限（演示）");
+            return;
+          }
+          copyText(SKILLS_INSTALL, "安装命令已复制");
+        };
+      }
+    }
+
+    function topicBadge(t) {
+      if (t === "policy") return `<span class="badge seal">政策</span>`;
+      if (t === "ai") return `<span class="badge ok">AI</span>`;
+      return `<span class="badge muted">${esc(t || "")}</span>`;
+    }
+
+    function mediaTypeBadge(mt) {
+      if (mt === "video") return `<span class="badge warn">视频</span>`;
+      if (mt === "image") return `<span class="badge muted">图文</span>`;
+      return `<span class="badge muted">链接</span>`;
+    }
+
+    function renderMediaHot() {
+      const srcChips = MEDIA_SOURCES.map((c) =>
+        `<button class="chip ${mediaSource === c.id ? "on" : ""}" data-media-source="${c.id}">${c.label}</button>`
+      ).join("");
+      const kwChips = MEDIA_KW.map((k) =>
+        `<button class="chip ${mediaQ === k ? "on" : ""}" data-media-q="${esc(k)}">${k || "默认词"}</button>`
+      ).join("");
+      const timeChips = MEDIA_TIME.map((t) =>
+        `<button class="chip ${mediaTime === t.id ? "on" : ""}" data-media-time="${t.id}">${t.label}</button>`
+      ).join("");
+      const notices = [];
+      if (mediaMeta && mediaMeta.allnet_notice) {
+        notices.push(`<div class="media-banner">Allnet：${esc(mediaMeta.allnet_notice)} · 鉴权头 <code>X-API-Key</code> · 环境变量 <code>ALLNET_API_KEY</code>（勿入库）。</div>`);
+      } else if (mediaMeta && mediaMeta.allnet_configured) {
+        notices.push(`<div class="media-banner ok">Allnet OpenAPI 已接通 · 主数据源</div>`);
+      }
+      if (mediaMeta && mediaMeta.tikhub_notice) {
+        notices.push(`<div class="media-banner">TikHub：${esc(mediaMeta.tikhub_notice)} · <code>TIKHUB_API_KEY</code></div>`);
+      }
+      const notice = notices.join("");
+      const sources = (mediaMeta && mediaMeta.sources || []).map((s) => {
+        const cls = s.ok ? "on" : "off";
+        return `<span class="${cls}">${esc(s.name)} · ${esc(s.detail || (s.ok ? "OK" : "降级"))}</span>`;
+      }).join("");
+      const cards = mediaItems.map((it) => {
+        const active = selectedMedia === it.id ? "active" : "";
+        const sample = it.is_sample ? `<span class="badge warn">样例</span>` : "";
+        let mediaEl = "";
+        if (it.video_url) {
+          mediaEl = `<video class="media-thumb" muted playsinline preload="metadata" poster="${esc(it.thumb || "")}" src="${esc(it.video_url)}"></video>`;
+        } else if (it.thumb) {
+          mediaEl = `<img class="media-thumb" src="${esc(it.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" />`;
+        } else {
+          mediaEl = `<div class="media-thumb ph">${it.media_type === "video" ? "视频" : "无图"}</div>`;
+        }
+        const rel = formatPubRel(it.published_at);
+        return `<div class="card ${active}" data-media="${esc(it.id)}">
+          <div class="media-card-row">
+            ${mediaEl}
+            <div>
+              <h3>${esc(it.title)}</h3>
+              <div class="meta">${sample}${mediaTypeBadge(it.media_type)}
+                <span class="badge muted">${esc(it.source || "")}</span>
+                <span class="pub-time">${esc(rel || (it.published_at || "").slice(0, 10))}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join("") || `<div class="empty">暂无条目<br/>可换关键词或检查网络</div>`;
+
+      const item = mediaItems.find((x) => x.id === selectedMedia);
+      let detail = `<div class="empty">点选左侧条目查看图/视频</div>`;
+      if (item) {
+        let mediaBlock = "";
+        if (item.video_url) {
+          mediaBlock = `<div class="media-detail-media"><video controls playsinline poster="${esc(item.thumb || "")}" src="${esc(item.video_url)}"></video></div>`;
+        } else if (item.thumb) {
+          mediaBlock = `<div class="media-detail-media"><img src="${esc(item.thumb)}" alt="" referrerpolicy="no-referrer" /></div>`;
+        } else {
+          mediaBlock = `<div class="media-banner">本条无直出媒体，请打开原文查看</div>`;
+        }
+        const summary = stripShowPlayer(item.summary || "");
+        const rel = formatPubRel(item.published_at);
+        detail = `<div class="detail">
+          <h2>${esc(item.title)}</h2>
+          <div class="meta" style="margin-top:6px">
+            ${item.is_sample ? `<span class="badge warn">样例</span>` : ""}
+            ${mediaTypeBadge(item.media_type)}
+            <span class="badge muted">${esc(item.source || "")}</span>
+            <span class="pub-time">${esc(rel)}</span>
+            <span class="badge muted">${esc((item.published_at || "").slice(0, 10))}</span>
+            <span class="badge muted">${esc(item.provider || "")}</span>
+          </div>
+          ${mediaBlock}
+          ${summary ? `<p class="cite">${esc(summary)}</p>` : ""}
+          <div class="actions">
+            <a class="act primary" href="${esc(item.url)}" target="_blank" rel="noopener">打开原文</a>
+          </div>
+          <p class="hint" style="margin-top:14px">政策/园区向公开聚合 · 不代发微信 · 不编造公文</p>
+        </div>`;
+      }
+
+      paint(`
+        <p class="hint">媒体信息热点 · 主源 Allnet OpenAPI · 补充 TikHub / RSS · 筛 AI/政策向 · 默认自 2025-09</p>
+        <div class="filter-row"><span class="lbl">时间</span>${timeChips}</div>
+        <div class="filter-row"><span class="lbl">来源</span>${srcChips}</div>
+        <div class="filter-row"><span class="lbl">关键词</span>${kwChips}</div>
+        ${notice}
+        <div class="media-sources">${sources}</div>
+        <div class="split">
+          <div class="split-list list">${cards}</div>
+          <div class="split-detail">${detail}</div>
+        </div>
+      `);
+
+      document.querySelectorAll("[data-media-time]").forEach((el) => {
+        el.onclick = async () => {
+          mediaTime = el.getAttribute("data-media-time") || "since";
+          selectedMedia = null;
+          setBusy(true);
+          try { await loadMediaHot(); render(); } finally { setBusy(false); }
+        };
+      });
+      document.querySelectorAll("[data-media-source]").forEach((el) => {
+        el.onclick = async () => {
+          mediaSource = el.getAttribute("data-media-source");
+          selectedMedia = null;
+          setBusy(true);
+          try { await loadMediaHot(); render(); } finally { setBusy(false); }
+        };
+      });
+      document.querySelectorAll("[data-media-q]").forEach((el) => {
+        el.onclick = async () => {
+          mediaQ = el.getAttribute("data-media-q") || "";
+          selectedMedia = null;
+          setBusy(true);
+          try { await loadMediaHot(); render(); } finally { setBusy(false); }
+        };
+      });
+      document.querySelectorAll("[data-media]").forEach((el) => {
+        el.onclick = () => {
+          selectedMedia = el.getAttribute("data-media");
+          render();
+        };
+      });
+    }
+
+    // ===== 智能招商测算与企服交接模块 =====
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    const ATTRACT_PRESETS = [
+      {
+        name: "杭州某工业智能体团队",
+        direction: "人工智能/工业智能体研发",
+        size_band: "m_20_100",
+        headcount: 20,
+        area: 240,
+        compute: 60,
+        raw_text: "我们团队专注离散制造工业机器人智能体与质检视觉算法，目前20人，计划在云谷租赁240平米研发中心，预计年自购算力与云训练开销60万元，计划入驻西湖区并申报国家级智能体标杆。"
+      },
+      {
+        name: "西湖区 OPC 独立开发者三人组",
+        direction: "一人公司/OPC/智能工具链",
+        size_band: "opc",
+        headcount: 3,
+        area: 15,
+        compute: 5,
+        raw_text: "我们是3位前大厂算法工程师组成的AI Agent独立开发小组，想在云谷挂靠一人公司注册，需要3个独立工位，无需实体办公室面积，年算力开销预计5万元。"
+      },
+      {
+        name: "具身智能出海硬件企业",
+        direction: "智能硬件研发/出海跨境",
+        size_band: "s_3_20",
+        headcount: 15,
+        area: 180,
+        compute: 30,
+        raw_text: "我们做具身智能外骨骼与扫地机器人出海欧美，团队15人，需180平米办公与轻量测试间，年出口报关与跨关区退税规模500万，年购置研发设备约80万。"
+      }
+    ];
+
+    let currentAttract = { ...ATTRACT_PRESETS[0] };
+    let currentAttractResult = null;
+
+    function calculateAttractResult(input) {
+      const isOpc = input.size_band === "opc" || Number(input.headcount) <= 3 || input.direction.includes("OPC");
+      const isAgentMfg = input.direction.includes("工业") || input.direction.includes("制造") || input.direction.includes("智能体");
+      const isHardware = input.direction.includes("硬件") || input.direction.includes("出海") || input.direction.includes("设备");
+
+      let rentSavings = 0;
+      if (isOpc) {
+        rentSavings = 72000;
+      } else {
+        rentSavings = Math.round(Number(input.area) * 2 * 365 * 0.7);
+      }
+
+      let computeSubsidy = 0;
+      if (isAgentMfg) {
+        computeSubsidy = Math.min(Math.round(Number(input.compute) * 10000 * 0.5), 300000);
+      } else if (isOpc) {
+        computeSubsidy = Math.round(Number(input.compute) * 10000 * 0.4);
+      } else {
+        computeSubsidy = Math.round(Number(input.compute) * 10000 * 0.35);
+      }
+
+      let specialSubsidy = 0;
+      if (isHardware) {
+        specialSubsidy = 64000;
+      } else if (isAgentMfg) {
+        specialSubsidy = 50000;
+      } else {
+        specialSubsidy = 18000;
+      }
+
+      const totalBenefit = rentSavings + computeSubsidy + specialSubsidy;
+
+      const policyItems = [
+        {
+          doc: "工信部信发〔2026〕209号",
+          title: "工业和信息化部《“人工智能+软件”专项行动实施方案》（2026年9月11日印发）",
+          state: isAgentMfg || isOpc ? "符合" : "待核验",
+          stateClass: isAgentMfg || isOpc ? "fit" : "audit",
+          clause: "发展‘智能体即服务’新业态，打造100个智能体软件标杆；统筹提供算力、场地等资源。",
+          url: "https://www.miit.gov.cn/zwgk/zcwj/index.html",
+          benefit: isAgentMfg ? "首年算力补贴达50%，可列入国家级智能体示范培育库" : "需在园形成典型交付场景后再行申报"
+        },
+        {
+          doc: "杭市监〔2026〕43号",
+          title: "《支持一人公司OPC创新创业发展的若干举措》（2026正式执行版）",
+          state: isOpc ? "符合" : "待核验",
+          stateClass: isOpc ? "fit" : "audit",
+          clause: "推行全程网办零成本准入，支持工位注册与一址多照；给予1至3年沙盒包容观察期。",
+          url: "https://scjt.zj.gov.cn/art/2026/1/22/art_1229618037_59281.html",
+          benefit: isOpc ? "免实体办公刚性租金，一张桌子合规开办一人公司" : "团队规模超标，需走常规独立办公室或研发单元通道"
+        },
+        {
+          doc: "工信部联科〔2026〕制造意见",
+          title: "工信部等八部门《“人工智能+制造”专项行动实施意见》（工业智能体培育专项）",
+          state: isAgentMfg ? "符合" : "排除",
+          stateClass: isAgentMfg ? "fit" : "drop",
+          clause: "推动大模型赋能工业机器人与柔性产线，建设全国工业智能体测试床与标杆车间。",
+          url: "https://www.miit.gov.cn/zwgk/zcwj/index.html",
+          benefit: isAgentMfg ? "配套专项智能体制造应用补贴，享受园区专属中试算力池" : "非制造业及工业软件赛道不纳入本专项扶持范围"
+        },
+        {
+          doc: "发改投资〔2026〕特别国债",
+          title: "国家发改委《2026年超长期特别国债支持大规模设备更新实施方案》",
+          state: isHardware ? "符合" : "待核验",
+          stateClass: isHardware ? "fit" : "audit",
+          clause: "支持企业购置高精度智能研发仪器与测试硬件，按发票核验补贴 10%~15%。",
+          url: "https://www.ndrc.gov.cn/xxgk/zcfb/",
+          benefit: isHardware ? "年购置自研设备预计可享约 6.4 万元超长期国债补贴" : "需凭正式设备采购发票在申报窗口开放时核验放行"
+        }
+      ];
+
+      const opVal = document.getElementById("operator") ? document.getElementById("operator").value : "OP-01";
+      const opText = opVal === "OP-02" ? "运营专员·乙" : "运营专员·甲";
+      let wechatDraft = "";
+      if (isOpc) {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心企服招商专员（${opText}）。针对咱们3人团队的入驻诉求，我们对照刚发布的杭市监〔2026〕43号“一人公司(OPC)”新政与西湖区孵化扶持，为您测算了一套极简方案：入驻云谷合规工位直接免除实体办公刚性租金，同时配套轻量算力补贴，首年综合预计降本达 ¥${(totalBenefit / 10000).toFixed(1)} 万元。现场工位有限，您看周三上午方便来园区喝茶敲定吗？`;
+      } else if (isAgentMfg) {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心招商企服专员（${opText}）。针对咱们20人工业智能体团队入驻，结合工信部信发〔2026〕209号新政与算力券，首年240㎡研发场地叠加算力补贴，预计为您综合降本约 ¥${(totalBenefit / 10000).toFixed(1)} 万元（其中算力投入补贴达50%）。申报门槛与公文依据已为您锁定，您看本周何时方便过来实地考察敲定工位？`;
+      } else {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心招商专员（${opText}）。针对咱们团队入驻的政策红利总账已测算完毕：结合2026超长期特别国债设备更新贴息与园区租金扶持，首年预计综合降本扶持达 ¥${(totalBenefit / 10000).toFixed(1)} 万元。申报细则与准入依据已核验，欢迎随时来园区对接签约！`;
+      }
+
+      return {
+        totalBenefit,
+        rentSavings,
+        computeSubsidy,
+        specialSubsidy,
+        policyItems,
+        wechatDraft
+      };
+    }
+
+    function renderAttract() {
+      if (!currentAttractResult) {
+        currentAttractResult = calculateAttractResult(currentAttract);
+      }
+      const res = currentAttractResult;
+      const opVal = document.getElementById("operator") ? document.getElementById("operator").value : "OP-01";
+
+      const html = `
+        <div class="attract-wrap">
+          <div class="attract-quick-bar">
+            <span>⚡ 现场极速演示预设（点击1秒生成报表）：</span>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(0)">预设一：20人工业智能体制造团队 (240㎡ / 算力60万)</button>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(1)">预设二：西湖区 OPC 独立开发者三人组 (工位3个 / 免租金)</button>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(2)">预设三：具身智能出海硬件企业 (180㎡ / 退税设备贴息)</button>
+          </div>
+
+          <div class="attract-main-grid">
+            <!-- 左侧：输入要素与AI快速提取 -->
+            <div class="attract-form-card">
+              <h3>招商企业要素输入</h3>
+              
+              <div class="attract-form-group">
+                <label>一句话自然语言 / 微信聊天记录快速粘贴：</label>
+                <textarea id="attr_raw_text" placeholder="粘贴意向企业介绍或微信聊天的需求，AI自动提取要素...">${escapeHtml(currentAttract.raw_text || "")}</textarea>
+              </div>
+
+              <div style="text-align:right; margin-bottom:12px;">
+                <button type="button" class="btn-secondary" style="width:100%;" onclick="window.parseAttractRawText()">🤖 AI 智能提取意向要素</button>
+              </div>
+
+              <div class="attract-form-group">
+                <label>意向企业名称 / 简称：</label>
+                <input type="text" id="attr_name" value="${escapeHtml(currentAttract.name)}" />
+              </div>
+
+              <div class="attract-form-group">
+                <label>主营技术赛道：</label>
+                <input type="text" id="attr_direction" value="${escapeHtml(currentAttract.direction)}" />
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="attract-form-group">
+                  <label>团队规模（人）：</label>
+                  <input type="number" id="attr_headcount" value="${currentAttract.headcount}" />
+                </div>
+                <div class="attract-form-group">
+                  <label>拟租赁面积（㎡）：</label>
+                  <input type="number" id="attr_area" value="${currentAttract.area}" />
+                </div>
+              </div>
+
+              <div class="attract-form-group">
+                <label>年算力与设备预算（万元）：</label>
+                <input type="number" id="attr_compute" value="${currentAttract.compute}" />
+              </div>
+
+              <button class="btn-calc" onclick="window.doCalculateAttract()">
+                <span>⚡ 重新测算 2026 入园红利总账</span>
+              </button>
+            </div>
+
+            <!-- 右侧：输出入园政策红利测算报表 -->
+            <div class="report-card" id="attract_report_print">
+              <div class="report-header">
+                <div class="report-title-box">
+                  <h2>云谷中心 · 企业入园政策红利与降本测算提案单</h2>
+                  <p>公文依据：严格锁定 2026 纯现行国家与省市区权威政策 · 编号：招商〔2026〕Q03号 · 责任专员：${opVal}</p>
+                </div>
+                <div class="report-badge">官方核验通过 · 责任可追</div>
+              </div>
+
+              <!-- 4个核心总账大指标 -->
+              <div class="metrics-summary-grid">
+                <div class="metric-sub-card highlight">
+                  <label>预计首年综合减免总账</label>
+                  <div class="val">¥ ${(res.totalBenefit / 10000).toFixed(1)} 万</div>
+                  <small>综合降低入园成本约 35%~50%</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>房租 / 工位减免</label>
+                  <div class="val">¥ ${(res.rentSavings / 10000).toFixed(1)} 万</div>
+                  <small>OPC免租 / 2元/天·㎡先缴后补</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>算力券与专项直补</label>
+                  <div class="val">¥ ${(res.computeSubsidy / 10000).toFixed(1)} 万</div>
+                  <small>工信部209号 / 算力券50%</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>设备与出海专项贴息</label>
+                  <div class="val">¥ ${(res.specialSubsidy / 10000).toFixed(1)} 万</div>
+                  <small>特别国债15% / 跨关区退税</small>
+                </div>
+              </div>
+
+              <!-- 2026 政策三态准入清单 -->
+              <div class="report-section-title">2026 现行公文依据与三态准入初筛（符合 · 待核验 · 排除）</div>
+              <table class="policy-eval-table">
+                <thead>
+                  <tr>
+                    <th style="width:18%;">政策发文字号</th>
+                    <th style="width:25%;">政策全称与官方出处</th>
+                    <th style="width:12%;">初筛状态</th>
+                    <th style="width:45%;">测算匹配理由与扶持条文</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${res.policyItems.map(item => `
+                    <tr>
+                      <td><strong>${escapeHtml(item.doc)}</strong></td>
+                      <td>
+                        <a href="${item.url}" target="_blank" rel="noopener" style="color:var(--seal); text-decoration:underline;">
+                          ${escapeHtml(item.title)}
+                        </a>
+                      </td>
+                      <td><span class="tag-state ${item.stateClass}">${item.state}</span></td>
+                      <td>
+                        <div style="color:var(--ink); font-weight:500;">${escapeHtml(item.benefit)}</div>
+                        <div style="font-size:11px; color:var(--muted); margin-top:2px;">摘录：${escapeHtml(item.clause)}</div>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+
+              <!-- 微信触达大白话草稿 -->
+              <div class="report-section-title">微信触达大白话草稿（招商经理复制即发给创始人）</div>
+              <div class="wechat-draft-box">
+                <h4>
+                  <span>💬 专属微信谈判沟通草稿（已按 ${opVal} 身份定制）</span>
+                  <button type="button" class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="window.copyWechatDraft()">📋 一键复制文案</button>
+                </h4>
+                <p id="wechat_draft_text">${escapeHtml(res.wechatDraft)}</p>
+              </div>
+
+              <!-- 签约交接与责任留痕 -->
+              <div class="report-actions">
+                <button type="button" class="btn-secondary" onclick="window.printReport()">🖨️ 打印测算提案单</button>
+                <button type="button" class="btn-primary" onclick="window.doAttractHandover()">🤝 意向签约 · 一键交接转入企服台账（责任留痕）</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("content").innerHTML = html;
+      bindAttractEvents();
+    }
+
+    function bindAttractEvents() {
+      window.applyAttractPreset = function(index) {
+        currentAttract = { ...ATTRACT_PRESETS[index] };
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("已成功载入预设，测算报表已更新！");
+      };
+
+      window.parseAttractRawText = function() {
+        const text = (document.getElementById("attr_raw_text").value || "").trim();
+        if (!text) {
+          toast("请先粘贴企业需求或聊天文本");
+          return;
+        }
+        // AI 意向要素提取逻辑
+        let name = "意向企业";
+        let direction = "人工智能/智能体研发";
+        let headcount = 10;
+        let area = 120;
+        let compute = 20;
+
+        if (text.includes("机器人") || text.includes("工业") || text.includes("制造")) {
+          name = "工业智能体研发团队";
+          direction = "人工智能/工业智能体";
+          headcount = 20;
+          area = 240;
+          compute = 60;
+        } else if (text.includes("OPC") || text.includes("独立开发") || text.includes("一人")) {
+          name = "AI 原生 OPC 团队";
+          direction = "一人公司/OPC/智能工具链";
+          headcount = 3;
+          area = 15;
+          compute = 5;
+        } else if (text.includes("出海") || text.includes("硬件") || text.includes("跨境")) {
+          name = "具身智能出海硬件企业";
+          direction = "智能硬件研发/出海跨境";
+          headcount = 15;
+          area = 180;
+          compute = 30;
+        }
+
+        const matchHc = text.match(/(\d+)\s*人/);
+        if (matchHc) headcount = parseInt(matchHc[1]);
+        const matchArea = text.match(/(\d+)\s*(平米|平|㎡)/);
+        if (matchArea) area = parseInt(matchArea[1]);
+        const matchComp = text.match(/(\d+)\s*(万|万元)/);
+        if (matchComp) compute = parseInt(matchComp[1]);
+
+        currentAttract = {
+          name,
+          direction,
+          size_band: headcount <= 3 ? "opc" : (headcount <= 20 ? "s_3_20" : "m_20_100"),
+          headcount,
+          area,
+          compute,
+          raw_text: text
+        };
+
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("AI 要素提取完成！已生成测算报表。");
+      };
+
+      window.doCalculateAttract = function() {
+        currentAttract.name = document.getElementById("attr_name").value.trim() || "意向企业";
+        currentAttract.direction = document.getElementById("attr_direction").value.trim() || "人工智能";
+        currentAttract.headcount = parseInt(document.getElementById("attr_headcount").value) || 10;
+        currentAttract.area = parseInt(document.getElementById("attr_area").value) || 100;
+        currentAttract.compute = parseInt(document.getElementById("attr_compute").value) || 10;
+        currentAttract.size_band = currentAttract.headcount <= 3 ? "opc" : (currentAttract.headcount <= 20 ? "s_3_20" : "m_20_100");
+
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("入园红利测算报表已实时更新！");
+      };
+
+      window.copyWechatDraft = function() {
+        const text = document.getElementById("wechat_draft_text").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          toast("微信草稿文案已复制到剪贴板！可直接发送给企业创始人");
+        }).catch(() => {
+          toast("复制成功！请直接在聊天框粘贴");
+        });
+      };
+
+      window.printReport = function() {
+        window.print();
+      };
+
+      window.doAttractHandover = async function() {
+        setBusy(true);
+        try {
+          const op = document.getElementById("operator").value;
+          const res = await api("/api/attract/handover", {
+            method: "POST",
+            body: JSON.stringify({
+              name: currentAttract.name,
+              direction: currentAttract.direction,
+              size_band: currentAttract.size_band,
+              headcount: currentAttract.headcount,
+              area: currentAttract.area,
+              operator: op
+            })
+          });
+          toast("🤝 签约交接成功！责任专员留痕完成，已归档至在园企业名册！");
+          // 重新拉取并在 1 秒后无缝切换到企业运营视图
+          await loadCompanies();
+          setTimeout(() => {
+            view = "companies";
+            syncNav();
+            render();
+          }, 1200);
+        } catch (e) {
+          toast("交接保存失败: " + e.message);
+        } finally {
+          setBusy(false);
+        }
+      };
+    }
+
+    function render() {
+      if (view === "dashboard") renderDashboard();
+      else if (view === "radar") renderRadar();
+      else if (view === "companies") renderCompanies();
+      else if (view === "attract") renderAttract();
+      else if (view === "skills") renderSkills();
+      else if (view === "perms") renderPerms();
+      else if (isCorpView(view)) renderCorpPortal();
+      else { view = "dashboard"; renderDashboard(); }
+    }
+
+    function syncNav() {
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-view") === view);
+      });
+    }
+
+    document.querySelectorAll(".nav-btn").forEach((btn) => {
+      btn.onclick = async () => {
+        const next = btn.getAttribute("data-view");
+        if (!next) return;
+        if (portalMode === "corp") {
+          if (!CORP_VIEWS.includes(next)) return;
+          view = next;
+          corpStaffEditId = null;
+          if (view !== "corp_policies" && view !== "corp_events") {
+            selectedRadar = null;
+            radarMatchItems = [];
+            policyBodyText = "";
+          }
+          syncNav();
+          setBusy(true);
+          try {
+            await loadCorpHome(portalCompanyId);
+            render();
+          } finally { setBusy(false); }
+          return;
+        }
+        if (btn.getAttribute("data-portal-nav") === "corp") return;
+        if (next === "media" || next === "attract") return;
+        view = next;
+        lastOpsView = view;
+        if (view !== "radar") {
+          selectedRadar = null;
+          radarMatchItems = [];
+          policyBodyText = "";
+        }
+        syncNav();
+        setBusy(true);
+        try {
+          if (view === "dashboard") await loadDashboard();
+          else if (view === "radar") await loadRadar();
+          else if (view === "companies") await loadCompanies();
+          render();
+        } finally { setBusy(false); }
+      };
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && selectedRadar && (view === "radar" || isCorpView(view))) {
+        e.preventDefault();
+        closeRadarModal();
+      }
+    });
+
+    document.getElementById("operator").addEventListener("change", () => {
+      syncOpSeal();
+      if (view === "skills") renderSkills();
+    });
+    syncOpSeal();
+
+    document.querySelectorAll(".portal-btn").forEach((btn) => {
+      btn.onclick = () => switchPortal(btn.getAttribute("data-portal"));
+    });
+    document.getElementById("portalCompany").addEventListener("change", async (e) => {
+      portalCompanyId = e.target.value || "";
+      localStorage.setItem("portalCompanyId", portalCompanyId);
+      corpStaffEditId = null;
+      if (portalMode !== "corp") return;
+      setBusy(true);
+      try {
+        await loadCorpHome(portalCompanyId);
+        selectedRadar = null;
+        radarMatchItems = [];
+        policyBodyText = "";
+        render();
+      } finally { setBusy(false); }
+    });
+
+    (async function init() {
+      try {
+        await api("/api/health").catch((e) => console.warn("health check warning:", e));
+        await loadDashboard().catch((e) => console.warn("loadDashboard warning:", e));
+        await loadRadar().catch((e) => console.warn("loadRadar warning:", e));
+        await loadCompanies().catch((e) => console.warn("loadCompanies warning:", e));
+        populatePortalCompanySelect();
+        applyPortalMode();
+        if (portalMode === "corp") {
+          view = "corp_policies";
+          await loadCorpHome(portalCompanyId);
+        } else if (view === "attract" || isCorpView(view)) {
+          view = "dashboard";
+        }
+        render();
+        setApiStatus("");
+      } catch (e) {
+        console.error("Init render error:", e);
+        setApiStatus("数据异常", true);
+        document.getElementById("content").innerHTML =
+          `<div class="empty">工作台载入异常: ${escapeHtml(e.message || "未知错误")}<br/>请检查接口连接或刷新重试</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
