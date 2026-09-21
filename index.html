@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>云谷企服雷达智能匹配系统</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/sql-wasm.js" defer></script>
+  <script src="static_db.js"></script>
+  <script src="alpha_db.js"></script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
@@ -1346,6 +1349,13 @@
           当前企业
           <select id="portalCompany"></select>
         </div>
+        <div class="db-status-block" style="margin-top: 10px; padding: 6px 8px; background: var(--ok-bg); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: 11px; color: var(--ok); display: flex; align-items: center; justify-content: space-between;">
+          <span title="本地轻量 SQLite 引擎，无后端极速运行">🟢 本地轻量 SQLite</span>
+          <div style="display: flex; gap: 4px;">
+            <button type="button" id="btnExportDb" title="导出 SQLite 数据库 (.db/json)" style="background: none; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; font-size: 11px; padding: 1px 4px; color: var(--ink);">📥 导出</button>
+            <button type="button" id="btnResetDb" title="重置为初始演示数据" style="background: none; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; font-size: 11px; padding: 1px 4px; color: var(--ink);">🔄 重置</button>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -1905,6 +1915,16 @@
     }
 
     async function api(path, opts = {}) {
+      if (window.AlphaDB) {
+        try {
+          const localRes = await window.AlphaDB.handleRequest(path, opts);
+          if (localRes !== null) {
+            return localRes;
+          }
+        } catch (err) {
+          console.warn("[AlphaDB] Intercept error, trying fallback:", err);
+        }
+      }
       const urlParams = new URLSearchParams(window.location.search);
       const studioToken = urlParams.get("studio_token");
       let url = (API || "") + path;
@@ -4606,6 +4626,28 @@
     });
 
     (async function init() {
+      const btnExport = document.getElementById("btnExportDb");
+      if (btnExport) {
+        btnExport.addEventListener("click", () => {
+          if (window.AlphaDB) {
+            window.AlphaDB.exportSqliteDb();
+            toast("已触发本地 SQLite 数据库导出");
+          }
+        });
+      }
+      const btnReset = document.getElementById("btnResetDb");
+      if (btnReset) {
+        btnReset.addEventListener("click", () => {
+          if (confirm("确定要重置为初始演示数据吗？本地修改的进度将恢复默认。")) {
+            if (window.AlphaDB) {
+              window.AlphaDB.reset();
+              toast("已恢复初始演示底账");
+              setTimeout(() => location.reload(), 500);
+            }
+          }
+        });
+      }
+
       try {
         await api("/api/health").catch((e) => console.warn("health check warning:", e));
         await loadDashboard().catch((e) => console.warn("loadDashboard warning:", e));

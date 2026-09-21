@@ -1066,7 +1066,7 @@ def policy_match(company_id: str):
             "headcount_range": c.get("headcount_range"),
             "funding_stage": c.get("funding_stage"),
             "service_needs": c.get("service_needs"),
-            "headcount_bands": c["headcount_bands"],
+            "headcount_bands": c.get("headcount_bands") or {"rd": 0, "biz": 0, "other": 0},
             "fields": c.get("fields"),
             "address": c.get("address") or "",
             "contact_lead": c.get("contact_lead") or "",

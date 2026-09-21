@@ -72,25 +72,34 @@ $$\text{企服雷达初筛} \longrightarrow \text{三态判定（符合/排除/�
 
 ---
 
-## 🏗️ 架构与稳定实现
+## 🏗️ 极致轻量架构：纯前端无后端 + 本地 SQLite 引擎
 
-* **前端（Frontend）**：原生现代化响应式 SPA (`index.html`)，零繁琐 Node 打包依赖，毫秒级即开即用，完美适配 PC 大屏与移动端。
-* **后端（Backend）**：基于 Python 标准库构建轻量高并发服务 (`server.py`)，自带 RESTful API 路由、状态机持久化与平滑降级容灾。
-* **Agent 规范（Skills）**：规范化 `skills.md` 接口契约，内置 T1（SOP推进）、T2（政策匹配）、T3（规则推送）、T4（活动报名）、T5（冲突裁决）、T6（复盘重开）、T7（快速接入）指令库。
+系统原生支持 **完全无服务器（Zero-Backend / Serverless）** 运行，彻底告别后台服务运维负担：
+
+* **浏览器内嵌轻量 SQLite（WASM / `alpha_db.js`）**：
+  - 双击 `index.html` 或部署到 GitHub Pages / 任意静态托管即可秒开，**完全无需运行 Python 或任何后台常驻进程**。
+  - 结构化关系型数据表（`policies`、`companies`、`matches`、`sop_logs`、`confirm_logs`）。
+  - 专员全流程操作（推进 SOP、确认留痕、提醒标记）自动通过 `LocalStorage / IndexedDB` 本地实时落盘，刷新页面状态不丢失。
+  - 界面左下角提供 **「📥 导出 SQLite」**（直接下载标准 `.db` 数据库）与 **「🔄 重置底账」** 控制面板。
+* **极简静态开放数据（Agent 友好）**：
+  - 预打包单文件关系型数据库 `alphafde.db`（约 300KB）与 `static_db.json`，外部 AI Agent（Claude Code / Qwen / DeepSeek）可直接通过 URL 或本地文件极速解析。
+* **可选 Python 服务基座 (`server.py`)**：
+  - 针对需要局域网跨机器共享（同 Wi-Fi 浏览器打开）、自动化定时抓取或部署至 ModelScope 容器创空间的场景，保留标准库 0 外部依赖的轻量服务作为补充。
 
 ---
 
-## ⚡ 快速开始
+## ⚡ 快速使用与部署
 
-### 方式一：本地极速启动（0 额外依赖）
+### 方式一：纯前端离线静态秒开（推荐 · 零后端）
+无需安装任何 Python 依赖与后台进程：
 ```bash
-# 需要 Python 3.10+
-python3 server.py
-
-# 访问本地运营台：http://127.0.0.1:8766
+# 浏览器直接双击打开 index.html，或用任意静态工具托管：
+python3 -m http.server 8080
+# 浏览器访问：http://127.0.0.1:8080
 ```
+*(也可直接推送到 GitHub Pages 免费自动化公开访问)*
 
-### 方式二：Docker 一键部署
+### 方式二：Docker 容器一键部署
 ```bash
 docker compose up -d --build
 # 服务监听端口 8766 (或 7860)
