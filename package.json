@@ -1,0 +1,17 @@
+{
+  "name": "alphafde-studio",
+  "version": "1.0.0",
+  "description": "云谷企服雷达智能匹配系统 · Fullstack TypeScript Engine",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsc -w",
+    "test": "node dist/test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3"
+  },
+  "license": "Apache-2.0"
+}

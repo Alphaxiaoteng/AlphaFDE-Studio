@@ -1,0 +1,14 @@
+# GitHub Linguist Language Configuration
+# Ensure TypeScript is highlighted as primary language
+src/**/*.ts linguist-detectable=true
+index.html linguist-detectable=true
+
+# Mark generated and data files
+dist/** linguist-generated=true
+static_db.js linguist-generated=true
+static_db.json linguist-generated=true
+data.json linguist-generated=true
+alpha_db.js linguist-generated=true
+*.db binary
+*.jsonl linguist-generated=true
+*.py linguist-vendored=true

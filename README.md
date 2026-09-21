@@ -16,7 +16,9 @@ pinned: false
 
 **面向科技园区与孵化器的 AI 政策申报与企业服务管家**
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![SQLite](https://img.shields.io/badge/SQLite-Native-003B57?logo=sqlite&logoColor=white)](https://sqlite.org)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://docker.com)
 [![ModelScope Studio](https://img.shields.io/badge/ModelScope-AlphaFDE--Studio-624AFF)](https://modelscope.cn/studios/cp1024/AlphaFDE-Studio)
 [![License](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE)
@@ -72,40 +74,47 @@ $$\text{企服雷达初筛} \longrightarrow \text{三态判定（符合/排除/�
 
 ---
 
-## 🏗️ 极致轻量架构：纯前端无后端 + 本地 SQLite 引擎
+## 🏗️ 全栈 TypeScript + 嵌入式 SQLite 架构
 
-系统原生支持 **完全无服务器（Zero-Backend / Serverless）** 运行，彻底告别后台服务运维负担：
+系统已全面完成 **TypeScript 生产级工程重构**：
 
-* **浏览器内嵌轻量 SQLite（WASM / `alpha_db.js`）**：
-  - 双击 `index.html` 或部署到 GitHub Pages / 任意静态托管即可秒开，**完全无需运行 Python 或任何后台常驻进程**。
-  - 结构化关系型数据表（`policies`、`companies`、`matches`、`sop_logs`、`confirm_logs`）。
-  - 专员全流程操作（推进 SOP、确认留痕、提醒标记）自动通过 `LocalStorage / IndexedDB` 本地实时落盘，刷新页面状态不丢失。
-  - 界面左下角提供 **「📥 导出 SQLite」**（直接下载标准 `.db` 数据库）与 **「🔄 重置底账」** 控制面板。
-* **极简静态开放数据（Agent 友好）**：
-  - 预打包单文件关系型数据库 `alphafde.db`（约 300KB）与 `static_db.json`，外部 AI Agent（Claude Code / Qwen / DeepSeek）可直接通过 URL 或本地文件极速解析。
-* **可选 Python 服务基座 (`server.py`)**：
-  - 针对需要局域网跨机器共享（同 Wi-Fi 浏览器打开）、自动化定时抓取或部署至 ModelScope 容器创空间的场景，保留标准库 0 外部依赖的轻量服务作为补充。
+* **生产级 TypeScript 后端 (`src/server.ts`, `src/services/`, `src/repositories/`)**：
+  - 基于 Node.js 原生 HTTP 与内置 SQLite（`node:sqlite`），零沉重第三方框架包袱。
+  - 严密类型契约（Schema & API Types），规范 Policy、Company、Match、SOP 状态机生命周期。
+  - 关系型数据持久化：内置 `schema.sql`、事务管理与审计日志表（`sop_logs`、`confirm_logs`）。
+* **浏览器内嵌轻量 SQLite（WASM / `src/client/alpha_db.ts`）**：
+  - 前端客户端同样采用 TypeScript 模块化编写，支持双击 `index.html` 纯静态秒开。
+  - 专员全流程操作通过 `LocalStorage / IndexedDB` 自动本地落盘，提供一键导出 `.db` 数据库。
+* **TypeScript CLI 终端工具 (`src/cli.ts`)**：
+  - 支持 `node dist/cli.js list`（雷达扫描）、`node dist/cli.js match <id>`（企业匹配）及 `node dist/cli.js stats`（大盘统计）。
 
 ---
 
 ## ⚡ 快速使用与部署
 
-### 方式一：纯前端离线静态秒开（推荐 · 零后端）
-无需安装任何 Python 依赖与后台进程：
+### 方式一：TypeScript 服务启动（开发与生产）
 ```bash
-# 浏览器直接双击打开 index.html，或用任意静态工具托管：
-python3 -m http.server 8080
-# 浏览器访问：http://127.0.0.1:8080
-```
-*(也可直接推送到 GitHub Pages 免费自动化公开访问)*
+# 1. 安装依赖并编译
+npm install
+npm run build
 
-### 方式二：Docker 容器一键部署
+# 2. 启动服务 (默认端口 8766 / 7860)
+npm start
+
+# 3. 运行全链路单元与集成测试
+npm test
+```
+
+### 方式二：纯前端静态离线秒开（零后端模式）
+无需任何后台服务，双击 `index.html` 或部署到 GitHub Pages 即可直接在浏览器内由 SQLite 引擎驱动运行！
+
+### 方式三：Docker 容器化部署
 ```bash
 docker compose up -d --build
 # 服务监听端口 8766 (或 7860)
 ```
 
-### 方式三：向任意 AI Agent 挂载本技能
+### 方式四：向任意 AI Agent 挂载本技能
 ```bash
 # 复制以下指令喂给 Claude Code / Qwen / DeepSeek / Trae / Cursor：
 curl -fsSL -A "Mozilla/5.0" https://cp1024-alphafde-studio.ms.show/skills.md

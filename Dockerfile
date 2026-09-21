@@ -1,33 +1,30 @@
 # ==============================================================================
-# 云谷中心 · 政策与活动雷达轻量化生产 Docker 镜像
+# 云谷中心 · 政策与活动雷达 TypeScript 生产 Docker 镜像
 # ==============================================================================
-FROM python:3.11-slim
+FROM node:22-alpine
 
-# 设置工作目录与环境变量
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1 \
+
+ENV NODE_ENV=production \
     PORT=7860 \
-    AUTO_CRON=true \
+    HOST=0.0.0.0 \
     TZ=Asia/Shanghai
 
-# 安装基础系统工具（curl用于健康检查，cron/tzdata用于时区与定时任务）
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    tzdata \
-    cron \
-    && rm -rf /var/lib/apt/lists/*
+# 安装 tzdata 处理时区
+RUN apk add --no-cache tzdata
+
+# 安装依赖
+COPY package*.json tsconfig.json ./
+RUN npm install
 
 # 复制项目代码与资源文件
-COPY . /app/
+COPY . .
 
-# 设置脚本可执行权限
-RUN chmod +x /app/entrypoint.sh /app/policy_radar_cli.py /app/ops-radar /app/scripts/*.sh 2>/dev/null || true
+# 编译 TypeScript
+RUN npm run build
 
 # 暴露服务端口
 EXPOSE 7860 8766
 
-# 数据持久化挂载声明
-VOLUME ["/app/data.json", "/app/pipeline_audit.log"]
-
-# 容器启动入口
-ENTRYPOINT ["/app/entrypoint.sh"]
+# 启动 TypeScript 服务
+CMD ["node", "dist/server.js"]
