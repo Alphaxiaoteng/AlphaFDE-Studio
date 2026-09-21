@@ -88,6 +88,23 @@ def load_data():
         return json.load(f)
 
 
+def save_data(data: dict) -> None:
+    """原子性较弱的演示落盘：整文件覆写 data.json，供 load_data 热读。"""
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+RADAR_CHANNELS = (
+    "政府政策",
+    "公开活动",
+    "平台规则活动",
+    "园区服务",
+    "阿里服务",
+    "机构服务",
+)
+
+
 # 看板演示种子：多阶段覆盖（非真实业绩）。元组 (match_id, step, status[, reject_reason])。
 # 多数进行中；少数 rejected + 少数待补充（靠 match_rules.gap）。末条覆盖；未列出默认待发送。
 DEMO_SOP_SEED = (
@@ -367,11 +384,11 @@ def _fits_current(company: dict, radar: dict) -> bool:
 
 
 def _passes_benefit(r: dict, benefit: str | None) -> bool:
-    """双益筛选：默认 both = 对园区有帮助 AND 对企业有帮助。
+    """双益筛选：默认 all = 不过滤；both = 对园区有帮助 AND 对企业有帮助。
     逻辑来源：policy_pilot 因果链（助企补贴 → 续租 → 托住园区）；
     localhost:3008 不可达时按同一规则落地。
     """
-    b = (benefit or "both").strip().lower()
+    b = (benefit or "all").strip().lower()
     park = bool(r.get("helps_park"))
     ent = bool(r.get("helps_enterprise"))
     if b in ("", "all"):
@@ -407,13 +424,17 @@ CHANNEL_ALIASES = {
     "机构服务": "机构服务",
     "机构": "机构服务",
     "partner": "机构服务",
+    "institution": "机构服务",
 }
 
 
 def _normalize_channel(value: str | None) -> str | None:
     if not value:
         return None
-    return CHANNEL_ALIASES.get(value.strip(), value.strip())
+    v = value.strip()
+    if v.lower() in ("all", "全部", "*"):
+        return None
+    return CHANNEL_ALIASES.get(v, v)
 
 
 def _radar_channel(r: dict) -> str:
@@ -538,7 +559,7 @@ def _timing_for_match(company: dict, urgency: str, days_left) -> dict:
 
 def policy_radar(
     track: str | None = None,
-    benefit: str | None = "both",
+    benefit: str | None = "all",
     channel: str | None = None,
     include_expired: bool = False,
 ):
@@ -615,7 +636,7 @@ def policy_radar(
     return {
         "meta": DATA["meta"],
         "queue_focus": "待核验 / 漏提醒优先，不看匹配条数冲榜",
-        "benefit_filter": benefit or "both",
+        "benefit_filter": benefit or "all",
         "channel_filter": want_channel or "",
         "include_expired": bool(include_expired),
         "skipped_expired": skipped_expired,
@@ -647,7 +668,7 @@ def policy_body(radar_id: str):
     }, 200
 
 
-def policy_match_for(radar_id: str, benefit: str | None = "both"):
+def policy_match_for(radar_id: str, benefit: str | None = "all"):
     DATA = load_data()
     radar = _radar_by_id(DATA).get(radar_id)
     if not radar:
@@ -1058,8 +1079,70 @@ def policy_match(company_id: str):
     }
 
 
+# 企业端「匹配的服务」渠道：三服务优先，平台规则活动可选归入并分组展示
+CORP_SERVICE_CHANNELS = ("园区服务", "阿里服务", "机构服务", "平台规则活动")
+CORP_SERVICE_CHANNEL_SET = frozenset(CORP_SERVICE_CHANNELS)
+
+
+def _corp_service_source_label(r: dict) -> str:
+    src = r.get("source")
+    if isinstance(src, dict) and src.get("name"):
+        return str(src["name"])
+    for key in ("agency", "doc_no", "platform", "official_source"):
+        val = r.get(key)
+        if val:
+            return str(val)
+    return ""
+
+
+def _enrich_corp_radar_fields(rad: dict | None, r: dict, ch: str) -> dict:
+    """企业端拆分时补齐 radar 展示字段（channel / 权益句 / 窗口）。"""
+    out = rad if isinstance(rad, dict) else _radar_card_fields(r)
+    out["channel"] = ch
+    out["value_one_liner"] = r.get("value_one_liner") or out.get("value_one_liner") or ""
+    out["benefit_one_liner"] = r.get("benefit_one_liner") or out.get("benefit_one_liner") or ""
+    out["subsidy_detail"] = r.get("subsidy_detail") or out.get("subsidy_detail") or ""
+    out["amount_label"] = r.get("amount_label") or out.get("amount_label") or ""
+    out["hard_criteria"] = list(r.get("hard_criteria") or out.get("hard_criteria") or [])
+    out["window_end"] = (r.get("window_end") or r.get("event_end") or out.get("window_end") or "")[:10]
+    out["event_start"] = (r.get("event_start") or r.get("window_start") or "")[:10]
+    out["event_end"] = (r.get("event_end") or r.get("window_end") or "")[:10]
+    win = _window_urgency(r)
+    out["days_left"] = win.get("days_left")
+    if not out.get("id"):
+        out["id"] = r.get("id")
+    if not out.get("title"):
+        out["title"] = r.get("title")
+    return out
+
+
+def _corp_service_row(m: dict | None, r: dict, ch: str, rad: dict | None = None) -> dict:
+    """企业端服务卡统一结构（match 或 radar.company_ids 补齐均可）。"""
+    rad = _enrich_corp_radar_fields(rad, r, ch)
+    rid = r.get("id") or rad.get("id") or ""
+    mid = (m or {}).get("id")
+    return {
+        "id": mid or f"svc_{rid}",
+        "match_id": mid,
+        "radar_id": rid,
+        "title": r.get("title") or rad.get("title") or "",
+        "channel": ch,
+        "source_label": _corp_service_source_label(r),
+        "value_one_liner": (
+            r.get("value_one_liner")
+            or r.get("benefit_one_liner")
+            or r.get("enterprise_help")
+            or (m or {}).get("citation")
+            or ""
+        ),
+        "citation": (m or {}).get("citation") or r.get("citation") or "",
+        "group": "平台规则" if ch == "平台规则活动" else "服务",
+        "radar": rad,
+    }
+
+
 def corp_home(company_id: str):
-    """企业端首页：匹配政策（matches）+ 匹配大会/公开活动（events）+ 地址/联系人。"""
+    """企业端首页：匹配政策 + 匹配大会 + 匹配的服务 + 地址/联系人。"""
     out = policy_match(company_id)
     if not out:
         return None
@@ -1077,30 +1160,21 @@ def corp_home(company_id: str):
     radar = _radar_by_id(DATA)
     policies = []
     events = []
+    services = []
+    seen_service_rids: set[str] = set()
     for m in out.get("matches") or []:
         rid = ((m.get("radar") or {}).get("id")) or ""
         r = radar.get(rid) or {}
         ch = _radar_channel(r)
-        rad = m.get("radar")
-        if isinstance(rad, dict):
-            rad["channel"] = ch
-            rad["value_one_liner"] = r.get("value_one_liner") or rad.get("value_one_liner") or ""
-            rad["benefit_one_liner"] = r.get("benefit_one_liner") or rad.get("benefit_one_liner") or ""
-            rad["subsidy_detail"] = r.get("subsidy_detail") or rad.get("subsidy_detail") or ""
-            rad["amount_label"] = r.get("amount_label") or rad.get("amount_label") or ""
-            rad["hard_criteria"] = list(r.get("hard_criteria") or rad.get("hard_criteria") or [])
-            rad["window_end"] = (r.get("window_end") or r.get("event_end") or rad.get("window_end") or "")[:10]
-            rad["event_start"] = (r.get("event_start") or r.get("window_start") or "")[:10]
-            rad["event_end"] = (r.get("event_end") or r.get("window_end") or "")[:10]
-            win = _window_urgency(r)
-            rad["days_left"] = win.get("days_left")
+        rad = _enrich_corp_radar_fields(m.get("radar"), r, ch)
+        m["radar"] = rad
         if ch == "公开活动":
             events.append(
                 {
                     "id": m.get("id"),
                     "match_id": m.get("id"),
                     "radar_id": rid,
-                    "title": r.get("title") or (rad or {}).get("title") or "",
+                    "title": r.get("title") or rad.get("title") or "",
                     "event_start": (r.get("event_start") or r.get("window_start") or "")[:10],
                     "event_end": (r.get("event_end") or r.get("window_end") or "")[:10],
                     "value_one_liner": (
@@ -1114,10 +1188,35 @@ def corp_home(company_id: str):
                     "radar": rad,
                 }
             )
+        elif ch in CORP_SERVICE_CHANNEL_SET:
+            services.append(_corp_service_row(m, r, ch, rad))
+            if rid:
+                seen_service_rids.add(rid)
         else:
             policies.append(m)
+
+    # 补齐：雷达 company_ids 已挂本企、但尚未写 match_rules 的服务类条目
+    company = raw or co
+    for r in DATA.get("radar") or []:
+        ch = _radar_channel(r)
+        if ch not in CORP_SERVICE_CHANNEL_SET:
+            continue
+        rid = r.get("id") or ""
+        if not rid or rid in seen_service_rids:
+            continue
+        if company_id not in (r.get("company_ids") or []):
+            continue
+        if not _fits_current(company, r):
+            continue
+        services.append(_corp_service_row(None, r, ch, None))
+        seen_service_rids.add(rid)
+
+    rank = {ch: i for i, ch in enumerate(CORP_SERVICE_CHANNELS)}
+    services.sort(key=lambda s: (rank.get(s.get("channel") or "", 99), s.get("title") or ""))
+
     out["matches"] = policies
     out["events"] = events
+    out["services"] = services
     return out
 
 
@@ -1211,7 +1310,7 @@ def list_companies(size_band: str | None = None, direction: str | None = None):
     return {"meta": DATA["meta"], "companies": rows, "direction_tags": DIRECTION_TAGS}
 
 
-def match_board(state: str | None = None, benefit: str | None = "both", review: str | None = None):
+def match_board(state: str | None = None, benefit: str | None = "all", review: str | None = None):
     DATA = load_data()
     cmap = _companies_by_id(DATA)
     radar = _radar_by_id(DATA)
@@ -1284,7 +1383,7 @@ def match_board(state: str | None = None, benefit: str | None = "both", review: 
     return {
         "meta": DATA["meta"],
         "stats": stats,
-        "benefit_filter": benefit or "both",
+        "benefit_filter": benefit or "all",
         "benefit_logic": DATA.get("benefit_logic", {}),
         "items": rows,
     }
@@ -1537,9 +1636,8 @@ def do_attract_handover(body: dict):
     }
     
     DATA["companies"].append(new_company)
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(DATA, f, ensure_ascii=False, indent=2)
-        
+    save_data(DATA)
+
     entry = {
         "at": at,
         "kind": "attract_handover",
@@ -1696,13 +1794,140 @@ def do_sop(body: dict):
     return out, 200
 
 
+def create_radar(body: dict):
+    """运营端新增一条企服雷达（任意渠道），写入 data.json。"""
+    DATA = load_data()
+    title = str(body.get("title") or "").strip()
+    if not title:
+        return {"ok": False, "error": "title required"}, 400
+    channel = _normalize_channel(body.get("channel")) or "政府政策"
+    if channel not in RADAR_CHANNELS:
+        return {"ok": False, "error": f"channel must be one of {list(RADAR_CHANNELS)}"}, 400
+
+    cmap = _companies_by_id(DATA)
+    raw_ids = body.get("company_ids") or []
+    if isinstance(raw_ids, str):
+        raw_ids = [x.strip() for x in raw_ids.split(",") if x.strip()]
+    company_ids = [cid for cid in raw_ids if cid in cmap]
+
+    platform = str(body.get("platform") or "").strip() or None
+    window = str(body.get("window") or "").strip() or "演示窗口 · 进行中"
+    amount_label = str(body.get("amount_label") or "").strip() or "—"
+    one_liner = str(body.get("value_one_liner") or body.get("one_liner") or "").strip()
+    if not one_liner:
+        one_liner = f"{title}（演示录入）"
+
+    rid = str(body.get("id") or "").strip()
+    if not rid:
+        rid = f"rad_demo_{uuid.uuid4().hex[:10]}"
+    if any(r.get("id") == rid for r in DATA.get("radar") or []):
+        return {"ok": False, "error": "id already exists"}, 409
+
+    track_prefix = {
+        "政府政策": "演示/政府政策",
+        "公开活动": "公开活动/演示",
+        "平台规则活动": "平台规则/演示",
+        "园区服务": "园区服务/演示",
+        "阿里服务": "阿里服务/演示",
+        "机构服务": "机构服务/演示",
+    }.get(channel, "演示")
+
+    item = {
+        "id": rid,
+        "lifecycle_status": "active",
+        "track": track_prefix,
+        "title": title,
+        "version": "演示录入",
+        "window": window,
+        "doc_no": "",
+        "agency": str(body.get("agency") or "云谷企服（演示）").strip(),
+        "value_one_liner": one_liner,
+        "citation": f"演示条目 · {title}",
+        "hard_criteria": ["演示口径 · 不构成正式申报依据"],
+        "subsidy_detail": amount_label,
+        "company_ids": company_ids,
+        "helps_park": True,
+        "helps_enterprise": True,
+        "park_help": "演示：园区可据此触达",
+        "enterprise_help": "演示：企业可据此了解",
+        "dual_benefit": True,
+        "channel": channel,
+        "amount_label": amount_label,
+    }
+    if platform:
+        item["platform"] = platform
+    win_end = str(body.get("window_end") or "").strip()
+    if win_end:
+        item["window_end"] = win_end[:10]
+
+    DATA.setdefault("radar", []).append(item)
+
+    # 可选：为勾选企业写初筛 match_rules，避免仅有 company_ids 时匹配弹窗空
+    created_matches = []
+    if body.get("create_matches", True) and company_ids:
+        rules = DATA.setdefault("match_rules", [])
+        for cid in company_ids:
+            mid = f"m_demo_{rid[-8:]}_{cid[-6:]}"
+            if any(m.get("id") == mid for m in rules):
+                continue
+            rules.append(
+                {
+                    "id": mid,
+                    "company_id": cid,
+                    "radar_id": rid,
+                    "state": "符合",
+                    "citation": f"演示匹配 · {title}",
+                    "gap": None,
+                    "draft_template": "（演示）您好，对照「{title}」，贵司初筛为符合。—{{operator}}".replace(
+                        "{title}", title
+                    ),
+                }
+            )
+            created_matches.append(mid)
+
+    save_data(DATA)
+    return {
+        "ok": True,
+        "item": item,
+        "match_ids": created_matches,
+        "message": "已新增雷达条目（演示）",
+    }, 200
+
+
+def delete_radar(radar_id: str | None, cleanup_matches: bool = True):
+    """删除一条雷达；默认一并清理关联 match_rules，避免悬空引用。"""
+    if not radar_id:
+        return {"ok": False, "error": "id required"}, 400
+    DATA = load_data()
+    radar_list = DATA.get("radar") or []
+    before = len(radar_list)
+    DATA["radar"] = [r for r in radar_list if r.get("id") != radar_id]
+    if len(DATA["radar"]) == before:
+        return {"ok": False, "error": "radar not found"}, 404
+
+    removed_matches = 0
+    if cleanup_matches:
+        rules = DATA.get("match_rules") or []
+        kept = [m for m in rules if m.get("radar_id") != radar_id]
+        removed_matches = len(rules) - len(kept)
+        DATA["match_rules"] = kept
+
+    save_data(DATA)
+    return {
+        "ok": True,
+        "id": radar_id,
+        "removed_matches": removed_matches,
+        "message": "已删除雷达条目",
+    }, 200
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         print(f"[ops-console] {args[0]}")
 
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def _json(self, code: int, payload):
@@ -1758,12 +1983,26 @@ class Handler(BaseHTTPRequestHandler):
             return self._file(
                 os.path.join(ROOT, "CLI_DOCKER_SOP.md"), "text/markdown; charset=utf-8"
             )
-        if path.startswith("/logos/") and path.count("/") == 2:
-            name = path.rsplit("/", 1)[-1]
-            if name.endswith(".svg") and ".." not in name and "/" not in name:
-                logo_path = os.path.join(ROOT, "logos", name)
+        if path.startswith("/logos/") and ".." not in path:
+            # /logos/foo.svg 或 /logos/platforms/douyin.png
+            rel = path[len("/logos/") :]
+            if rel and all(p and p not in (".", "..") for p in rel.split("/")):
+                logo_path = os.path.join(ROOT, "logos", *rel.split("/"))
                 if os.path.isfile(logo_path):
-                    return self._file(logo_path, "image/svg+xml")
+                    lower = logo_path.lower()
+                    if lower.endswith(".svg"):
+                        ctype = "image/svg+xml"
+                    elif lower.endswith(".png"):
+                        ctype = "image/png"
+                    elif lower.endswith((".jpg", ".jpeg")):
+                        ctype = "image/jpeg"
+                    elif lower.endswith(".webp"):
+                        ctype = "image/webp"
+                    elif lower.endswith(".ico"):
+                        ctype = "image/x-icon"
+                    else:
+                        ctype = "application/octet-stream"
+                    return self._file(logo_path, ctype)
         if path == "/api/dashboard":
             self._json(200, dashboard())
             return
@@ -1789,7 +2028,7 @@ class Handler(BaseHTTPRequestHandler):
                 200,
                 policy_radar(
                     qs.get("track", [None])[0],
-                    qs.get("benefit", ["both"])[0],
+                    qs.get("benefit", ["all"])[0],
                     qs.get("channel", [None])[0],
                     include_expired=inc,
                 ),
@@ -1806,7 +2045,7 @@ class Handler(BaseHTTPRequestHandler):
             rid = qs.get("radar_id", [None])[0]
             if not rid:
                 return self._json(400, {"error": "radar_id required"})
-            out = policy_match_for(rid, qs.get("benefit", ["both"])[0])
+            out = policy_match_for(rid, qs.get("benefit", ["all"])[0])
             if out is None:
                 return self._json(404, {"error": "radar not found"})
             return self._json(200, out)
@@ -1835,7 +2074,7 @@ class Handler(BaseHTTPRequestHandler):
                 200,
                 match_board(
                     qs.get("state", [None])[0],
-                    qs.get("benefit", ["both"])[0],
+                    qs.get("benefit", ["all"])[0],
                     qs.get("review", [None])[0],
                 ),
             )
@@ -1895,6 +2134,27 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(code, payload)
         if parsed.path == "/api/remind":
             payload, code = do_remind(body)
+            return self._json(code, payload)
+        if parsed.path == "/api/radar":
+            payload, code = create_radar(body)
+            return self._json(code, payload)
+        if parsed.path == "/api/radar/delete":
+            rid = body.get("id") or parse_qs(parsed.query).get("id", [None])[0]
+            cleanup = body.get("cleanup_matches", True)
+            if isinstance(cleanup, str):
+                cleanup = cleanup.lower() not in ("0", "false", "no")
+            payload, code = delete_radar(rid, cleanup_matches=bool(cleanup))
+            return self._json(code, payload)
+        self._json(404, {"error": "not found"})
+
+    def do_DELETE(self):
+        parsed = urlparse(self.path)
+        qs = parse_qs(parsed.query)
+        if parsed.path == "/api/radar":
+            rid = qs.get("id", [None])[0]
+            cleanup_raw = str(qs.get("cleanup_matches", ["1"])[0]).lower()
+            cleanup = cleanup_raw not in ("0", "false", "no")
+            payload, code = delete_radar(rid, cleanup_matches=cleanup)
             return self._json(code, payload)
         self._json(404, {"error": "not found"})
 

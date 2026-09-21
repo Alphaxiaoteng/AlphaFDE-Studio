@@ -17,6 +17,12 @@ import os
 import sys
 from datetime import datetime, timezone
 
+try:
+    from service_channels_data import MASTER_SERVICE_PLATFORM_DATABASE, SERVICE_MATCH_RULES
+except ImportError:
+    MASTER_SERVICE_PLATFORM_DATABASE = []
+    SERVICE_MATCH_RULES = []
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(ROOT, "data.json")
 AUDIT_LOG_PATH = os.path.join(ROOT, "pipeline_audit.log")
@@ -789,13 +795,22 @@ def run_pipeline():
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # 1. 确保渠道属性明确，组合政府政策与真实公开活动
+    # 1. 确保渠道属性明确，组合政府政策、真实公开活动、平台规则与各类企业服务
     for p in MASTER_POLICY_DATABASE:
         p.setdefault("channel", "政府政策")
     for ev in REAL_PUBLIC_EVENTS:
         ev["channel"] = "公开活动"
 
-    all_radar = MASTER_POLICY_DATABASE + REAL_PUBLIC_EVENTS
+    # 内置基础库组合
+    built_in_radar = MASTER_POLICY_DATABASE + REAL_PUBLIC_EVENTS + MASTER_SERVICE_PLATFORM_DATABASE
+    built_in_ids = {item["id"] for item in built_in_radar}
+
+    # 保留底账中用户或外部扩展的额外条目
+    custom_radar = [
+        item for item in data.get("radar", [])
+        if item.get("id") not in built_in_ids
+    ]
+    all_radar = built_in_radar + custom_radar
 
     # 2. 统计三层漏斗时效与生命周期状态
     active_count = sum(1 for p in all_radar if p.get("lifecycle_status") in ("active", "expiring"))
@@ -803,44 +818,66 @@ def run_pipeline():
     expired_count = sum(1 for p in all_radar if p.get("lifecycle_status") == "expired")
 
     data["radar"] = all_radar
-    data["match_rules"] = REAL_MATCH_RULES
+
+    # 3. 合并规则映射：REAL_MATCH_RULES + SERVICE_MATCH_RULES + 数据底账额外规则
+    built_in_rules = list(REAL_MATCH_RULES) + list(SERVICE_MATCH_RULES)
+    built_in_rule_ids = {r.get("id") for r in built_in_rules if r.get("id")}
+    custom_rules = [
+        r for r in data.get("match_rules", [])
+        if r.get("id") not in built_in_rule_ids
+    ]
+    all_rules = built_in_rules + custom_rules
+    data["match_rules"] = all_rules
+
     data["meta"]["updated_at"] = datetime.now(timezone.utc).isoformat()
-    data["meta"]["disclaimer"] = "政策与活动雷达由三层漏斗引擎清洗：立足在园 130 家企业真实底账，涵盖 100% 真实政府公文与官方核验公开活动（双碳政策/GLM补贴/云栖大会等），具备正规发文与主办方权威出处。"
+    data["meta"]["disclaimer"] = "政策与活动雷达由三层漏斗引擎清洗：立足在园 130 家企业真实底账，涵盖 100% 真实政府公文、官方核验公开活动（双碳/GLM/云栖等）以及电商平台规则与园区生态服务，具备正规发文与主办方权威出处。"
     data["meta"]["lifecycle_summary"] = {
         "active_valid": active_count,
         "superseded_deprecated": superseded_count,
         "window_closed_expired": expired_count,
         "total": len(all_radar),
-        "policies_count": len(MASTER_POLICY_DATABASE),
-        "events_count": len(REAL_PUBLIC_EVENTS)
+        "policies_count": sum(1 for p in all_radar if p.get("channel") == "政府政策"),
+        "events_count": sum(1 for p in all_radar if p.get("channel") == "公开活动"),
+        "platform_rules_count": sum(1 for p in all_radar if p.get("channel") == "平台规则活动"),
+        "park_services_count": sum(1 for p in all_radar if p.get("channel") == "园区服务"),
+        "ali_services_count": sum(1 for p in all_radar if p.get("channel") == "阿里服务"),
+        "inst_services_count": sum(1 for p in all_radar if p.get("channel") == "机构服务"),
     }
 
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # 3. 写入自动化审计日志
+    # 4. 写入自动化审计日志
     log_entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE",
         "total_radar_count": len(all_radar),
-        "policies_count": len(MASTER_POLICY_DATABASE),
-        "events_count": len(REAL_PUBLIC_EVENTS),
+        "policies_count": sum(1 for p in all_radar if p.get("channel") == "政府政策"),
+        "events_count": sum(1 for p in all_radar if p.get("channel") == "公开活动"),
+        "platform_rules_count": sum(1 for p in all_radar if p.get("channel") == "平台规则活动"),
+        "park_services_count": sum(1 for p in all_radar if p.get("channel") == "园区服务"),
+        "ali_services_count": sum(1 for p in all_radar if p.get("channel") == "阿里服务"),
+        "inst_services_count": sum(1 for p in all_radar if p.get("channel") == "机构服务"),
         "active_valid_count": active_count,
         "superseded_count": superseded_count,
         "expired_count": expired_count,
-        "rules_count": len(REAL_MATCH_RULES),
+        "rules_count": len(all_rules),
         "status": "SUCCESS"
     }
     with open(AUDIT_LOG_PATH, "a", encoding="utf-8") as log_file:
         log_file.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
-    print(f"✓ 三层漏斗引擎运行完毕！共处理 {len(all_radar)} 条公文与活动：")
-    print(f"   • 政府政策：{len(MASTER_POLICY_DATABASE)} 条 (有效申报中: {sum(1 for p in MASTER_POLICY_DATABASE if p['lifecycle_status'] in ('active', 'expiring'))}，替代: 1，过期: 1)")
-    print(f"   • 真实公开活动：{len(REAL_PUBLIC_EVENTS)} 项 (双碳政策: 2，GLM/Token补贴: 2，云栖大会/数贸会: 2)")
+    print(f"✓ 三层漏斗引擎运行完毕！共处理 {len(all_radar)} 条公文、活动与服务：")
+    print(f"   • 政府政策：{sum(1 for p in all_radar if p.get('channel') == '政府政策')} 条")
+    print(f"   • 真实公开活动：{sum(1 for p in all_radar if p.get('channel') == '公开活动')} 项")
+    print(f"   • 平台规则活动：{sum(1 for p in all_radar if p.get('channel') == '平台规则活动')} 条")
+    print(f"   • 园区服务：{sum(1 for p in all_radar if p.get('channel') == '园区服务')} 条")
+    print(f"   • 阿里服务：{sum(1 for p in all_radar if p.get('channel') == '阿里服务')} 条")
+    print(f"   • 机构服务：{sum(1 for p in all_radar if p.get('channel') == '机构服务')} 条")
     print(f"   • 有效申报/参与中总数：{active_count} 条")
     print(f"   • 已被新规废止替代：{superseded_count} 条")
     print(f"   • 申报窗口已关闭归档：{expired_count} 条")
-    print(f"✓ 企业比对规则更新完成：{len(REAL_MATCH_RULES)} 项已完成动态映射。")
+    print(f"✓ 企业比对规则更新完成：{len(all_rules)} 项已完成动态映射。")
     print(f"✓ 审计留痕日志：{AUDIT_LOG_PATH}")
 
 if __name__ == "__main__":

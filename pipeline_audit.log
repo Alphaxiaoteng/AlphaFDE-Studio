@@ -17,3 +17,4 @@
 [2026-09-21T06:23:11Z] 每日政策雷达清洗成功完成 (Exit Code 0)。
 {"timestamp": "2026-09-21T06:38:02.360659+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "total_radar_count": 20, "policies_count": 14, "events_count": 6, "active_valid_count": 18, "superseded_count": 1, "expired_count": 1, "rules_count": 19, "status": "SUCCESS"}
 {"timestamp": "2026-09-21T06:39:16.199935+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "total_radar_count": 20, "policies_count": 14, "events_count": 6, "active_valid_count": 18, "superseded_count": 1, "expired_count": 1, "rules_count": 19, "status": "SUCCESS"}
+{"timestamp": "2026-09-21T09:04:33.295332+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "total_radar_count": 48, "policies_count": 14, "events_count": 6, "platform_rules_count": 11, "park_services_count": 7, "ali_services_count": 7, "inst_services_count": 3, "active_valid_count": 46, "superseded_count": 1, "expired_count": 1, "rules_count": 24, "status": "SUCCESS"}

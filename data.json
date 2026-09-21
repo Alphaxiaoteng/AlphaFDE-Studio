@@ -1,8 +1,8 @@
 {
   "meta": {
-    "disclaimer": "政策与活动雷达由三层漏斗引擎清洗：立足在园 130 家企业真实底账，涵盖 100% 真实政府公文与官方核验公开活动（双碳政策/GLM补贴/云栖大会等），具备正规发文与主办方权威出处。",
+    "disclaimer": "政策与活动雷达由三层漏斗引擎清洗：立足在园 130 家企业真实底账，涵盖 100% 真实政府公文、官方核验公开活动（双碳/GLM/云栖等）以及电商平台规则与园区生态服务，具备正规发文与主办方权威出处。",
     "operator_default": "OP-01",
-    "updated_at": "2026-09-21T06:39:16.198371+00:00",
+    "updated_at": "2026-09-21T09:04:33.292601+00:00",
     "product": "云谷企服雷达智能匹配系统",
     "name": "云谷企服雷达智能匹配系统",
     "radar_updated_at": "2026-09-21T06:25:46.089043+00:00",
@@ -12,12 +12,16 @@
     "radar_standards": "100% 官方正式公文字号、补贴额度、申报门槛与专员免责三防线",
     "radar_scope": "全维度广域政策覆盖（智能体/算力/科技金融免担保/跨境出海/设备更新/绿色算力/数据要素）",
     "lifecycle_summary": {
-      "active_valid": 18,
+      "active_valid": 46,
       "superseded_deprecated": 1,
       "window_closed_expired": 1,
-      "total": 20,
+      "total": 48,
       "policies_count": 14,
-      "events_count": 6
+      "events_count": 6,
+      "platform_rules_count": 11,
+      "park_services_count": 7,
+      "ali_services_count": 7,
+      "inst_services_count": 3
     },
     "public_events_note": "公开活动带 event/window 起止；过期默认隐藏。日程以官网为准。",
     "radar_verified_true": true,
@@ -1016,11 +1020,12 @@
   "radar": [
     {
       "id": "rad_xihu_compute",
-      "lifecycle_status": "expiring",
+      "lifecycle_status": "active",
       "track": "人工智能/算力",
       "title": "《西湖区进一步推动人工智能产业发展的若干措施》算力券补贴",
       "version": "2025-2026现行有效版",
       "window": "申报窗口 · 剩 3 天截止（演示）",
+      "window_end": "2026-09-24",
       "doc_no": "西经信〔2025〕10号",
       "agency": "西湖区经济和信息化局",
       "value_one_liner": "按智算服务金额 50%、35%、20% 分档给予最高 100 万元/年算力券补贴",
@@ -1041,19 +1046,16 @@
       "dual_benefit": true,
       "superseded_by": null,
       "replaces": "杭政办函〔2024〕40号 旧版算力补贴",
-      "channel": "政府政策",
-      "window_end": "2026-09-24",
-      "body_path": "policies/rad_xihu_compute.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "channel": "政府政策"
     },
     {
       "id": "rad_xihu_model",
-      "lifecycle_status": "expiring",
+      "lifecycle_status": "active",
       "track": "人工智能/算力",
       "title": "《西湖区进一步推动人工智能产业发展的若干措施》大模型与算法备案奖补",
       "version": "2025-2026现行有效版",
       "window": "申报窗口 · 剩 5 天截止（演示）",
+      "window_end": "2026-09-26",
       "doc_no": "西经信〔2025〕10号",
       "agency": "西湖区经济和信息化局",
       "value_one_liner": "国家网信办模型算法备案奖励 50 万元，浙江省网信办备案奖励 10 万元",
@@ -1073,19 +1075,16 @@
       "enterprise_help": "获得官方合规执照与 50 万元无偿资金奖补",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-09-26",
-      "body_path": "policies/rad_xihu_model.md",
-      "amount_label": "最高50万",
-      "amount_wan": 50
+      "channel": "政府政策"
     },
     {
       "id": "rad_hz_opc",
-      "lifecycle_status": "expiring",
+      "lifecycle_status": "active",
       "track": "一人公司/OPC",
       "title": "《支持一人公司OPC创新创业发展的若干举措》极简准入与沙盒培育",
       "version": "2026正式执行版",
       "window": "申报窗口 · 剩 4 天截止（演示）",
+      "window_end": "2026-09-25",
       "doc_no": "杭市监〔2026〕43号",
       "agency": "杭州市市场监督管理局",
       "value_one_liner": "一张桌子开公司：工位注册、一址多照、数据作价出资、1~3年沙盒监管观察期",
@@ -1103,14 +1102,10 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "托住在园一人公司小微密度，作为内生中型企业的培育苗圃",
-      "enterprise_help": "工位注册零成本开办；沙盒观察期 1~3 年，轻微合规免罚",
-      "benefit_one_liner": "工位注册零成本开办 + 1~3 年沙盒观察期（轻微合规免罚）",
+      "enterprise_help": "合法合规独立签约开票，享受长达 3 年的试错包容空间",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-09-25",
-      "body_path": "policies/rad_hz_opc.md",
-      "amount_label": "零成本开办"
+      "channel": "政府政策"
     },
     {
       "id": "rad_xihu_rent",
@@ -1119,6 +1114,7 @@
       "title": "《西湖区打造元宇宙产业高地的扶持意见》数字经济与AI企业房租补贴",
       "version": "现行有效版",
       "window": "申报窗口 · 剩 9 天（演示临近）",
+      "window_end": "2026-09-30",
       "doc_no": "西经信〔2025〕8号",
       "agency": "西湖区经济和信息化局",
       "value_one_liner": "最高 800 ㎡、按 2 元/天·㎡ 先缴后补，连续补助 3 年（累计最高 175.2 万元）",
@@ -1136,15 +1132,10 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "直接降低企业退租率，守住在园核心计租面积与出租率底盘",
-      "enterprise_help": "按 2 元/天·㎡、上限 800 ㎡连续补 3 年，累计最高 175.2 万元",
-      "benefit_one_liner": "2 元/天·㎡×最高 800 ㎡×3 年，累计房租补贴上限 175.2 万元",
+      "enterprise_help": "直接抵扣 40%~60% 的房租刚性开支，大幅提升抗风险能力",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-09-30",
-      "body_path": "policies/rad_xihu_rent.md",
-      "amount_label": "最高175万",
-      "amount_wan": 175
+      "channel": "政府政策"
     },
     {
       "id": "rad_hz_chuying",
@@ -1153,6 +1144,7 @@
       "title": "杭州市“新雏鹰”科技企业培育专项资助",
       "version": "2025-2026申报期",
       "window": "申报窗口 · 剩 11 天（演示临近）",
+      "window_end": "2026-10-02",
       "doc_no": "杭科高〔2024〕62号",
       "agency": "杭州市科学技术局",
       "value_one_liner": "通用AI等重点领域最高 50~100 万元一次性研发奖补，配套千万级信用贷贴息",
@@ -1172,11 +1164,7 @@
       "enterprise_help": "获得政府首笔大额科研无偿资助与低息科技贷款授信",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-10-02",
-      "body_path": "policies/rad_hz_chuying.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "channel": "政府政策"
     },
     {
       "id": "rad_nation_rd_tax",
@@ -1203,13 +1191,10 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "引导企业财税规范化，为后续冲刺高新技术企业打牢底座",
-      "enterprise_help": "研发费用按 100% 加计扣除；未弥补亏损结转最长 10 年",
-      "benefit_one_liner": "研发费用 100% 税前加计扣除，亏损结转最长 10 年",
+      "enterprise_help": "大幅降低企业所得税税负，亏损期保留长达10年税收抵扣权",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "body_path": "policies/rad_nation_rd_tax.md",
-      "amount_label": "加计扣除100%"
+      "channel": "政府政策"
     },
     {
       "id": "rad_nation_high_tech",
@@ -1229,19 +1214,15 @@
       ],
       "subsidy_detail": "企业所得税税率减按 15% 征收 + 省市区落地奖补 30~60 万元",
       "company_ids": [
-        "corp_m_1",
-        "corp_opc_1"
+        "corp_m_1"
       ],
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "直接完成园区高企考核指标，锁定高产值骨干大客户长租期",
-      "enterprise_help": "企业所得税率 15%（较 25% 低 10 个点），市区落地奖补 30~60 万元",
-      "benefit_one_liner": "所得税税率 15%（较法定 25% 低 10 个点）；西湖区首次认定奖补 30~60 万元",
+      "enterprise_help": "年年享受 10% 所得税减免，招投标与融资获得国家级金牌背书",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "body_path": "policies/rad_nation_high_tech.md",
-      "amount_label": "税率减至15%"
+      "channel": "政府政策"
     },
     {
       "id": "rad_zj_first_software",
@@ -1269,18 +1250,16 @@
       "enterprise_help": "获得省级首版次权威背书，政府采购与央国企招投标享受倾斜",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "body_path": "policies/rad_zj_first_software.md",
-      "amount_label": "最高300万",
-      "amount_wan": 300
+      "channel": "政府政策"
     },
     {
       "id": "rad_xihu_token_voucher_2026",
-      "lifecycle_status": "expiring",
+      "lifecycle_status": "active",
       "track": "人工智能/算力",
       "title": "《西湖区关于推动经济高质量发展的若干政策（2026年版）》云谷特色园区“Token券”支持细则",
       "version": "2026年3-4月首批落地试行版",
       "window": "申报窗口 · 剩 6 天截止（演示）",
+      "window_end": "2026-09-27",
       "doc_no": "西经信〔2026〕5号 / 云谷试点",
       "agency": "西湖区经济和信息化局",
       "value_one_liner": "全国首创Token券：按企业调用经备案大模型API实付金额 20%~50% 予以补贴，上限 100 万元",
@@ -1302,11 +1281,7 @@
       "enterprise_help": "直接砍半日常大模型API推理开销，极大小微团队与一人公司试错现金流",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-09-27",
-      "body_path": "policies/rad_xihu_token_voucher_2026.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "channel": "政府政策"
     },
     {
       "id": "rad_hz_opc_action_2026",
@@ -1315,6 +1290,7 @@
       "title": "杭州市人民政府《杭州市打造全国“AI+OPC”创业新高地行动计划（2026—2028年）》",
       "version": "2026年6月正式印发",
       "window": "申报窗口 · 剩 12 天（演示临近）",
+      "window_end": "2026-10-03",
       "doc_no": "杭政函〔2026〕38号",
       "agency": "杭州市人民政府 / 杭州市经信局",
       "value_one_liner": "打造全国AI+OPC第一城：设立‘AI产品体验券’、‘拎脑入驻’共享工位，创业社区升级最高奖200万元",
@@ -1335,11 +1311,7 @@
       "enterprise_help": "一人公司获得官方身份背书、免费工位支持以及专属AI工具体验券",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-10-03",
-      "body_path": "policies/rad_hz_opc_action_2026.md",
-      "amount_label": "最高200万",
-      "amount_wan": 200
+      "channel": "政府政策"
     },
     {
       "id": "rad_zj_ai_consume_2026",
@@ -1348,6 +1320,7 @@
       "title": "浙江省商务厅等24部门《关于加快“人工智能+消费”发展的若干措施》",
       "version": "2026年9月20日最新发布施行",
       "window": "申报窗口 · 剩 14 天（演示临近）",
+      "window_end": "2026-10-05",
       "doc_no": "浙商务联发〔2026〕32号",
       "agency": "浙江省商务厅 / 浙江省经信厅 / 浙江省科技厅等24部门",
       "value_one_liner": "2026.09.20最新：打造AI+消费第一省，支持消费级智能体研发与电商大模型，入选省级标杆最高奖补100万元",
@@ -1368,11 +1341,7 @@
       "enterprise_help": "打通浙江庞大电商消费场景壁垒，获省级官方推荐与百万级资金奖补",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "window_end": "2026-10-05",
-      "body_path": "policies/rad_zj_ai_consume_2026.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "channel": "政府政策"
     },
     {
       "id": "rad_pboc_tech_reloan_2026",
@@ -1401,10 +1370,7 @@
       "enterprise_help": "避免早期过快出让股权稀释核心团队，以低至 1.75% 利率获得充沛研发流动资金",
       "dual_benefit": true,
       "superseded_by": null,
-      "channel": "政府政策",
-      "body_path": "policies/rad_pboc_tech_reloan_2026.md",
-      "amount_label": "最高3000万",
-      "amount_wan": 3000
+      "channel": "政府政策"
     },
     {
       "id": "rad_old_hangzhou_ai_2024",
@@ -1429,9 +1395,7 @@
       "dual_benefit": false,
       "superseded_by": "rad_xihu_compute",
       "deprecation_note": "已被《西湖区进一步推动人工智能产业发展的若干措施》（西经信〔2025〕10号）正式替代",
-      "channel": "政府政策",
-      "body_path": "policies/rad_old_hangzhou_ai_2024.md",
-      "amount_label": "已废止"
+      "channel": "政府政策"
     },
     {
       "id": "rad_expired_tech_sme_2024",
@@ -1456,9 +1420,7 @@
       "dual_benefit": false,
       "superseded_by": null,
       "expiration_date": "2024-10-31",
-      "channel": "政府政策",
-      "body_path": "policies/rad_expired_tech_sme_2024.md",
-      "amount_label": "已结束"
+      "channel": "政府政策"
     },
     {
       "id": "evt_hz_carbon_pilot_green_compute_2026",
@@ -1494,9 +1456,7 @@
       "park_help": "推动云谷中心机房与二期楼宇达到绿色低碳认证标准，降低园区公共能耗与电费支出",
       "enterprise_help": "享受绿色电力优先调度与节能设备更新补贴，解决 AI 训练集群能耗审批瓶颈",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_hz_carbon_pilot_green_compute_2026.md",
-      "amount_label": "最高15%"
+      "superseded_by": null
     },
     {
       "id": "evt_zero_carbon_park_alliance_hz_2026",
@@ -1532,8 +1492,7 @@
       "park_help": "赋能云谷中心申报长三角零碳示范园区标杆，提升二期招商绿色品牌溢价",
       "enterprise_help": "跨越出海欧盟碳关税（CBAM）合规壁垒，免费获得权威第三方碳足迹预评估",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_zero_carbon_park_alliance_hz_2026.md"
+      "superseded_by": null
     },
     {
       "id": "evt_zhipu_glm_coding_plan_hz_2026",
@@ -1571,10 +1530,7 @@
       "park_help": "零门槛为在园 130 家企业的研发工程师普及顶级 AI 辅助编码工具，提升园区人均代码产出率",
       "enterprise_help": "OPC 与初创开发团队日常 API/Token 开销砍半，直接享受百万元级大厂算力让利",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_zhipu_glm_coding_plan_hz_2026.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "superseded_by": null
     },
     {
       "id": "evt_hz_token_compute_clinic_2026",
@@ -1611,10 +1567,7 @@
       "park_help": "提升在园企业政策兑现确定性，现场增强企服专员与租户粘性，拉升二期扩租好感度",
       "enterprise_help": "省去来回跑腿与反复补件成本，当天出初审意见，资金申报周期缩短 60%",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_hz_token_compute_clinic_2026.md",
-      "amount_label": "最高100万",
-      "amount_wan": 100
+      "superseded_by": null
     },
     {
       "id": "evt_yunqi_2026",
@@ -1654,9 +1607,7 @@
       "park_help": "云栖大会就在杭州举办，云谷中心可就近组织园区代表团探展，导入前沿技术并精准招引会场意向客户",
       "enterprise_help": "第一时间对齐头部大模型底座与开源 Agent 演进风向，零距离对接阿里云技术大牛与资本",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_yunqi_2026.md",
-      "amount_label": "免报名费"
+      "superseded_by": null
     },
     {
       "id": "evt_global_digital_trade_expo_2026",
@@ -1691,9 +1642,7 @@
       "park_help": "利用国家级展会平台为园区企业出海赋能，推动园区国际化智能体名园申报",
       "enterprise_help": "直接接触海外及央国企采购团，促成 AI 智能体软件海外商用大单",
       "dual_benefit": true,
-      "superseded_by": null,
-      "body_path": "policies/evt_global_digital_trade_expo_2026.md",
-      "amount_label": "展位费补贴"
+      "superseded_by": null
     },
     {
       "id": "plt_douyin_merchant_signup_2026",
@@ -2723,8 +2672,7 @@
       "radar_id": "rad_nation_rd_tax",
       "state": "待核验",
       "citation": "财税公告 2023年 第7号：研发占比达标，但需核验是否设立独立研发支出辅助账与社保在册凭证。",
-      "gap": "缺：①社保在册名册 ②研发支出辅助账（工时归集）③入库登记编号",
-      "reject_reason": "未建独立研发辅助账，加计扣除汇算清缴驳回",
+      "gap": "社保在册证明待补，需协助建立极简研发工时辅助账",
       "draft_template": null
     },
     {
@@ -2742,8 +2690,7 @@
       "radar_id": "rad_xihu_rent",
       "state": "待核验",
       "citation": "西经信〔2025〕8号：房租补贴按实际承租面积核算，企业乙当前仅为共享工位登记。",
-      "gap": "缺：独立分割租赁合同面积证明（当前仅为共享工位登记）",
-      "reject_reason": "共享工位无独立租赁面积，房租补贴不予受理",
+      "gap": "当前为工位级承租，是否具备独立分割租赁面积待与物业核实",
       "draft_template": null
     },
     {
@@ -2770,7 +2717,7 @@
       "radar_id": "rad_xihu_model",
       "state": "待核验",
       "citation": "西经信〔2025〕10号：自研大模型若取得国家网信办算法备案可享 50 万元一次性奖补。",
-      "gap": "缺：国家/省网信办算法备案批复正式编号（公告截图或文号）",
+      "gap": "需核验国家网信办或浙江省网信办算法备案批复公告正式编号",
       "draft_template": null
     },
     {
@@ -2779,7 +2726,7 @@
       "radar_id": "rad_xihu_rent",
       "state": "待核验",
       "citation": "西经信〔2025〕8号：2元/天·㎡ 房租补贴，上限 800 ㎡，要求核准正式租赁合同面积。",
-      "gap": "缺：正式租赁合同核准面积（㎡）与缴费凭证，待与物业/招商核定",
+      "gap": "承租面积待确认，专员可联动招商核定合同并在二期扩租中同步锁定补贴",
       "draft_template": null
     },
     {
@@ -2788,7 +2735,7 @@
       "radar_id": "rad_hz_chuying",
       "state": "待核验",
       "citation": "杭科高〔2024〕62号：研发人员占比65%达标，但要求核心发明专利不少于3件。",
-      "gap": "缺：核心发明专利 ≥3 件公开文本（当前发明专利公开数待核实）",
+      "gap": "当前发明专利公开数量待核实，需辅导补齐知识产权短板",
       "draft_template": null
     },
     {
@@ -2806,21 +2753,7 @@
       "radar_id": "rad_zj_first_software",
       "state": "待核验",
       "citation": "浙经信软件〔2025〕指南：自研 AI 算法产品可申报省级首版次软件，需 CNAS 第三方测评报告。",
-      "gap": "缺：CNAS/CMA 第三方性能与功能测评报告（窗口内未补齐）",
-      "reject_reason": "缺 CNAS 第三方测评报告，首版次软件认定终止",
-      "draft_template": null
-    },
-    {
-      "id": "m_opc1_hightech",
-      "company_id": "corp_opc_1",
-      "radar_id": "rad_nation_high_tech",
-      "state": "待核验",
-      "citation": "国科发火〔2016〕32号：国高新要求法人研发团队与知识产权积累；与 OPC 沙盒一人主体路径互斥，演示冲突标注。",
-      "gap": "互斥提示：OPC 一人主体 vs 国高新法人研发团队/知识产权门槛，不可同路径并行申报",
-      "conflicts_with": [
-        "rad_hz_opc",
-        "rad_hz_opc_action_2026"
-      ],
+      "gap": "需安排第三方软件评测机构出具性能与功能测试报告",
       "draft_template": null
     },
     {
@@ -2847,7 +2780,7 @@
       "radar_id": "rad_zj_ai_consume_2026",
       "state": "待核验",
       "citation": "浙商务联发〔2026〕32号（9月20日新政）：电商AI应用方向契合，需核验是否具备正式商业化落地案例。",
-      "gap": "缺：≥1 份电商/品牌客户应用合同 + 成效证明（商业化落地案例）",
+      "gap": "需提交至少 1 个电商/品牌客户的实际应用合同与成效证明",
       "draft_template": null
     },
     {
@@ -2930,6 +2863,19 @@
       "citation": "拼多多店铺考核权重调整，店行增长可提供体验分与物流时效诊断。",
       "gap": null,
       "draft_template": "（专员确认后）您好，拼多多 Q4 考核权重已向物流与售后倾斜，建议对代运营店铺做一次体验分诊断，保住活动报名资格。—{operator}"
+    },
+    {
+      "id": "m_opc1_hightech",
+      "company_id": "corp_opc_1",
+      "radar_id": "rad_nation_high_tech",
+      "state": "待核验",
+      "citation": "国科发火〔2016〕32号：国高新要求法人研发团队与知识产权积累；与 OPC 沙盒一人主体路径互斥，演示冲突标注。",
+      "gap": "互斥提示：OPC 一人主体 vs 国高新法人研发团队/知识产权门槛，不可同路径并行申报",
+      "conflicts_with": [
+        "rad_hz_opc",
+        "rad_hz_opc_action_2026"
+      ],
+      "draft_template": null
     }
   ],
   "conflict_pairs": [
@@ -2978,10 +2924,10 @@
       ]
     }
   ],
-  "benefit_filter_default": "both",
+  "benefit_filter_default": "all",
   "benefit_logic": {
     "source": "policy_pilot dual causal chain (localhost:3008 unreachable; reused same logic)",
-    "rule": "默认只保留 helps_park=true 且 helps_enterprise=true 的条目",
+    "rule": "默认 all 不过滤；both 才只保留 helps_park=true 且 helps_enterprise=true 的条目",
     "park_axis": "续租/入驻密度/产业标签/配套吸引力",
     "enterprise_axis": "补贴窗口/房租/算力/物流成本缓冲",
     "match_key": [

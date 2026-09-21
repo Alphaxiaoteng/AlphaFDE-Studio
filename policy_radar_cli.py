@@ -59,6 +59,10 @@ def cmd_status(args):
 
     gov_policies = [r for r in radar if r.get("channel") == "政府政策"]
     pub_events = [r for r in radar if r.get("channel") == "公开活动"]
+    plt_rules = [r for r in radar if r.get("channel") == "平台规则活动"]
+    park_services = [r for r in radar if r.get("channel") == "园区服务"]
+    ali_services = [r for r in radar if r.get("channel") == "阿里服务"]
+    inst_services = [r for r in radar if r.get("channel") == "机构服务"]
 
     active_cnt = sum(1 for r in radar if r.get("lifecycle_status") in ("active", "expiring"))
     superseded_cnt = sum(1 for r in radar if r.get("lifecycle_status") == "superseded")
@@ -67,9 +71,13 @@ def cmd_status(args):
     print("\n" + "=" * 65)
     print("📊 云谷中心政策与活动雷达 · 当前运行状态报告")
     print("=" * 65)
-    print(f"• 雷达条目总数: {len(radar)} 条")
+    print(f"• 雷达条目总数: {len(radar)} 条 (全 6 大渠道)")
     print(f"  ├─ 政府权威政策: {len(gov_policies)} 条")
-    print(f"  └─ 真实公开活动: {len(pub_events)} 项 (双碳对接/GLM补贴/云栖大会等)")
+    print(f"  ├─ 真实公开活动: {len(pub_events)} 项 (双碳对接/GLM补贴/云栖大会等)")
+    print(f"  ├─ 平台规则活动: {len(plt_rules)} 条 (抖音/京东/天猫/拼多多/快手等)")
+    print(f"  ├─ 园区生态服务: {len(park_services)} 项 (算力券/租房/路演/工商)")
+    print(f"  ├─ 阿里生态服务: {len(ali_services)} 项 (百炼/创业者计划/上云)")
+    print(f"  └─ 专业机构服务: {len(inst_services)} 项 (银行/律所/会计)")
     print(f"• 生命周期分布:")
     print(f"  ├─ 现行有效 / 申报参与中: {active_cnt} 条")
     print(f"  ├─ 已被新规废止替代: {superseded_cnt} 条 (带新旧公文替代链)")

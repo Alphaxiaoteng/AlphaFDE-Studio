@@ -59,31 +59,43 @@
       z-index: 2;
     }
     .brand {
-      display: flex; align-items: center; gap: 12px;
-      padding: 4px 8px 20px; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; gap: 10px;
+      padding: 4px 6px 18px; border-bottom: 1px solid var(--line);
       margin-bottom: 14px;
     }
     .logo {
-      width: 40px; height: 40px;
+      width: 42px; height: 42px;
       border: 1.5px solid var(--seal);
       border-radius: 10px;
       color: var(--seal);
       background: var(--paper-soft);
-      display: grid; place-items: center;
-      font-family: "Noto Serif SC", serif;
-      font-weight: 700; font-size: 13px;
-      letter-spacing: 0.05em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
       flex-shrink: 0;
     }
+    .logo svg { width: 18px; height: 18px; display: block; }
+    .logo span {
+      font-family: "Noto Serif SC", serif;
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      margin-left: 0.12em;
+    }
+    .brand-copy { min-width: 0; flex: 1; }
     .brand h1 {
       margin: 0;
       font-family: "Noto Serif SC", serif;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.04em;
-      line-height: 1.35;
+      letter-spacing: 0.02em;
+      line-height: 1.3;
     }
-    .brand p { margin: 4px 0 0; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+    .brand h1 .brand-line { display: block; }
+    .brand p { margin: 3px 0 0; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
     .nav-btn {
       display: flex; align-items: flex-start; gap: 10px;
       text-align: left;
@@ -339,6 +351,13 @@
       font-weight: 700; font-size: 16px; letter-spacing: 0.02em;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
       user-select: none;
+      overflow: hidden;
+      background: #fff;
+    }
+    img.plat-logo {
+      object-fit: contain;
+      padding: 2px;
+      font-weight: inherit;
     }
     .pub-time { color: var(--seal); font-weight: 500; font-variant-numeric: tabular-nums; }
     .term-block {
@@ -1206,16 +1225,73 @@
       font-size: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;
     }
     .btn-primary:hover { opacity: .9; }
+    .radar-ops-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin: 0 0 10px;
+    }
+    .radar-ops-bar .hint { margin: 0; flex: 1; }
+    .card-ops-del {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      background: #fff; border: 1px solid var(--line); color: #b42318;
+      font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer;
+      opacity: 0.85;
+    }
+    .card-ops-del:hover { background: #fef2f2; border-color: #fca5a5; }
+    .split-list .card { position: relative; }
+    .radar-form-overlay {
+      position: fixed; inset: 0; background: rgba(20, 24, 28, 0.42);
+      display: flex; align-items: center; justify-content: center; z-index: 80;
+      padding: 20px;
+    }
+    .radar-form {
+      width: min(480px, 100%); background: var(--paper); border: 1px solid var(--line);
+      border-radius: 8px; padding: 18px 18px 14px; box-shadow: 0 12px 40px rgba(0,0,0,.12);
+    }
+    .radar-form h3 { margin: 0 0 12px; font-size: 15px; }
+    .radar-form label {
+      display: block; font-size: 11px; color: var(--muted); margin: 0 0 4px;
+    }
+    .radar-form .field { margin: 0 0 10px; }
+    .radar-form input, .radar-form select, .radar-form textarea {
+      width: 100%; box-sizing: border-box; border: 1px solid var(--line);
+      border-radius: 4px; padding: 7px 9px; font-size: 13px; background: #fff;
+      font-family: inherit; color: var(--ink);
+    }
+    .radar-form textarea { min-height: 56px; resize: vertical; }
+    .radar-form .co-checks {
+      display: flex; flex-wrap: wrap; gap: 6px 12px; max-height: 96px; overflow: auto;
+      padding: 6px 0;
+    }
+    .radar-form .co-checks label {
+      display: inline-flex; align-items: center; gap: 4px; margin: 0;
+      font-size: 12px; color: var(--ink); cursor: pointer;
+    }
+    .radar-form .actions {
+      display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px;
+      padding-top: 10px; border-top: 1px solid var(--line);
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <aside class="side">
       <div class="brand">
-        <div class="logo">云谷</div>
-        <div>
-          <h1>云谷企服雷达智能匹配系统</h1>
-          <p>双益初筛 · 责任可追</p>
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" opacity=".35"/>
+            <circle cx="12" cy="12" r="5.6" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+            <circle cx="12" cy="12" r="2.2" fill="currentColor"/>
+            <path d="M12 12V3.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M12 12l6.2 3.4" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" opacity=".7"/>
+          </svg>
+          <span>云谷</span>
+        </div>
+        <div class="brand-copy">
+          <h1>
+            <span class="brand-line">云谷企服雷达</span>
+            <span class="brand-line">智能匹配系统</span>
+          </h1>
+          <p>匹配 · 可追</p>
         </div>
       </div>
       <button class="nav-btn active" data-view="dashboard" data-portal-nav="ops">
@@ -1245,6 +1321,10 @@
       <button class="nav-btn" data-view="corp_events" data-portal-nav="corp" hidden>
         <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.8" y="3.5" width="10.4" height="9.2" rx="1.4" stroke="#0f6f4f" stroke-width="1.3"/><path d="M5.2 2.8v2M10.8 2.8v2M2.8 7h10.4" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/></svg></span>
         <span class="nav-txt">匹配大会<small>公开活动 · 只读</small></span>
+      </button>
+      <button class="nav-btn" data-view="corp_services" data-portal-nav="corp" hidden>
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M3.2 11.2 8 3.4l4.8 7.8H3.2z" stroke="#0f6f4f" stroke-width="1.3" stroke-linejoin="round"/><circle cx="8" cy="9.2" r="1.15" fill="#0f6f4f"/></svg></span>
+        <span class="nav-txt">匹配的服务<small>园区 · 阿里 · 机构</small></span>
       </button>
       <button class="nav-btn" data-view="corp_staff" data-portal-nav="corp" hidden>
         <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.2" r="2.4" fill="#0f6f4f"/><path d="M3.2 13.2c.5-2.4 2.1-3.6 4.8-3.6s4.3 1.2 4.8 3.6" stroke="#0f6f4f" stroke-width="1.35" stroke-linecap="round"/></svg></span>
@@ -1294,8 +1374,9 @@
     let corpStaffEditId = null; // null=收起表单；""=新增；id=编辑
     const CORP_STAFF_KEY_PREFIX = "corpStaff:";
     let radarChannel = "";
-    let benefitFilter = "both";
+    let benefitFilter = "all";
     let radarSort = "smart"; // smart | window | newest
+    let showRadarCreate = false;
     let sizeBand = "";
     let directionFilter = "";
     const DIRECTION_CHIPS = [
@@ -1345,7 +1426,8 @@
       { id: "CORP-W", label: "企业对接·王*", role: "企业对接" },
       { id: "CORP-L", label: "企业经办·李*", role: "企业对接" },
     ];
-    const CORP_VIEWS = ["corp_policies", "corp_events", "corp_staff"];
+    const CORP_VIEWS = ["corp_policies", "corp_events", "corp_services", "corp_staff"];
+    const CORP_SERVICE_CHANNELS = ["园区服务", "阿里服务", "机构服务", "平台规则活动"];
 
     function isCorpView(v) {
       return v === "corp" || CORP_VIEWS.includes(v);
@@ -1479,18 +1561,18 @@
       { id: "机构服务", label: "机构服务" },
     ];
     const PLATFORM_META = {
-      douyin: { label: "抖音", char: "抖", bg: "#111111", fg: "#ffffff" },
-      taobao: { label: "淘宝", char: "淘", bg: "#FF5000", fg: "#ffffff" },
-      jd: { label: "京东", char: "京", bg: "#E1251B", fg: "#ffffff" },
-      pdd: { label: "拼多多", char: "拼", bg: "#E02E24", fg: "#ffffff" },
-      kuaishou: { label: "快手", char: "快", bg: "#FF4906", fg: "#ffffff" },
-      xiaohongshu: { label: "小红书", char: "书", bg: "#FF2442", fg: "#ffffff" },
-      vip: { label: "唯品会", char: "唯", bg: "#C60A0A", fg: "#ffffff" },
-      meituan: { label: "美团", char: "美", bg: "#FFD100", fg: "#1a1a1a" },
-      eleme: { label: "饿了么", char: "饿", bg: "#0097FF", fg: "#ffffff" },
-      aliyun: { label: "阿里云", char: "云", bg: "#FF6A00", fg: "#ffffff" },
-      yungu: { label: "云谷", char: "谷", bg: "#0f6f4f", fg: "#ffffff" },
-      partner: { label: "机构", char: "机", bg: "#5b6b7a", fg: "#ffffff" },
+      douyin: { label: "抖音", logo: "logos/platforms/douyin.png", bg: "#111111", fg: "#ffffff", char: "抖" },
+      taobao: { label: "淘宝", logo: "logos/platforms/taobao.png", bg: "#FF5000", fg: "#ffffff", char: "淘" },
+      jd: { label: "京东", logo: "logos/platforms/jd.png", bg: "#E1251B", fg: "#ffffff", char: "京" },
+      pdd: { label: "拼多多", logo: "logos/platforms/pdd.png", bg: "#E02E24", fg: "#ffffff", char: "拼" },
+      kuaishou: { label: "快手", logo: "logos/platforms/kuaishou.png", bg: "#FF4906", fg: "#ffffff", char: "快" },
+      xiaohongshu: { label: "小红书", logo: "logos/platforms/xiaohongshu.png", bg: "#FF2442", fg: "#ffffff", char: "书" },
+      vip: { label: "唯品会", logo: "logos/platforms/vip.png", bg: "#C60A0A", fg: "#ffffff", char: "唯" },
+      meituan: { label: "美团", logo: "logos/platforms/meituan.png", bg: "#FFD100", fg: "#1a1a1a", char: "美" },
+      eleme: { label: "饿了么", logo: "logos/platforms/eleme.png", bg: "#0097FF", fg: "#ffffff", char: "饿" },
+      aliyun: { label: "阿里云", bg: "#FF6A00", fg: "#ffffff", char: "云" },
+      yungu: { label: "云谷", bg: "#0f6f4f", fg: "#ffffff", char: "谷" },
+      partner: { label: "机构", bg: "#5b6b7a", fg: "#ffffff", char: "机" },
     };
     const MEDIA_SOURCES = [
       { id: "all", label: "全部来源" },
@@ -2065,18 +2147,6 @@
       document.getElementById("content").classList.toggle("busy", on);
     }
 
-    function benefitChips() {
-      const opts = [
-        { id: "both", label: "园企双益" },
-        { id: "park", label: "助园" },
-        { id: "enterprise", label: "助企" },
-        { id: "all", label: "全部口径" },
-      ];
-      return opts.map((o) =>
-        `<button class="chip ${benefitFilter === o.id ? "on" : ""}" data-benefit="${o.id}">${o.label}</button>`
-      ).join("");
-    }
-
     function channelChips() {
       return CHANNELS.map((o) =>
         `<button class="chip ${radarChannel === o.id ? "on" : ""}" data-channel="${o.id}">${o.label}</button>`
@@ -2170,31 +2240,63 @@
         }
         corpPayload = match;
       }
-      // 兜底：旧 API 无 events 时，从前端 radar + matches 拆公开活动
-      if (corpPayload && !Array.isArray(corpPayload.events)) {
-        const all = corpPayload.matches || [];
-        const policies = [];
-        const events = [];
-        all.forEach((m) => {
-          const r = m.radar || (radarItems || []).find((x) => x.id === ((m.radar && m.radar.id) || "")) || {};
-          if (isPublicEvent(r) || isPublicEvent(m.radar)) {
-            events.push({
-              id: m.id,
-              match_id: m.id,
-              radar_id: (m.radar && m.radar.id) || r.id || "",
-              title: (m.radar && m.radar.title) || r.title || "",
-              event_start: r.event_start || r.window_start || "",
-              event_end: r.event_end || r.window_end || "",
-              value_one_liner: r.value_one_liner || (m.radar && m.radar.enterprise_help) || m.citation || "",
-              channel: "公开活动",
-              radar: m.radar || r,
-            });
-          } else {
-            policies.push(m);
-          }
-        });
-        corpPayload.matches = policies;
-        corpPayload.events = events;
+      // 兜底：旧 API 缺 events / services 时，从 matches 按 channel 拆
+      if (corpPayload) {
+        const needEvents = !Array.isArray(corpPayload.events);
+        const needServices = !Array.isArray(corpPayload.services);
+        if (needEvents || needServices) {
+          const all = corpPayload.matches || [];
+          const policies = [];
+          const events = needEvents ? [] : corpPayload.events;
+          const services = needServices ? [] : corpPayload.services;
+          const seenSvc = new Set((services || []).map((s) => s.radar_id || (s.radar && s.radar.id)).filter(Boolean));
+          all.forEach((m) => {
+            const r = m.radar || (radarItems || []).find((x) => x.id === ((m.radar && m.radar.id) || "")) || {};
+            const ch = r.channel || (m.radar && m.radar.channel) || "";
+            if (isPublicEvent(r) || isPublicEvent(m.radar) || ch === "公开活动") {
+              if (needEvents) {
+                events.push({
+                  id: m.id,
+                  match_id: m.id,
+                  radar_id: (m.radar && m.radar.id) || r.id || "",
+                  title: (m.radar && m.radar.title) || r.title || "",
+                  event_start: r.event_start || r.window_start || "",
+                  event_end: r.event_end || r.window_end || "",
+                  value_one_liner: r.value_one_liner || (m.radar && m.radar.enterprise_help) || m.citation || "",
+                  channel: "公开活动",
+                  radar: m.radar || r,
+                });
+              } else {
+                policies.push(m);
+              }
+            } else if (CORP_SERVICE_CHANNELS.includes(ch)) {
+              if (needServices) {
+                const rid = (m.radar && m.radar.id) || r.id || "";
+                if (!rid || seenSvc.has(rid)) return;
+                seenSvc.add(rid);
+                services.push({
+                  id: m.id,
+                  match_id: m.id,
+                  radar_id: rid,
+                  title: (m.radar && m.radar.title) || r.title || "",
+                  channel: ch,
+                  source_label: r.doc_no || r.agency || "",
+                  value_one_liner: r.value_one_liner || r.benefit_one_liner || r.enterprise_help || m.citation || "",
+                  citation: m.citation || "",
+                  group: ch === "平台规则活动" ? "平台规则" : "服务",
+                  radar: m.radar || r,
+                });
+              } else {
+                policies.push(m);
+              }
+            } else {
+              policies.push(m);
+            }
+          });
+          if (needEvents) corpPayload.events = events;
+          if (needServices) corpPayload.services = services;
+          if (needEvents || needServices) corpPayload.matches = policies;
+        }
       }
       return corpPayload;
     }
@@ -2273,7 +2375,7 @@
         if (brandSub) brandSub.textContent = "企业端 · 演示";
         if (seal) seal.style.display = "none";
       } else {
-        if (brandSub) brandSub.textContent = "双益初筛 · 责任可追";
+        if (brandSub) brandSub.textContent = "匹配 · 可追";
         if (seal) seal.style.display = "";
         syncOpSeal();
       }
@@ -2383,16 +2485,6 @@
       } finally {
         setBusy(false);
       }
-    }
-
-    function bindBenefitChips(reload) {
-      document.querySelectorAll("[data-benefit]").forEach((el) => {
-        el.onclick = async () => {
-          benefitFilter = el.getAttribute("data-benefit");
-          setBusy(true);
-          try { await reload(); } finally { setBusy(false); }
-        };
-      });
     }
 
     function bindConfirmActions(fallbackCid) {
@@ -2886,7 +2978,28 @@
         bg: "#6b7280",
         fg: "#ffffff",
       };
-      return `<div class="plat-logo" style="background:${esc(meta.bg)};color:${esc(meta.fg)}" title="${esc(meta.label)}" aria-label="${esc(meta.label)}">${esc(meta.char)}</div>`;
+      const title = esc(meta.label);
+      if (meta.logo) {
+        const src = meta.logo.startsWith("/") ? meta.logo : `/${meta.logo}`;
+        const fb = esc(meta.char || meta.label.slice(0, 1));
+        const bg = esc(meta.bg || "#6b7280");
+        const fg = esc(meta.fg || "#ffffff");
+        return `<img class="plat-logo" src="${esc(src)}" alt="${title}" title="${title}" width="44" height="44" loading="lazy" data-fb="${fb}" data-bg="${bg}" data-fg="${fg}" onerror="platformLogoFallback(this)" />`;
+      }
+      return `<div class="plat-logo" style="background:${esc(meta.bg)};color:${esc(meta.fg)}" title="${title}" aria-label="${title}">${esc(meta.char)}</div>`;
+    }
+
+    function platformLogoFallback(img) {
+      if (!img || img.dataset.fbDone) return;
+      img.dataset.fbDone = "1";
+      const d = document.createElement("div");
+      d.className = "plat-logo";
+      d.title = img.title || "";
+      d.setAttribute("aria-label", img.alt || d.title);
+      d.textContent = img.dataset.fb || "?";
+      d.style.background = img.dataset.bg || "#6b7280";
+      d.style.color = img.dataset.fg || "#ffffff";
+      img.replaceWith(d);
     }
 
     function platformBadgeHtml(r) {
@@ -2976,6 +3089,7 @@
     }
 
         function renderRadar() {
+      const opsEdit = portalMode === "ops";
       const sorted = sortRadarItems(radarItems);
       const cards = sorted.map((r) => {
         const active = selectedRadar === r.id ? "active" : "";
@@ -3020,6 +3134,9 @@
           ? `<div class="cite event-time">${plat || svc ? "窗口" : "活动时间"}：${esc(eventTimeRange(r))}</div>`
           : "";
         const logoHtml = plat ? platformLogo(platformSlug(r)) : "";
+        const delBtn = opsEdit
+          ? `<button type="button" class="card-ops-del" data-radar-del="${esc(r.id)}" title="删除">删除</button>`
+          : "";
         const mid = `
           <div class="card-title-row">
             <h3>${esc(r.title)}</h3>
@@ -3035,9 +3152,10 @@
           </div>`;
         return plat
           ? `<div class="card ${active} ${expired}" data-radar="${r.id}">
+          ${delBtn}
           <div class="card-plat-row">${logoHtml}<div class="card-plat-mid">${mid}</div></div>
         </div>`
-          : `<div class="card ${active} ${expired}" data-radar="${r.id}">${mid}</div>`;
+          : `<div class="card ${active} ${expired}" data-radar="${r.id}">${delBtn}${mid}</div>`;
       }).join("");
 
       const item = sorted.find((x) => x.id === selectedRadar) || radarItems.find((x) => x.id === selectedRadar);
@@ -3052,6 +3170,9 @@
           showEnterCompany: portalMode !== "corp",
         });
         const eventCls = isPublicEvent(item) ? " is-event" : "";
+        const modalDel = opsEdit
+          ? `<button type="button" class="btn-secondary" data-radar-del="${esc(item.id)}" style="margin-right:auto">删除本条</button>`
+          : "";
         modal = `
           <div class="policy-modal-overlay" data-close-modal>
             <div class="policy-modal${eventCls}" role="dialog" aria-modal="true" aria-label="${isPublicEvent(item) ? "活动详情" : "政策详情"}" data-modal-panel>
@@ -3060,6 +3181,7 @@
                 <div class="policy-modal-left">
                   ${buildPolicyModalHead(item)}
                   ${leftBody}
+                  ${modalDel ? `<div class="report-actions" style="border:0;padding-top:8px">${modalDel}</div>` : ""}
                 </div>
                 <div class="policy-modal-right">
                   ${rightBody}
@@ -3078,23 +3200,54 @@
         `<button class="chip ${radarSort === o.id ? "on" : ""}" data-radar-sort="${o.id}">${o.label}</button>`
       ).join("");
 
+      const channelOpts = CHANNELS.filter((o) => o.id).map((o) =>
+        `<option value="${esc(o.id)}" ${radarChannel === o.id ? "selected" : ""}>${esc(o.label)}</option>`
+      ).join("");
+      const platformOpts = Object.entries(PLATFORM_META).map(([k, v]) =>
+        `<option value="${esc(k)}">${esc(v.label)}</option>`
+      ).join("");
+      const coChecks = (companies || []).map((c) =>
+        `<label><input type="checkbox" name="radar_co" value="${esc(c.id)}"/> ${esc(companyLabel(c))}</label>`
+      ).join("") || `<span class="cite">暂无企业名册</span>`;
+
+      const createModal = (opsEdit && showRadarCreate) ? `
+        <div class="radar-form-overlay" data-radar-form-close>
+          <form class="radar-form" data-radar-form role="dialog" aria-modal="true" aria-label="新增雷达">
+            <h3>新增企服雷达</h3>
+            <div class="field"><label>标题</label><input name="title" required maxlength="120" placeholder="演示标题"/></div>
+            <div class="field"><label>渠道</label><select name="channel">${channelOpts}</select></div>
+            <div class="field"><label>窗口</label><input name="window" maxlength="80" placeholder="如 2026-09-21 ~ 2026-10-31 · 进行中"/></div>
+            <div class="field"><label>金额/价值标签</label><input name="amount_label" maxlength="40" placeholder="如 最高50万 / 流量券包"/></div>
+            <div class="field"><label>一句话</label><textarea name="value_one_liner" maxlength="200" placeholder="企业侧价值一句话"></textarea></div>
+            <div class="field"><label>平台（可选）</label><select name="platform"><option value="">—</option>${platformOpts}</select></div>
+            <div class="field"><label>匹配企业（多选）</label><div class="co-checks">${coChecks}</div></div>
+            <div class="actions">
+              <button type="button" class="btn-secondary" data-radar-form-close>取消</button>
+              <button type="submit" class="btn-primary">保存</button>
+            </div>
+          </form>
+        </div>` : "";
+
+      const opsBar = opsEdit
+        ? `<div class="radar-ops-bar">
+            <div class="hint">点选政策、活动或服务查看详情与匹配企业 · 运营可增删（演示）</div>
+            <button type="button" class="btn-primary" data-radar-create>新增</button>
+          </div>`
+        : `<div class="hint">点选政策、活动或服务查看详情与匹配企业</div>`;
+
       paint(`
-        <div class="hint">点选政策、活动或服务查看详情与匹配企业</div>
+        ${opsBar}
         <div class="filter-stack">
           <div class="filter-row"><span class="lbl">渠道</span>${channelChips()}</div>
-          <div class="filter-row"><span class="lbl">受益</span>${benefitChips()}</div>
           <div class="filter-row"><span class="lbl">排序</span>${sortChips}</div>
         </div>
         <div class="split radar-layout">
           <div class="split-list list">${cards || '<div class="empty">当前筛选无条目</div>'}</div>
         </div>
         ${modal}
+        ${createModal}
       `);
 
-      bindBenefitChips(async () => {
-        selectedRadar = null; radarMatchItems = []; policyBodyText = ""; modalFocusCompanyId = null;
-        await loadRadar(); render();
-      });
       document.querySelectorAll("[data-channel]").forEach((el) => {
         el.onclick = async () => {
           radarChannel = el.getAttribute("data-channel");
@@ -3112,6 +3265,82 @@
       document.querySelectorAll("[data-radar]").forEach((el) => {
         el.onclick = () => selectRadar(el.getAttribute("data-radar"));
       });
+      document.querySelectorAll("[data-radar-del]").forEach((el) => {
+        el.onclick = async (e) => {
+          e.stopPropagation();
+          const id = el.getAttribute("data-radar-del");
+          if (!id) return;
+          if (!confirm(`确认删除「${id}」？关联匹配规则将一并清理。`)) return;
+          setBusy(true);
+          try {
+            await api(`/api/radar?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+            if (selectedRadar === id) {
+              selectedRadar = null; radarMatchItems = []; policyBodyText = "";
+            }
+            toast("已删除");
+            await loadRadar();
+            render();
+          } catch (err) {
+            toast(err.message || "删除失败");
+          } finally {
+            setBusy(false);
+          }
+        };
+      });
+      const createBtn = document.querySelector("[data-radar-create]");
+      if (createBtn) {
+        createBtn.onclick = async () => {
+          if (!companies.length) {
+            try { await loadCompanies(); } catch (_) { /* ignore */ }
+          }
+          showRadarCreate = true;
+          render();
+        };
+      }
+      document.querySelectorAll("[data-radar-form-close]").forEach((el) => {
+        el.onclick = (e) => {
+          if (el.classList.contains("radar-form-overlay") && e.target !== el) return;
+          showRadarCreate = false;
+          render();
+        };
+      });
+      const form = document.querySelector("[data-radar-form]");
+      if (form) {
+        form.onclick = (e) => e.stopPropagation();
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const company_ids = [...form.querySelectorAll('input[name="radar_co"]:checked')].map((x) => x.value);
+          const payload = {
+            title: String(fd.get("title") || "").trim(),
+            channel: String(fd.get("channel") || "").trim(),
+            window: String(fd.get("window") || "").trim(),
+            amount_label: String(fd.get("amount_label") || "").trim(),
+            value_one_liner: String(fd.get("value_one_liner") || "").trim(),
+            platform: String(fd.get("platform") || "").trim() || undefined,
+            company_ids,
+          };
+          if (!payload.title) { toast("请填写标题"); return; }
+          setBusy(true);
+          try {
+            const out = await api("/api/radar", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            showRadarCreate = false;
+            radarChannel = payload.channel || radarChannel;
+            toast("已新增");
+            await loadRadar();
+            if (out.item && out.item.id) selectedRadar = out.item.id;
+            render();
+          } catch (err) {
+            toast(err.message || "新增失败");
+          } finally {
+            setBusy(false);
+          }
+        };
+      }
       document.querySelectorAll("[data-focus-company]").forEach((el) => {
         el.onclick = (e) => {
           e.stopPropagation();
@@ -3547,6 +3776,44 @@
       bindCorpPortalChrome(cid);
     }
 
+    function renderCorpServices(payload, c, cid, head) {
+      const list = payload.services || [];
+      const core = list.filter((s) => s.channel !== "平台规则活动");
+      const plat = list.filter((s) => s.channel === "平台规则活动");
+      const cardHtml = (sv) => {
+        const rid = sv.radar_id || (sv.radar && sv.radar.id) || "";
+        const benefit = sv.value_one_liner || sv.citation
+          || (sv.radar && (sv.radar.value_one_liner || sv.radar.enterprise_help)) || "";
+        const src = sv.source_label || (sv.radar && (sv.radar.doc_no || sv.radar.agency)) || "";
+        return `<div class="match corp-service" data-goto-radar="${esc(rid)}" style="cursor:pointer">
+          <div class="meta">
+            <span class="badge ok">${esc(sv.channel || "服务")}</span>
+            ${src ? `<span class="badge muted">${esc(src)}</span>` : ""}
+          </div>
+          <h3 style="font-size:15px;margin:8px 0 0;font-family:'Noto Serif SC',serif">${esc(sv.title || "")}</h3>
+          <div class="cite">${esc(benefit)}</div>
+        </div>`;
+      };
+      let body = "";
+      if (core.length) {
+        body += `<h4 style="margin:12px 0 8px;font-size:13px;color:var(--muted);font-weight:600">园区 · 阿里 · 机构</h4>`;
+        body += core.map(cardHtml).join("");
+      }
+      if (plat.length) {
+        body += `<h4 style="margin:18px 0 8px;font-size:13px;color:var(--muted);font-weight:600">平台规则活动</h4>`;
+        body += plat.map(cardHtml).join("");
+      }
+      paint(`
+        <div class="hint">企业端 · 匹配的服务 · 演示口径</div>
+        ${corpPortalHeadHtml(c, head)}
+        <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-size:15px">匹配的服务</h3>
+        <p class="cite" style="margin:0 0 12px">园区 · 阿里 · 机构（及平台规则）· 点卡片看详情</p>
+        ${body || '<div class="empty">暂无匹配的服务</div>'}
+        ${corpPolicyModalHtml(payload, c)}
+      `);
+      bindCorpPortalChrome(cid);
+    }
+
     function renderCorpPortal() {
       if (view === "corp") view = "corp_policies";
       const payload = corpPayload || {};
@@ -3555,6 +3822,7 @@
       const head = c.headcount_range || SIZE_LABELS[c.size_band] || "";
       if (view === "corp_staff") renderCorpStaff(payload, c, cid, head);
       else if (view === "corp_events") renderCorpEvents(payload, c, cid, head);
+      else if (view === "corp_services") renderCorpServices(payload, c, cid, head);
       else renderCorpPolicies(payload, c, cid, head);
     }
 
@@ -4273,7 +4541,7 @@
           if (!CORP_VIEWS.includes(next)) return;
           view = next;
           corpStaffEditId = null;
-          if (view !== "corp_policies" && view !== "corp_events") {
+          if (view !== "corp_policies" && view !== "corp_events" && view !== "corp_services") {
             selectedRadar = null;
             radarMatchItems = [];
             policyBodyText = "";
