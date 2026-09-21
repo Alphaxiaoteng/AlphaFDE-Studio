@@ -163,7 +163,7 @@ def cmd_serve(args):
     """启动本地/容器 Web 服务。"""
     port = args.port or int(os.environ.get("PORT", "8766"))
     host = args.host or "0.0.0.0"
-    print(f"🚀 启动云谷企服运营台服务: http://{host}:{port}/?v=2")
+    print(f"🚀 启动云谷企服雷达智能匹配系统服务: http://{host}:{port}/?v=2")
     os.environ["PORT"] = str(port)
     server_script = os.path.join(ROOT, "server.py")
     return subprocess.call([sys.executable, server_script])

@@ -3,8 +3,8 @@
     "disclaimer": "政策与活动雷达由三层漏斗引擎清洗：立足在园 130 家企业真实底账，涵盖 100% 真实政府公文与官方核验公开活动（双碳政策/GLM补贴/云栖大会等），具备正规发文与主办方权威出处。",
     "operator_default": "OP-01",
     "updated_at": "2026-09-21T06:39:16.198371+00:00",
-    "product": "云谷企服运营台",
-    "name": "云谷企服运营台",
+    "product": "云谷企服雷达智能匹配系统",
+    "name": "云谷企服雷达智能匹配系统",
     "radar_updated_at": "2026-09-21T06:25:46.089043+00:00",
     "radar_source_verified": true,
     "radar_policy_count": 6,
@@ -94,6 +94,21 @@
           "note": "社保仍待核验，不写入对外承诺"
         },
         {
+          "at": "2025-11",
+          "kind": "服务动作",
+          "stage": "opc",
+          "title": "工位续约口径确认",
+          "note": "口头澄清续约窗口，非正式合同",
+          "status": "done"
+        },
+        {
+          "at": "2026-06",
+          "kind": "服务动作",
+          "stage": "opc",
+          "title": "创业补贴窗口提示",
+          "note": "企服转介公开报名渠道，不代填"
+        },
+        {
           "at": "2026-09",
           "kind": "政策触达",
           "stage": "opc",
@@ -170,7 +185,11 @@
           "status": "verified",
           "label": "已核验"
         }
-      ]
+      ],
+      "direction_tag": "smart_tools",
+      "industry": "智能工具",
+      "phone": "138****8001",
+      "contact_phone": "13800138001"
     },
     {
       "id": "corp_opc_2",
@@ -221,6 +240,21 @@
           "stage": "opc",
           "title": "租金口径询问",
           "note": "只记录当前需求，不表示已申报"
+        },
+        {
+          "at": "2025-12",
+          "kind": "服务动作",
+          "stage": "opc",
+          "title": "公开活动窗口提醒",
+          "note": "路演候补名额一次提醒，以官网报名为准",
+          "status": "done"
+        },
+        {
+          "at": "2026-04",
+          "kind": "服务动作",
+          "stage": "opc",
+          "title": "内容创作场地灵活续约",
+          "note": "工位级面积口头备忘，待合同核验"
         },
         {
           "at": "2026-09",
@@ -314,7 +348,11 @@
           "status": "pending",
           "label": "待上传"
         }
-      ]
+      ],
+      "direction_tag": "digital_content",
+      "industry": "数字内容",
+      "phone": "139****8002",
+      "contact_phone": "13900138002"
     },
     {
       "id": "corp_s_1",
@@ -372,7 +410,8 @@
           "kind": "服务动作",
           "stage": "s_3_20",
           "title": "增长窗口走访",
-          "note": "当前需求是活动与店铺，不是研发税务"
+          "note": "当前需求是活动与店铺，不是研发税务",
+          "status": "done"
         },
         {
           "at": "2026-09",
@@ -455,7 +494,11 @@
           "status": "verified",
           "label": "已核验"
         }
-      ]
+      ],
+      "direction_tag": "ecommerce",
+      "industry": "电商运营",
+      "phone": "136****8003",
+      "contact_phone": "13600138003"
     },
     {
       "id": "corp_s_2",
@@ -584,7 +627,11 @@
           "status": "pending",
           "label": "待上传"
         }
-      ]
+      ],
+      "direction_tag": "hardtech",
+      "industry": "硬科创孵化",
+      "phone": "137****8004",
+      "contact_phone": "13700138004"
     },
     {
       "id": "corp_m_1",
@@ -654,6 +701,22 @@
           "stage": "m_20_100",
           "title": "算力成本走访",
           "note": "研发占比与税务登记已确认"
+        },
+        {
+          "at": "2025-10",
+          "kind": "服务动作",
+          "stage": "m_20_100",
+          "title": "已完成入园对接",
+          "note": "工位与会议室预约渠道已打通（演示口径）",
+          "status": "done"
+        },
+        {
+          "at": "2026-03",
+          "kind": "服务动作",
+          "stage": "m_20_100",
+          "title": "已完成算力券初筛辅导",
+          "note": "园区政策宣讲后完成材料清单对照（演示口径，不代办申报）",
+          "status": "done"
         },
         {
           "at": "2026-09",
@@ -746,7 +809,11 @@
           "status": "verified",
           "label": "已核验"
         }
-      ]
+      ],
+      "direction_tag": "industrial_vision",
+      "industry": "工业视觉",
+      "phone": "158****8005",
+      "contact_phone": "15800138005"
     },
     {
       "id": "corp_m_2",
@@ -799,6 +866,14 @@
           "stage": "m_20_100",
           "title": "约 55 人",
           "note": "当前档。需求是仓配，不是算力政策"
+        },
+        {
+          "at": "2026-01",
+          "kind": "服务动作",
+          "stage": "m_20_100",
+          "title": "已完成仓配需求摸底",
+          "note": "班次与交接节点口头梳理（演示口径）",
+          "status": "done"
         },
         {
           "at": "2026-06",
@@ -886,7 +961,11 @@
           "status": "pending",
           "label": "待上传"
         }
-      ]
+      ],
+      "direction_tag": "logistics",
+      "industry": "仓配物流",
+      "phone": "186****8006",
+      "contact_phone": "18600138006"
     },
     {
       "id": "corp_attr_1789973075",
@@ -927,7 +1006,11 @@
           "status": "pending",
           "label": "办理中"
         }
-      ]
+      ],
+      "direction_tag": "smart_tools",
+      "industry": "智能工具",
+      "phone": "188****8007",
+      "contact_phone": "18800138007"
     }
   ],
   "radar": [
@@ -960,7 +1043,9 @@
       "replaces": "杭政办函〔2024〕40号 旧版算力补贴",
       "channel": "政府政策",
       "window_end": "2026-09-24",
-      "body_path": "policies/rad_xihu_compute.md"
+      "body_path": "policies/rad_xihu_compute.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "rad_xihu_model",
@@ -990,7 +1075,9 @@
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-09-26",
-      "body_path": "policies/rad_xihu_model.md"
+      "body_path": "policies/rad_xihu_model.md",
+      "amount_label": "最高50万",
+      "amount_wan": 50
     },
     {
       "id": "rad_hz_opc",
@@ -1016,12 +1103,14 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "托住在园一人公司小微密度，作为内生中型企业的培育苗圃",
-      "enterprise_help": "合法合规独立签约开票，享受长达 3 年的试错包容空间",
+      "enterprise_help": "工位注册零成本开办；沙盒观察期 1~3 年，轻微合规免罚",
+      "benefit_one_liner": "工位注册零成本开办 + 1~3 年沙盒观察期（轻微合规免罚）",
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-09-25",
-      "body_path": "policies/rad_hz_opc.md"
+      "body_path": "policies/rad_hz_opc.md",
+      "amount_label": "零成本开办"
     },
     {
       "id": "rad_xihu_rent",
@@ -1047,12 +1136,15 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "直接降低企业退租率，守住在园核心计租面积与出租率底盘",
-      "enterprise_help": "直接抵扣 40%~60% 的房租刚性开支，大幅提升抗风险能力",
+      "enterprise_help": "按 2 元/天·㎡、上限 800 ㎡连续补 3 年，累计最高 175.2 万元",
+      "benefit_one_liner": "2 元/天·㎡×最高 800 ㎡×3 年，累计房租补贴上限 175.2 万元",
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-09-30",
-      "body_path": "policies/rad_xihu_rent.md"
+      "body_path": "policies/rad_xihu_rent.md",
+      "amount_label": "最高175万",
+      "amount_wan": 175
     },
     {
       "id": "rad_hz_chuying",
@@ -1082,7 +1174,9 @@
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-10-02",
-      "body_path": "policies/rad_hz_chuying.md"
+      "body_path": "policies/rad_hz_chuying.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "rad_nation_rd_tax",
@@ -1109,11 +1203,13 @@
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "引导企业财税规范化，为后续冲刺高新技术企业打牢底座",
-      "enterprise_help": "大幅降低企业所得税税负，亏损期保留长达10年税收抵扣权",
+      "enterprise_help": "研发费用按 100% 加计扣除；未弥补亏损结转最长 10 年",
+      "benefit_one_liner": "研发费用 100% 税前加计扣除，亏损结转最长 10 年",
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
-      "body_path": "policies/rad_nation_rd_tax.md"
+      "body_path": "policies/rad_nation_rd_tax.md",
+      "amount_label": "加计扣除100%"
     },
     {
       "id": "rad_nation_high_tech",
@@ -1133,16 +1229,19 @@
       ],
       "subsidy_detail": "企业所得税税率减按 15% 征收 + 省市区落地奖补 30~60 万元",
       "company_ids": [
-        "corp_m_1"
+        "corp_m_1",
+        "corp_opc_1"
       ],
       "helps_park": true,
       "helps_enterprise": true,
       "park_help": "直接完成园区高企考核指标，锁定高产值骨干大客户长租期",
-      "enterprise_help": "年年享受 10% 所得税减免，招投标与融资获得国家级金牌背书",
+      "enterprise_help": "企业所得税率 15%（较 25% 低 10 个点），市区落地奖补 30~60 万元",
+      "benefit_one_liner": "所得税税率 15%（较法定 25% 低 10 个点）；西湖区首次认定奖补 30~60 万元",
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
-      "body_path": "policies/rad_nation_high_tech.md"
+      "body_path": "policies/rad_nation_high_tech.md",
+      "amount_label": "税率减至15%"
     },
     {
       "id": "rad_zj_first_software",
@@ -1171,7 +1270,9 @@
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
-      "body_path": "policies/rad_zj_first_software.md"
+      "body_path": "policies/rad_zj_first_software.md",
+      "amount_label": "最高300万",
+      "amount_wan": 300
     },
     {
       "id": "rad_xihu_token_voucher_2026",
@@ -1203,7 +1304,9 @@
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-09-27",
-      "body_path": "policies/rad_xihu_token_voucher_2026.md"
+      "body_path": "policies/rad_xihu_token_voucher_2026.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "rad_hz_opc_action_2026",
@@ -1234,7 +1337,9 @@
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-10-03",
-      "body_path": "policies/rad_hz_opc_action_2026.md"
+      "body_path": "policies/rad_hz_opc_action_2026.md",
+      "amount_label": "最高200万",
+      "amount_wan": 200
     },
     {
       "id": "rad_zj_ai_consume_2026",
@@ -1265,7 +1370,9 @@
       "superseded_by": null,
       "channel": "政府政策",
       "window_end": "2026-10-05",
-      "body_path": "policies/rad_zj_ai_consume_2026.md"
+      "body_path": "policies/rad_zj_ai_consume_2026.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "rad_pboc_tech_reloan_2026",
@@ -1295,7 +1402,9 @@
       "dual_benefit": true,
       "superseded_by": null,
       "channel": "政府政策",
-      "body_path": "policies/rad_pboc_tech_reloan_2026.md"
+      "body_path": "policies/rad_pboc_tech_reloan_2026.md",
+      "amount_label": "最高3000万",
+      "amount_wan": 3000
     },
     {
       "id": "rad_old_hangzhou_ai_2024",
@@ -1321,7 +1430,8 @@
       "superseded_by": "rad_xihu_compute",
       "deprecation_note": "已被《西湖区进一步推动人工智能产业发展的若干措施》（西经信〔2025〕10号）正式替代",
       "channel": "政府政策",
-      "body_path": "policies/rad_old_hangzhou_ai_2024.md"
+      "body_path": "policies/rad_old_hangzhou_ai_2024.md",
+      "amount_label": "已废止"
     },
     {
       "id": "rad_expired_tech_sme_2024",
@@ -1347,7 +1457,8 @@
       "superseded_by": null,
       "expiration_date": "2024-10-31",
       "channel": "政府政策",
-      "body_path": "policies/rad_expired_tech_sme_2024.md"
+      "body_path": "policies/rad_expired_tech_sme_2024.md",
+      "amount_label": "已结束"
     },
     {
       "id": "evt_hz_carbon_pilot_green_compute_2026",
@@ -1384,7 +1495,8 @@
       "enterprise_help": "享受绿色电力优先调度与节能设备更新补贴，解决 AI 训练集群能耗审批瓶颈",
       "dual_benefit": true,
       "superseded_by": null,
-      "body_path": "policies/evt_hz_carbon_pilot_green_compute_2026.md"
+      "body_path": "policies/evt_hz_carbon_pilot_green_compute_2026.md",
+      "amount_label": "最高15%"
     },
     {
       "id": "evt_zero_carbon_park_alliance_hz_2026",
@@ -1460,7 +1572,9 @@
       "enterprise_help": "OPC 与初创开发团队日常 API/Token 开销砍半，直接享受百万元级大厂算力让利",
       "dual_benefit": true,
       "superseded_by": null,
-      "body_path": "policies/evt_zhipu_glm_coding_plan_hz_2026.md"
+      "body_path": "policies/evt_zhipu_glm_coding_plan_hz_2026.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "evt_hz_token_compute_clinic_2026",
@@ -1498,7 +1612,9 @@
       "enterprise_help": "省去来回跑腿与反复补件成本，当天出初审意见，资金申报周期缩短 60%",
       "dual_benefit": true,
       "superseded_by": null,
-      "body_path": "policies/evt_hz_token_compute_clinic_2026.md"
+      "body_path": "policies/evt_hz_token_compute_clinic_2026.md",
+      "amount_label": "最高100万",
+      "amount_wan": 100
     },
     {
       "id": "evt_yunqi_2026",
@@ -1539,7 +1655,8 @@
       "enterprise_help": "第一时间对齐头部大模型底座与开源 Agent 演进风向，零距离对接阿里云技术大牛与资本",
       "dual_benefit": true,
       "superseded_by": null,
-      "body_path": "policies/evt_yunqi_2026.md"
+      "body_path": "policies/evt_yunqi_2026.md",
+      "amount_label": "免报名费"
     },
     {
       "id": "evt_global_digital_trade_expo_2026",
@@ -1575,7 +1692,1019 @@
       "enterprise_help": "直接接触海外及央国企采购团，促成 AI 智能体软件海外商用大单",
       "dual_benefit": true,
       "superseded_by": null,
-      "body_path": "policies/evt_global_digital_trade_expo_2026.md"
+      "body_path": "policies/evt_global_digital_trade_expo_2026.md",
+      "amount_label": "展位费补贴"
+    },
+    {
+      "id": "plt_douyin_merchant_signup_2026",
+      "channel": "平台规则活动",
+      "platform": "douyin",
+      "lifecycle_status": "active",
+      "track": "平台规则/抖音电商",
+      "title": "抖音电商「秋冬上新」活动报名规则更新（商家端）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-09-18 ~ 2026-10-15 · 报名进行中",
+      "window_start": "2026-09-18",
+      "window_end": "2026-10-15",
+      "event_start": "2026-09-18",
+      "event_end": "2026-10-15",
+      "doc_no": "抖音电商商家规则 · 演示",
+      "agency": "抖音电商（演示口径）",
+      "source_url": "https://fxg.jinritemai.com/",
+      "official_source": "抖音电商商家后台规则中心（演示）",
+      "value_one_liner": "秋冬上新会场报名门槛与保证金档位调整，达人联名场次名额限时开放",
+      "citation": "【演示·补信息差】抖音电商更新秋冬上新活动报名规则：店铺体验分与近30日纠纷率门槛上调；新开联名场次可申请流量券包。非政府公文。",
+      "hard_criteria": [
+        "抖音小店已开店且体验分达标（演示门槛）",
+        "主营服饰/家居/美妆等秋冬上新类目",
+        "可配合达人联名场次物料与库存回传"
+      ],
+      "subsidy_detail": "达标商家可申领会场流量券包（演示口径）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商服务商提前触达平台报名窗口，稳住商家代运营续约",
+      "enterprise_help": "提前对齐报名门槛，避免错过秋冬上新会场流量窗口",
+      "dual_benefit": true,
+      "body_path": "policies/plt_douyin_merchant_signup_2026.md",
+      "amount_label": "流量券包"
+    },
+    {
+      "id": "plt_jd_nyear_merchants_2026",
+      "channel": "平台规则活动",
+      "platform": "jd",
+      "lifecycle_status": "active",
+      "track": "平台规则/京东招商",
+      "title": "京东年货节招商报名开启（自营/POP 通用）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-09-20 ~ 2026-11-30 · 招商报名中",
+      "window_start": "2026-09-20",
+      "window_end": "2026-11-30",
+      "event_start": "2026-09-20",
+      "event_end": "2026-11-30",
+      "doc_no": "京东年货节招商简报 · 演示",
+      "agency": "京东零售（演示口径）",
+      "source_url": "https://sz.jd.com/",
+      "official_source": "京东商家后台招商中心（演示）",
+      "value_one_liner": "年货节主会场/品类会场招商启动，要求备货深度与履约时效达标",
+      "citation": "【演示·补信息差】京东年货节招商：自营与 POP 店铺可报名主会场；需提交备货计划与仓配时效承诺。非政府公文。",
+      "hard_criteria": [
+        "京东店铺经营满 90 天或自营合作在约",
+        "年货/礼盒/生鲜等适配类目有可售库存",
+        "可承诺大促履约时效（演示门槛）"
+      ],
+      "subsidy_detail": "主会场曝光位 + 部分类目京豆投放支持（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "推动在园增长服务商服务年货节招商，提升园区电商企业活跃度",
+      "enterprise_help": "提前锁定年货节会场资源，避免临期仓促备货",
+      "dual_benefit": true,
+      "body_path": "policies/plt_jd_nyear_merchants_2026.md",
+      "amount_label": "会场曝光"
+    },
+    {
+      "id": "plt_tmall_category_rules_2026",
+      "channel": "平台规则活动",
+      "platform": "taobao",
+      "lifecycle_status": "active",
+      "track": "平台规则/淘宝天猫类目",
+      "title": "淘宝/天猫部分类目准入与质检新规生效预告",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-10-01 起分批生效 · 过渡期辅导中",
+      "window_start": "2026-09-15",
+      "window_end": "2026-10-31",
+      "event_start": "2026-09-15",
+      "event_end": "2026-10-31",
+      "doc_no": "淘宝天猫类目规则 · 演示",
+      "agency": "淘宝网 / 天猫（演示口径）",
+      "source_url": "https://rule.taobao.com/",
+      "official_source": "淘宝规则中心（演示）",
+      "value_one_liner": "服饰/家电等类目上新需补齐质检报告或品牌授权链，过渡期可整改",
+      "citation": "【演示·补信息差】淘宝/天猫更新部分类目准入：上新需质检或品牌授权材料；未齐备商品将在过渡期后退场。非政府公文。",
+      "hard_criteria": [
+        "淘宝或天猫在营店铺",
+        "涉及新规类目的在售/待上新 SKU",
+        "可在过渡期内补齐质检或授权材料"
+      ],
+      "subsidy_detail": "无现金补贴；合规上架可保留搜索权重（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "降低在园电商客户因类目新规批量下架的经营风险",
+      "enterprise_help": "提前整改避免链接批量下架与搜索降权",
+      "dual_benefit": true,
+      "body_path": "policies/plt_tmall_category_rules_2026.md",
+      "amount_label": "合规整改"
+    },
+    {
+      "id": "plt_pdd_shop_kpi_2026",
+      "channel": "平台规则活动",
+      "platform": "pdd",
+      "lifecycle_status": "active",
+      "track": "平台规则/拼多多考核",
+      "title": "拼多多店铺体验分与物流考核规则季度更新",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-Q4 考核周期 · 规则已公示",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "拼多多商家考核 · 演示",
+      "agency": "拼多多（演示口径）",
+      "source_url": "https://mms.pinduoduo.com/",
+      "official_source": "拼多多商家后台规则（演示）",
+      "value_one_liner": "Q4 体验分权重向物流时效与售后一次性解决率倾斜，低分店铺限流",
+      "citation": "【演示·补信息差】拼多多更新店铺考核：物流时效与售后一次解决率权重上调；连续低分将限制参加活动。非政府公文。",
+      "hard_criteria": [
+        "拼多多在营店铺",
+        "近 90 日有成单流水",
+        "可优化仓配时效与售后话术"
+      ],
+      "subsidy_detail": "体验分达标可恢复活动报名资格（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "协助在园代运营团队保住店铺活动资格，减少流失",
+      "enterprise_help": "按新权重提前抬升体验分，保住大促报名资格",
+      "dual_benefit": true,
+      "body_path": "policies/plt_pdd_shop_kpi_2026.md",
+      "amount_label": "考核预警"
+    },
+    {
+      "id": "plt_kuaishou_live_boost_2026",
+      "channel": "平台规则活动",
+      "platform": "kuaishou",
+      "lifecycle_status": "active",
+      "track": "平台规则/快手电商",
+      "title": "快手电商「直播间加热券」商家报名规则更新（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-09-22 ~ 2026-10-20 · 报名中",
+      "window_start": "2026-09-22",
+      "window_end": "2026-10-20",
+      "event_start": "2026-09-22",
+      "event_end": "2026-10-20",
+      "doc_no": "快手电商商家规则 · 演示",
+      "agency": "快手电商（演示口径）",
+      "source_url": "https://s.kuaishou.com/",
+      "official_source": "快手商家后台规则中心（演示）",
+      "value_one_liner": "直播间加热券报名门槛调整，店铺分与违规率达标可领券包",
+      "citation": "【演示·补信息差】快手电商更新直播间加热券报名：店铺分与近30日违规率门槛上调；达标可申领加热券包。非政府公文。",
+      "hard_criteria": [
+        "快手小店在营",
+        "店铺分达标（演示门槛）",
+        "近30日无严重违规"
+      ],
+      "subsidy_detail": "加热券包（演示口径）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "直播间加热券报名门槛调整，店铺分与违规率达标可领券包",
+      "dual_benefit": true,
+      "body_path": "policies/plt_kuaishou_live_boost_2026.md",
+      "amount_label": "加热券包"
+    },
+    {
+      "id": "plt_xhs_brand_coop_2026",
+      "channel": "平台规则活动",
+      "platform": "xiaohongshu",
+      "lifecycle_status": "active",
+      "track": "平台规则/小红书商家",
+      "title": "小红书品牌合作中心「秋冬种草」商家入驻窗口（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-09-25 ~ 2026-11-15 · 入驻开放",
+      "window_start": "2026-09-25",
+      "window_end": "2026-11-15",
+      "event_start": "2026-09-25",
+      "event_end": "2026-11-15",
+      "doc_no": "小红书商家成长 · 演示",
+      "agency": "小红书（演示口径）",
+      "source_url": "https://www.xiaohongshu.com/",
+      "official_source": "小红书商家后台（演示）",
+      "value_one_liner": "秋冬种草合作位开放，需备齐品牌授权与内容合规材料",
+      "citation": "【演示·补信息差】小红书品牌合作中心开放秋冬种草入驻：需品牌授权链与内容合规自检。非政府公文。",
+      "hard_criteria": [
+        "小红书专业号/商家号",
+        "有可种草秋冬品类",
+        "可提供品牌授权材料"
+      ],
+      "subsidy_detail": "种草曝光位（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "秋冬种草合作位开放，需备齐品牌授权与内容合规材料",
+      "dual_benefit": true,
+      "body_path": "policies/plt_xhs_brand_coop_2026.md",
+      "amount_label": "种草曝光"
+    },
+    {
+      "id": "plt_vip_super_brand_2026",
+      "channel": "平台规则活动",
+      "platform": "vip",
+      "lifecycle_status": "active",
+      "track": "平台规则/唯品会招商",
+      "title": "唯品会超级品牌日招商简报更新（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-10-01 ~ 2026-12-15 · 招商中",
+      "window_start": "2026-10-01",
+      "window_end": "2026-12-15",
+      "event_start": "2026-10-01",
+      "event_end": "2026-12-15",
+      "doc_no": "唯品会招商 · 演示",
+      "agency": "唯品会（演示口径）",
+      "source_url": "https://www.vip.com/",
+      "official_source": "唯品会商家后台（演示）",
+      "value_one_liner": "超级品牌日档期招商，强调特卖深度与退货率控制",
+      "citation": "【演示·补信息差】唯品会超级品牌日招商：需提交特卖深度与退货率承诺。非政府公文。",
+      "hard_criteria": [
+        "唯品会在营或完成入驻预审",
+        "服饰/美妆等适配类目",
+        "可承诺大促退货率（演示）"
+      ],
+      "subsidy_detail": "档期曝光支持（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_m_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "超级品牌日档期招商，强调特卖深度与退货率控制",
+      "dual_benefit": true,
+      "body_path": "policies/plt_vip_super_brand_2026.md",
+      "amount_label": "档期曝光"
+    },
+    {
+      "id": "plt_douyin_instant_retail_2026",
+      "channel": "平台规则活动",
+      "platform": "douyin",
+      "lifecycle_status": "active",
+      "track": "平台规则/抖音即时零售",
+      "title": "抖音即时零售「小时达」商家履约规则调整（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-09-28 起生效 · 过渡期辅导",
+      "window_start": "2026-09-28",
+      "window_end": "2026-11-30",
+      "event_start": "2026-09-28",
+      "event_end": "2026-11-30",
+      "doc_no": "抖音即时零售 · 演示",
+      "agency": "抖音电商（演示口径）",
+      "source_url": "https://fxg.jinritemai.com/",
+      "official_source": "抖音电商商家规则（演示）",
+      "value_one_liner": "小时达履约时效与出餐/出库考核加严，低分门店限流",
+      "citation": "【演示·补信息差】抖音即时零售更新小时达履约考核：时效与出库准时率权重上调。非政府公文。",
+      "hard_criteria": [
+        "已开通抖音即时零售/小时达",
+        "有本地履约能力",
+        "可优化出库时效"
+      ],
+      "subsidy_detail": "履约达标保留流量（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_m_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "小时达履约时效与出餐/出库考核加严，低分门店限流",
+      "dual_benefit": true,
+      "body_path": "policies/plt_douyin_instant_retail_2026.md",
+      "amount_label": "履约考核"
+    },
+    {
+      "id": "plt_jd_pop_score_2026",
+      "channel": "平台规则活动",
+      "platform": "jd",
+      "lifecycle_status": "active",
+      "track": "平台规则/京东POP",
+      "title": "京东 POP 店铺星级与售后考核 Q4 更新（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-Q4 考核周期 · 已公示",
+      "window_start": "2026-10-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-10-01",
+      "event_end": "2026-12-31",
+      "doc_no": "京东POP考核 · 演示",
+      "agency": "京东零售（演示口径）",
+      "source_url": "https://sz.jd.com/",
+      "official_source": "京东商家后台（演示）",
+      "value_one_liner": "Q4 星级权重向售后一次解决率与物流时效倾斜",
+      "citation": "【演示·补信息差】京东 POP 更新星级考核：售后一次解决率与物流时效权重上调。非政府公文。",
+      "hard_criteria": [
+        "京东 POP 在营",
+        "近90日有成单",
+        "可优化售后与仓配"
+      ],
+      "subsidy_detail": "星级达标可报名大促（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "Q4 星级权重向售后一次解决率与物流时效倾斜",
+      "dual_benefit": true,
+      "body_path": "policies/plt_jd_pop_score_2026.md",
+      "amount_label": "星级考核"
+    },
+    {
+      "id": "plt_meituan_merchant_growth_2026",
+      "channel": "平台规则活动",
+      "platform": "meituan",
+      "lifecycle_status": "active",
+      "track": "平台规则/美团商家",
+      "title": "美团商家端「神券节」报名与评价规则提示（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-10-08 ~ 2026-11-08 · 报名窗口",
+      "window_start": "2026-10-08",
+      "window_end": "2026-11-08",
+      "event_start": "2026-10-08",
+      "event_end": "2026-11-08",
+      "doc_no": "美团商家规则 · 演示",
+      "agency": "美团（演示口径）",
+      "source_url": "https://e.meituan.com/",
+      "official_source": "美团商家后台（演示）",
+      "value_one_liner": "神券节报名需评价分与出餐时效达标，可申领神券补贴档",
+      "citation": "【演示·补信息差】美团商家端神券节：评价分与出餐时效门槛上调。非政府公文。",
+      "hard_criteria": [
+        "美团商家在营",
+        "评价分达标（演示）",
+        "可配合神券档位备货"
+      ],
+      "subsidy_detail": "神券补贴档（演示口径）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "神券节报名需评价分与出餐时效达标，可申领神券补贴档",
+      "dual_benefit": true,
+      "body_path": "policies/plt_meituan_merchant_growth_2026.md",
+      "amount_label": "神券补贴"
+    },
+    {
+      "id": "plt_eleme_peak_ops_2026",
+      "channel": "平台规则活动",
+      "platform": "eleme",
+      "lifecycle_status": "active",
+      "track": "平台规则/饿了么商家",
+      "title": "饿了么高峰履约与准时宝规则季度提示（演示）",
+      "version": "演示样例 · 非官方库",
+      "window": "2026-Q4 · 规则已公示",
+      "window_start": "2026-09-15",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-15",
+      "event_end": "2026-12-31",
+      "doc_no": "饿了么商家规则 · 演示",
+      "agency": "饿了么（演示口径）",
+      "source_url": "https://open.shop.ele.me/",
+      "official_source": "饿了么商家后台（演示）",
+      "value_one_liner": "高峰时段准时率权重上调，可开通准时宝降低客诉",
+      "citation": "【演示·补信息差】饿了么更新高峰履约规则：准时率权重上调；可开通准时宝。非政府公文。",
+      "hard_criteria": [
+        "饿了么商家在营",
+        "高峰时段有单量",
+        "可开通准时宝或优化出餐"
+      ],
+      "subsidy_detail": "准时宝减免档（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "帮在园电商/本地生活服务商提前触达平台规则窗口",
+      "enterprise_help": "高峰时段准时率权重上调，可开通准时宝降低客诉",
+      "dual_benefit": true,
+      "body_path": "policies/plt_eleme_peak_ops_2026.md",
+      "amount_label": "准时宝"
+    },
+    {
+      "id": "park_compute_voucher_coach_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/算力辅导",
+      "title": "云谷算力券申领辅导窗口（演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-09-20 ~ 2026-10-31 · 预约辅导",
+      "window_start": "2026-09-20",
+      "window_end": "2026-10-31",
+      "event_start": "2026-09-20",
+      "event_end": "2026-10-31",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服中心（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "一对一梳理算力/模型券材料清单与申报节点",
+      "citation": "【演示·园区企服】一对一梳理算力/模型券材料清单与申报节点。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "辅导预约（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "一对一梳理算力/模型券材料清单与申报节点",
+      "dual_benefit": true,
+      "body_path": "policies/park_compute_voucher_coach_2026.md",
+      "amount_label": "辅导预约"
+    },
+    {
+      "id": "park_rent_subsidy_agency_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/房租补贴",
+      "title": "房租补贴材料代办指引（演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-09-01 ~ 2026-12-15 · 常年受理",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-15",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-15",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服中心（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "对照租赁合同与面积证明，梳理房租补贴缺口清单",
+      "citation": "【演示·园区企服】对照租赁合同与面积证明，梳理房租补贴缺口清单。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "材料代办（演示）",
+      "company_ids": [
+        "corp_opc_1",
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "对照租赁合同与面积证明，梳理房租补贴缺口清单",
+      "dual_benefit": true,
+      "body_path": "policies/park_rent_subsidy_agency_2026.md",
+      "amount_label": "材料代办"
+    },
+    {
+      "id": "park_roadshow_slot_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/路演",
+      "title": "园区路演名额预约（本季专场·演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-10-12 专场 · 名额预约至 10-05",
+      "window_start": "2026-09-20",
+      "window_end": "2026-10-05",
+      "event_start": "2026-09-20",
+      "event_end": "2026-10-05",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服中心（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "本季投融资路演开放有限席位，需提交一页纸 BP 摘要",
+      "citation": "【演示·园区企服】本季投融资路演开放有限席位，需提交一页纸 BP 摘要。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "路演名额（演示）",
+      "company_ids": [
+        "corp_opc_2",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "本季投融资路演开放有限席位，需提交一页纸 BP 摘要",
+      "dual_benefit": true,
+      "body_path": "policies/park_roadshow_slot_2026.md",
+      "amount_label": "路演名额"
+    },
+    {
+      "id": "park_desk_renew_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/工位",
+      "title": "共享工位续约与扩容办理窗口（演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-09-15 ~ 2026-10-20 · 续约季",
+      "window_start": "2026-09-15",
+      "window_end": "2026-10-20",
+      "event_start": "2026-09-15",
+      "event_end": "2026-10-20",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷物业企服（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "续约季开放工位保留与扩容申请，逾期按空置释放",
+      "citation": "【演示·园区企服】续约季开放工位保留与扩容申请，逾期按空置释放。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "工位续约（演示）",
+      "company_ids": [
+        "corp_opc_1",
+        "corp_opc_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "续约季开放工位保留与扩容申请，逾期按空置释放",
+      "dual_benefit": true,
+      "body_path": "policies/park_desk_renew_2026.md",
+      "amount_label": "工位续约"
+    },
+    {
+      "id": "park_biz_agency_window_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/手续代办",
+      "title": "工商变更/年报手续代办窗口（演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "工作日 9:30–16:30 · 预约制",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服前台（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "支持工商变更、年报预审材料核对，不替代窗口正式受理",
+      "citation": "【演示·园区企服】支持工商变更、年报预审材料核对，不替代窗口正式受理。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "手续代办（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_opc_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "支持工商变更、年报预审材料核对，不替代窗口正式受理",
+      "dual_benefit": true,
+      "body_path": "policies/park_biz_agency_window_2026.md",
+      "amount_label": "手续代办"
+    },
+    {
+      "id": "park_meeting_room_pack_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/场地",
+      "title": "会议室与路演厅优惠包（在园企业·演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-Q4 · 按月配额",
+      "window_start": "2026-10-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-10-01",
+      "event_end": "2026-12-31",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服中心（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "在园企业可申领本季会议室优惠时长与路演厅半日档",
+      "citation": "【演示·园区企服】在园企业可申领本季会议室优惠时长与路演厅半日档。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "场次配额（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_m_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "在园企业可申领本季会议室优惠时长与路演厅半日档",
+      "dual_benefit": true,
+      "body_path": "policies/park_meeting_room_pack_2026.md",
+      "amount_label": "场次配额"
+    },
+    {
+      "id": "park_talent_housing_guide_2026",
+      "channel": "园区服务",
+      "platform": "yungu",
+      "lifecycle_status": "active",
+      "track": "园区服务/人才安居",
+      "title": "人才租房补贴材料梳理指引（演示）",
+      "version": "演示样例 · 园区企服脱敏",
+      "window": "2026-09-10 ~ 2026-11-30 · 辅导期",
+      "window_start": "2026-09-10",
+      "window_end": "2026-11-30",
+      "event_start": "2026-09-10",
+      "event_end": "2026-11-30",
+      "doc_no": "云谷企服 · 演示",
+      "agency": "云谷企服中心（演示）",
+      "source_url": "https://example.local/yungu-demo",
+      "official_source": "云谷企服中心（演示口径，非政府公文）",
+      "value_one_liner": "梳理人才租房补贴常见缺口：劳动合同、社保证明、租赁备案",
+      "citation": "【演示·园区企服】梳理人才租房补贴常见缺口：劳动合同、社保证明、租赁备案。脱敏样例，非正式对外承诺。",
+      "hard_criteria": [
+        "云谷在园或在谈企业",
+        "可配合提供基础证照与合同材料"
+      ],
+      "subsidy_detail": "材料指引（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "提升园区企服触达与续约粘性",
+      "enterprise_help": "梳理人才租房补贴常见缺口：劳动合同、社保证明、租赁备案",
+      "dual_benefit": true,
+      "body_path": "policies/park_talent_housing_guide_2026.md",
+      "amount_label": "材料指引"
+    },
+    {
+      "id": "ali_startup_plan_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/创业者计划",
+      "title": "阿里云创业者计划 · 上云抵扣金申请辅导（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "常年可申请 · 演示辅导档",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "阿里云创业者计划（公开口径·演示）",
+      "source_url": "https://startup.aliyun.com/startups",
+      "official_source": "阿里云创业者计划（公开口径·演示）",
+      "value_one_liner": "对照创业者计划公开口径，梳理 3500 元起抵扣金申请材料（演示辅导）",
+      "citation": "【演示·阿里服务】对照创业者计划公开口径，梳理 3500 元起抵扣金申请材料（演示辅导）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "抵扣金辅导（演示）",
+      "company_ids": [
+        "corp_opc_1",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "对照创业者计划公开口径，梳理 3500 元起抵扣金申请材料（演示辅导）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_startup_plan_2026.md",
+      "amount_label": "抵扣金辅导"
+    },
+    {
+      "id": "ali_migrate_compute_subsidy_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/迁云补贴",
+      "title": "阿里云新迁上云算力补贴意向登记辅导（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "申请有效期至 2026-12-31（公开活动页）",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "阿里云权益中心（公开口径·演示）",
+      "source_url": "https://cn.aliyun.com/benefit/form/index",
+      "official_source": "阿里云权益中心（公开口径·演示）",
+      "value_one_liner": "协助整理近12个月非阿里云/IDC消费凭证，登记迁云补贴意向（公开活动·演示）",
+      "citation": "【演示·阿里服务】协助整理近12个月非阿里云/IDC消费凭证，登记迁云补贴意向（公开活动·演示）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "迁云补贴（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "协助整理近12个月非阿里云/IDC消费凭证，登记迁云补贴意向（公开活动·演示）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_migrate_compute_subsidy_2026.md",
+      "amount_label": "迁云补贴"
+    },
+    {
+      "id": "ali_bailian_token_pack_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/通义百炼",
+      "title": "通义百炼新用户 Token 权益开通指引（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "开通即领 · 以控制台公示为准",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "阿里云百炼（公开口径·演示）",
+      "source_url": "https://www.aliyun.com/product/bailian",
+      "official_source": "阿里云百炼（公开口径·演示）",
+      "value_one_liner": "指引开通百炼并核验新用户 Token 包额度（公开产品页·演示）",
+      "citation": "【演示·阿里服务】指引开通百炼并核验新用户 Token 包额度（公开产品页·演示）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "Token权益（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_opc_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "指引开通百炼并核验新用户 Token 包额度（公开产品页·演示）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_bailian_token_pack_2026.md",
+      "amount_label": "Token权益"
+    },
+    {
+      "id": "ali_sme_zhiling_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/中小企业",
+      "title": "阿里云「智领云启」中小企业权益包对接（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "区域批次开放 · 演示对接",
+      "window_start": "2026-09-15",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-15",
+      "event_end": "2026-12-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "阿里云中小企业（公开口径·演示）",
+      "source_url": "https://sme.aliyun.com/activity/hx",
+      "official_source": "阿里云中小企业（公开口径·演示）",
+      "value_one_liner": "对接中小企业算力/模型折扣包与 1V1 方案咨询入口（公开行动页·演示）",
+      "citation": "【演示·阿里服务】对接中小企业算力/模型折扣包与 1V1 方案咨询入口（公开行动页·演示）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "折扣权益包（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_m_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "对接中小企业算力/模型折扣包与 1V1 方案咨询入口（公开行动页·演示）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_sme_zhiling_2026.md",
+      "amount_label": "折扣权益包"
+    },
+    {
+      "id": "ali_dingtalk_org_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/钉钉",
+      "title": "钉钉组织开通与园企协同模板（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "常年 · 企服代配演示",
+      "window_start": "2026-09-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-09-01",
+      "event_end": "2026-12-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "钉钉（公开入口·演示）",
+      "source_url": "https://www.dingtalk.com/",
+      "official_source": "钉钉（公开入口·演示）",
+      "value_one_liner": "协助开通钉钉组织与基础审批/日程模板，便于园企协同（演示）",
+      "citation": "【演示·阿里服务】协助开通钉钉组织与基础审批/日程模板，便于园企协同（演示）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "协同模板（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_opc_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "协助开通钉钉组织与基础审批/日程模板，便于园企协同（演示）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_dingtalk_org_2026.md",
+      "amount_label": "协同模板"
+    },
+    {
+      "id": "ali_tmall_merchant_growth_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/淘宝商家",
+      "title": "淘宝商家成长体系规则解读场（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "2026-10 月专场 · 预约",
+      "window_start": "2026-09-25",
+      "window_end": "2026-10-31",
+      "event_start": "2026-09-25",
+      "event_end": "2026-10-31",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "淘宝规则中心（公开入口·演示）",
+      "source_url": "https://rule.taobao.com/",
+      "official_source": "淘宝规则中心（公开入口·演示）",
+      "value_one_liner": "解读商家成长积分与活动报名关联，联动平台规则信息差（演示）",
+      "citation": "【演示·阿里服务】解读商家成长积分与活动报名关联，联动平台规则信息差（演示）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "成长解读（演示）",
+      "company_ids": [
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "解读商家成长积分与活动报名关联，联动平台规则信息差（演示）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_tmall_merchant_growth_2026.md",
+      "amount_label": "成长解读"
+    },
+    {
+      "id": "ali_yunqi_eco_touch_2026",
+      "channel": "阿里服务",
+      "platform": "aliyun",
+      "lifecycle_status": "active",
+      "track": "阿里服务/云栖生态",
+      "title": "云栖大会生态服务对接清单（演示）",
+      "version": "演示样例 · 公开口径标注",
+      "window": "大会前后窗口 · 演示清单",
+      "window_start": "2026-09-01",
+      "window_end": "2026-11-15",
+      "event_start": "2026-09-01",
+      "event_end": "2026-11-15",
+      "doc_no": "阿里服务 · 演示",
+      "agency": "云栖大会（公开入口·演示）",
+      "source_url": "https://yunqi.aliyun.com/",
+      "official_source": "云栖大会（公开入口·演示）",
+      "value_one_liner": "整理云栖相关公开生态展区/合作入口，供园企按清单对接（演示，非赞助合同）",
+      "citation": "【演示·阿里服务】整理云栖相关公开生态展区/合作入口，供园企按清单对接（演示，非赞助合同）。公开入口可查；不伪造未公开合同金额。",
+      "hard_criteria": [
+        "阿里云/钉钉/淘宝相关账号可认证",
+        "愿意配合材料核验"
+      ],
+      "subsidy_detail": "生态对接（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_s_2"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "把可公开对接的阿里生态服务转化为园区触达清单",
+      "enterprise_help": "整理云栖相关公开生态展区/合作入口，供园企按清单对接（演示，非赞助合同）",
+      "dual_benefit": true,
+      "body_path": "policies/ali_yunqi_eco_touch_2026.md",
+      "amount_label": "生态对接"
+    },
+    {
+      "id": "inst_bank_settlement_2026",
+      "channel": "机构服务",
+      "platform": "partner",
+      "lifecycle_status": "active",
+      "track": "机构服务/银行",
+      "title": "对公账户与结算手续费优惠咨询（银行·演示）",
+      "version": "演示样例 · 机构驻点脱敏",
+      "window": "2026-Q4 预约咨询",
+      "window_start": "2026-10-01",
+      "window_end": "2026-12-31",
+      "event_start": "2026-10-01",
+      "event_end": "2026-12-31",
+      "doc_no": "机构服务 · 演示",
+      "agency": "合作银行驻点（演示）",
+      "source_url": "https://example.local/partner-demo",
+      "official_source": "合作银行驻点（演示）",
+      "value_one_liner": "园区合作银行提供对公开户与小微结算费率咨询（演示，非承诺批复）",
+      "citation": "【演示·机构服务】园区合作银行提供对公开户与小微结算费率咨询（演示，非承诺批复）",
+      "hard_criteria": [
+        "云谷在园企业",
+        "可预约驻点时段"
+      ],
+      "subsidy_detail": "结算优惠（演示）",
+      "company_ids": [
+        "corp_s_1",
+        "corp_opc_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "丰富园区第三方服务供给",
+      "enterprise_help": "园区合作银行提供对公开户与小微结算费率咨询（演示，非承诺批复）",
+      "dual_benefit": true,
+      "body_path": "policies/inst_bank_settlement_2026.md",
+      "amount_label": "结算优惠"
+    },
+    {
+      "id": "inst_law_ip_clinic_2026",
+      "channel": "机构服务",
+      "platform": "partner",
+      "lifecycle_status": "active",
+      "track": "机构服务/律所",
+      "title": "知识产权与合同体检义诊（律所·演示）",
+      "version": "演示样例 · 机构驻点脱敏",
+      "window": "2026-10-18 半日场",
+      "window_start": "2026-09-20",
+      "window_end": "2026-10-18",
+      "event_start": "2026-09-20",
+      "event_end": "2026-10-18",
+      "doc_no": "机构服务 · 演示",
+      "agency": "合作律所（演示）",
+      "source_url": "https://example.local/partner-demo",
+      "official_source": "合作律所（演示）",
+      "value_one_liner": "合作律所提供软著/商标与标准合同条款义诊名额（演示）",
+      "citation": "【演示·机构服务】合作律所提供软著/商标与标准合同条款义诊名额（演示）",
+      "hard_criteria": [
+        "云谷在园企业",
+        "可预约驻点时段"
+      ],
+      "subsidy_detail": "义诊名额（演示）",
+      "company_ids": [
+        "corp_opc_2",
+        "corp_m_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "丰富园区第三方服务供给",
+      "enterprise_help": "合作律所提供软著/商标与标准合同条款义诊名额（演示）",
+      "dual_benefit": true,
+      "body_path": "policies/inst_law_ip_clinic_2026.md",
+      "amount_label": "义诊名额"
+    },
+    {
+      "id": "inst_cpa_rd_ledger_2026",
+      "channel": "机构服务",
+      "platform": "partner",
+      "lifecycle_status": "active",
+      "track": "机构服务/会计",
+      "title": "研发费用辅助账搭建辅导（会计·演示）",
+      "version": "演示样例 · 机构驻点脱敏",
+      "window": "2026-09-25 ~ 2026-11-30 · 预约",
+      "window_start": "2026-09-25",
+      "window_end": "2026-11-30",
+      "event_start": "2026-09-25",
+      "event_end": "2026-11-30",
+      "doc_no": "机构服务 · 演示",
+      "agency": "合作会计师事务所（演示）",
+      "source_url": "https://example.local/partner-demo",
+      "official_source": "合作会计师事务所（演示）",
+      "value_one_liner": "合作会计事务所辅导研发辅助账科目与工时归集模板（演示）",
+      "citation": "【演示·机构服务】合作会计事务所辅导研发辅助账科目与工时归集模板（演示）",
+      "hard_criteria": [
+        "云谷在园企业",
+        "可预约驻点时段"
+      ],
+      "subsidy_detail": "辅账辅导（演示）",
+      "company_ids": [
+        "corp_m_1",
+        "corp_s_1"
+      ],
+      "helps_park": true,
+      "helps_enterprise": true,
+      "park_help": "丰富园区第三方服务供给",
+      "enterprise_help": "合作会计事务所辅导研发辅助账科目与工时归集模板（演示）",
+      "dual_benefit": true,
+      "body_path": "policies/inst_cpa_rd_ledger_2026.md",
+      "amount_label": "辅账辅导"
     }
   ],
   "match_rules": [
@@ -1594,7 +2723,8 @@
       "radar_id": "rad_nation_rd_tax",
       "state": "待核验",
       "citation": "财税公告 2023年 第7号：研发占比达标，但需核验是否设立独立研发支出辅助账与社保在册凭证。",
-      "gap": "社保在册证明待补，需协助建立极简研发工时辅助账",
+      "gap": "缺：①社保在册名册 ②研发支出辅助账（工时归集）③入库登记编号",
+      "reject_reason": "未建独立研发辅助账，加计扣除汇算清缴驳回",
       "draft_template": null
     },
     {
@@ -1612,7 +2742,8 @@
       "radar_id": "rad_xihu_rent",
       "state": "待核验",
       "citation": "西经信〔2025〕8号：房租补贴按实际承租面积核算，企业乙当前仅为共享工位登记。",
-      "gap": "当前为工位级承租，是否具备独立分割租赁面积待与物业核实",
+      "gap": "缺：独立分割租赁合同面积证明（当前仅为共享工位登记）",
+      "reject_reason": "共享工位无独立租赁面积，房租补贴不予受理",
       "draft_template": null
     },
     {
@@ -1639,7 +2770,7 @@
       "radar_id": "rad_xihu_model",
       "state": "待核验",
       "citation": "西经信〔2025〕10号：自研大模型若取得国家网信办算法备案可享 50 万元一次性奖补。",
-      "gap": "需核验国家网信办或浙江省网信办算法备案批复公告正式编号",
+      "gap": "缺：国家/省网信办算法备案批复正式编号（公告截图或文号）",
       "draft_template": null
     },
     {
@@ -1648,7 +2779,7 @@
       "radar_id": "rad_xihu_rent",
       "state": "待核验",
       "citation": "西经信〔2025〕8号：2元/天·㎡ 房租补贴，上限 800 ㎡，要求核准正式租赁合同面积。",
-      "gap": "承租面积待确认，专员可联动招商核定合同并在二期扩租中同步锁定补贴",
+      "gap": "缺：正式租赁合同核准面积（㎡）与缴费凭证，待与物业/招商核定",
       "draft_template": null
     },
     {
@@ -1657,7 +2788,7 @@
       "radar_id": "rad_hz_chuying",
       "state": "待核验",
       "citation": "杭科高〔2024〕62号：研发人员占比65%达标，但要求核心发明专利不少于3件。",
-      "gap": "当前发明专利公开数量待核实，需辅导补齐知识产权短板",
+      "gap": "缺：核心发明专利 ≥3 件公开文本（当前发明专利公开数待核实）",
       "draft_template": null
     },
     {
@@ -1675,7 +2806,21 @@
       "radar_id": "rad_zj_first_software",
       "state": "待核验",
       "citation": "浙经信软件〔2025〕指南：自研 AI 算法产品可申报省级首版次软件，需 CNAS 第三方测评报告。",
-      "gap": "需安排第三方软件评测机构出具性能与功能测试报告",
+      "gap": "缺：CNAS/CMA 第三方性能与功能测评报告（窗口内未补齐）",
+      "reject_reason": "缺 CNAS 第三方测评报告，首版次软件认定终止",
+      "draft_template": null
+    },
+    {
+      "id": "m_opc1_hightech",
+      "company_id": "corp_opc_1",
+      "radar_id": "rad_nation_high_tech",
+      "state": "待核验",
+      "citation": "国科发火〔2016〕32号：国高新要求法人研发团队与知识产权积累；与 OPC 沙盒一人主体路径互斥，演示冲突标注。",
+      "gap": "互斥提示：OPC 一人主体 vs 国高新法人研发团队/知识产权门槛，不可同路径并行申报",
+      "conflicts_with": [
+        "rad_hz_opc",
+        "rad_hz_opc_action_2026"
+      ],
       "draft_template": null
     },
     {
@@ -1702,7 +2847,7 @@
       "radar_id": "rad_zj_ai_consume_2026",
       "state": "待核验",
       "citation": "浙商务联发〔2026〕32号（9月20日新政）：电商AI应用方向契合，需核验是否具备正式商业化落地案例。",
-      "gap": "需提交至少 1 个电商/品牌客户的实际应用合同与成效证明",
+      "gap": "缺：≥1 份电商/品牌客户应用合同 + 成效证明（商业化落地案例）",
       "draft_template": null
     },
     {
@@ -1749,7 +2894,53 @@
       "citation": "2026云栖大会（9月22-24日·杭州）：主题智以致用，全面聚焦 Agentic AI 智能体应用，园区组织生态代表团参会观摩。",
       "gap": null,
       "draft_template": "（专员确认后）您好，2026 云栖大会将于 9 月 22 日开幕，本届聚焦 Agentic AI（智能体）与云计算全栈演进，云谷中心正组织园区代表团探展，如需团队线下入场券或展位对接请联系企服部。—{operator}"
+    },
+    {
+      "id": "m_s1_douyin_signup",
+      "company_id": "corp_s_1",
+      "radar_id": "plt_douyin_merchant_signup_2026",
+      "state": "符合",
+      "citation": "店行增长主营商家运营服务，对接抖音小店代运营客户，初筛符合秋冬上新报名辅导场景。",
+      "gap": null,
+      "draft_template": "（专员确认后）您好，抖音电商秋冬上新报名规则已更新，贵司代运营客户可按新门槛准备体验分与联名场次物料，避免错过会场流量窗口。—{operator}"
+    },
+    {
+      "id": "m_s1_jd_nyear",
+      "company_id": "corp_s_1",
+      "radar_id": "plt_jd_nyear_merchants_2026",
+      "state": "符合",
+      "citation": "店行增长服务京东/POP 商家增长，匹配年货节招商备货与履约辅导。",
+      "gap": null,
+      "draft_template": "（专员确认后）您好，京东年货节招商已开启，建议贵司协助客户提交备货计划与履约承诺，尽早锁定主会场资源。—{operator}"
+    },
+    {
+      "id": "m_s1_tmall_category",
+      "company_id": "corp_s_1",
+      "radar_id": "plt_tmall_category_rules_2026",
+      "state": "待核验",
+      "citation": "淘宝/天猫类目新规涉及质检与授权链，需核验客户在售 SKU 是否落入新规类目。",
+      "gap": "缺：客户在售类目清单与质检/授权材料齐备情况",
+      "draft_template": null
+    },
+    {
+      "id": "m_s1_pdd_kpi",
+      "company_id": "corp_s_1",
+      "radar_id": "plt_pdd_shop_kpi_2026",
+      "state": "符合",
+      "citation": "拼多多店铺考核权重调整，店行增长可提供体验分与物流时效诊断。",
+      "gap": null,
+      "draft_template": "（专员确认后）您好，拼多多 Q4 考核权重已向物流与售后倾斜，建议对代运营店铺做一次体验分诊断，保住活动报名资格。—{operator}"
     }
+  ],
+  "conflict_pairs": [
+    [
+      "rad_hz_opc",
+      "rad_nation_high_tech"
+    ],
+    [
+      "rad_hz_opc_action_2026",
+      "rad_nation_high_tech"
+    ]
   ],
   "coop_seed": [
     {
@@ -1829,7 +3020,9 @@
       "helps_enterprise": true,
       "park_help": "争创国家级‘人工智能+软件’创新集聚示范园区",
       "enterprise_help": "抢占智能体国家级标杆席位，获工信部重点向行业龙头推荐",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "最高3000万",
+      "amount_wan": 3000
     },
     {
       "id": "rad_agent_action_2026",
@@ -1861,7 +3054,9 @@
       "helps_enterprise": true,
       "park_help": "抢占全国智能体示范园区先机，享受国家智能体产业专项倾斜",
       "enterprise_help": "直接入局国家 19 大典型场景，获得合规准入与直通采购推荐",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "最高500万",
+      "amount_wan": 500
     },
     {
       "id": "rad_miit_ai_mfg_2026",
@@ -1892,7 +3087,9 @@
       "helps_enterprise": true,
       "park_help": "争创国家级工业智能体应用示范基地，提升云谷中心在工信系统硬核影响力",
       "enterprise_help": "获国家部委权威标杆评定，获得国家级专项资金与工业龙头直通采购",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "最高5000万",
+      "amount_wan": 5000
     },
     {
       "id": "rad_hz_opc",
@@ -1923,7 +3120,8 @@
       "helps_enterprise": true,
       "park_help": "极大降低园区工位去化门槛，吸纳海量超级个体与 AI 原生创客团队入园",
       "enterprise_help": "单人无需租用独立办公室即可合法获得正规企业法人身份与银行对公账户",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "零成本开办"
     },
     {
       "id": "rad_customs_crossborder_2026",
@@ -1954,7 +3152,8 @@
       "helps_enterprise": true,
       "park_help": "吸纳大批出海电商与跨境供应链企业设立总部，拉升园区外贸进出口流水",
       "enterprise_help": "退税款离境即到账，极大盘活跨国备货资金链，退货损失减少 30% 以上",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "退税加速"
     },
     {
       "id": "rad_ndrc_equipment_2026",
@@ -1985,7 +3184,8 @@
       "helps_enterprise": true,
       "park_help": "撬动在园企业千万级重资产技改投资，加快园区绿色智造基础设施升级",
       "enterprise_help": "直接冲减昂贵的服务器集群或智能物流设备购置成本",
-      "dual_benefit": true
+      "dual_benefit": true,
+      "amount_label": "最高30%"
     }
   ]
 }

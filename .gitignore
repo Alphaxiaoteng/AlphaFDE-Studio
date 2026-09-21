@@ -1,6 +1,35 @@
+# Secrets & local env
 .env
+.env.local
+*.pem
+*.key
+
+# Python
 __pycache__/
-*.pyc
-*.png
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+.venv/
+venv/
+
+# OS / IDE
 .DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Debug / scrape artifacts (not for public repo)
+debug*.png
+ops_console*.png
 fetched.html
+
+# Optional local caches (regenerable)
+media_hot_cache.json
+media_hotspots_cache.json
+public_events_cache.json
+pipeline_audit.log
+confirm_log.jsonl
+coop_requests.jsonl
+sop_log.jsonl
+remind_log.jsonl

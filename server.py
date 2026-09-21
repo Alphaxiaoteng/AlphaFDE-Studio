@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""云谷企服运营台 · 本地 API。端口 8766。"""
+"""云谷企服雷达智能匹配系统 · 本地 API。端口 8766。"""
 from __future__ import annotations
 
 import json
@@ -23,6 +23,7 @@ DATA_PATH = os.path.join(ROOT, "data.json")
 LOG_PATH = os.path.join(ROOT, "confirm_log.jsonl")
 COOP_PATH = os.path.join(ROOT, "coop_requests.jsonl")
 SOP_PATH = os.path.join(ROOT, "sop_log.jsonl")
+REMIND_PATH = os.path.join(ROOT, "remind_log.jsonl")
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "7860"))
 
@@ -87,15 +88,17 @@ def load_data():
         return json.load(f)
 
 
-# 看板演示种子：多阶段覆盖（非真实业绩）。末条覆盖；未列出的 match 仍走默认（待发送）。
+# 看板演示种子：多阶段覆盖（非真实业绩）。元组 (match_id, step, status[, reject_reason])。
+# 多数进行中；少数 rejected + 少数待补充（靠 match_rules.gap）。末条覆盖；未列出默认待发送。
 DEMO_SOP_SEED = (
-    # 已发送·待企业接受 → pending_accept
+    # 已发送·待企业接受
     ("m_opc_hz_2", 1, "active"),
     ("m_s1_tax", 1, "active"),
     ("m_m1_compute", 1, "active"),
     ("m_m1_model", 1, "active"),
     ("m_m1_rent", 1, "active"),
     ("m_opc1_token", 1, "active"),
+    ("m_opc1_hightech", 1, "active"),
     # 已接受 / 申请提交
     ("m_opc_hz_1", 2, "active"),
     ("m_m1_chuying", 2, "active"),
@@ -108,7 +111,20 @@ DEMO_SOP_SEED = (
     ("m_opc1_glm_coding", 4, "passed"),
     ("m_opc1_clinic", 4, "passed"),
     ("m_m1_yunqi", 4, "passed"),
+    # 已终止（跨企业，少数）
+    ("m_opc_tax_1", 3, "rejected", "未建独立研发辅助账，加计扣除汇算清缴驳回"),
+    ("m_opc_rent_2", 2, "rejected", "共享工位无独立租赁面积，房租补贴不予受理"),
+    ("m_m1_software", 3, "rejected", "缺 CNAS 第三方测评报告，首版次软件认定终止"),
 )
+
+
+def _seed_row(row) -> tuple:
+    """兼容 (id, step, status) 与 (id, step, status, reason)。"""
+    mid = row[0]
+    step = int(row[1])
+    status = row[2]
+    reason = row[3] if len(row) > 3 else None
+    return mid, step, status, reason
 
 
 def seed_sop():
@@ -129,23 +145,35 @@ def seed_sop():
                     mid = row.get("match_id")
                     if not mid:
                         continue
-                    SOP[mid] = {
+                    entry = {
                         "sop_step": int(row.get("sop_step", 0)),
                         "sop_status": row.get("sop_status") or "active",
                     }
+                    reason = row.get("reject_reason") or row.get("fail_reason")
+                    if reason:
+                        entry["reject_reason"] = reason
+                    SOP[mid] = entry
         except OSError:
             pass
     # 演示种子：仅填尚未出现在日志中的 match_id，不覆盖运行时推进
-    for mid, step, status in DEMO_SOP_SEED:
+    for row in DEMO_SOP_SEED:
+        mid, step, status, reason = _seed_row(row)
         if mid not in SOP:
-            SOP[mid] = {"sop_step": int(step), "sop_status": status}
+            entry = {"sop_step": int(step), "sop_status": status}
+            if reason and status == "rejected":
+                entry["reject_reason"] = reason
+            SOP[mid] = entry
 
 
 def _sop_defaults(match_id: str, rule: dict | None = None) -> dict:
     """无 runtime 时：已确认≈已发送；专员驳回≈终态未通过；其余待发送。"""
     conf = CONFIRMED.get(match_id)
     if conf and conf.get("action") == "reject":
-        return {"sop_step": 4, "sop_status": "rejected"}
+        reason = conf.get("reject_reason") or conf.get("fail_reason") or ""
+        out = {"sop_step": 4, "sop_status": "rejected"}
+        if reason:
+            out["reject_reason"] = reason
+        return out
     if conf and conf.get("action") == "confirm":
         return {"sop_step": 1, "sop_status": "active"}
     return {"sop_step": 0, "sop_status": "active"}
@@ -154,10 +182,18 @@ def _sop_defaults(match_id: str, rule: dict | None = None) -> dict:
 def get_sop_state(match_id: str, rule: dict | None = None) -> dict:
     if match_id in SOP:
         st = SOP[match_id]
-        return {
+        out = {
             "sop_step": int(st.get("sop_step", 0)),
             "sop_status": st.get("sop_status") or "active",
         }
+        reason = st.get("reject_reason") or st.get("fail_reason")
+        if reason:
+            out["reject_reason"] = reason
+        elif out["sop_status"] == "rejected" and rule:
+            rr = rule.get("reject_reason") or rule.get("fail_reason")
+            if rr:
+                out["reject_reason"] = rr
+        return out
     return _sop_defaults(match_id, rule)
 
 
@@ -193,6 +229,14 @@ def sop_payload(match_id: str, rule: dict | None = None) -> dict:
     primary = None
     if status == "active":
         primary = SOP_PRIMARY[step]
+    reason = ""
+    if status == "rejected":
+        reason = (
+            st.get("reject_reason")
+            or (rule or {}).get("reject_reason")
+            or (rule or {}).get("fail_reason")
+            or ""
+        )
     return {
         "sop_step": step,
         "sop_status": status,
@@ -201,6 +245,81 @@ def sop_payload(match_id: str, rule: dict | None = None) -> dict:
         "primary_action": primary,
         "can_back": status == "active" and step > 0,
         "can_reject": status == "active" and step < 4,
+        "reject_reason": reason,
+        "fail_reason": reason,
+    }
+
+
+def _conflict_pair_set(data: dict) -> set:
+    pairs: set = set()
+    for pair in data.get("conflict_pairs") or []:
+        if isinstance(pair, (list, tuple)) and len(pair) >= 2:
+            pairs.add(frozenset((pair[0], pair[1])))
+    return pairs
+
+
+def _annotate_match_conflicts(matches: list, data: dict, rules_by_id: dict | None = None) -> None:
+    """同企业互斥政策对 → match.conflict + conflicts[{radar_id,title}]。就地标注。"""
+    if not matches:
+        return
+    pairs = _conflict_pair_set(data)
+    rules_by_id = rules_by_id or {m["id"]: m for m in (data.get("match_rules") or [])}
+    by_rid: dict = {}
+    for m in matches:
+        rid = ((m.get("radar") or {}).get("id")) or ""
+        if rid:
+            by_rid.setdefault(rid, []).append(m)
+    for m in matches:
+        rid = ((m.get("radar") or {}).get("id")) or ""
+        titles = []
+        seen = set()
+        rule = rules_by_id.get(m.get("id") or "") or {}
+        extra = list(rule.get("conflicts_with") or [])
+        for other_rid, others in by_rid.items():
+            if not rid or other_rid == rid:
+                continue
+            linked = frozenset((rid, other_rid)) in pairs or other_rid in extra
+            if not linked:
+                continue
+            for o in others:
+                t = ((o.get("radar") or {}).get("title")) or other_rid
+                if other_rid in seen:
+                    continue
+                seen.add(other_rid)
+                titles.append({"radar_id": other_rid, "title": t})
+        m["conflicts"] = titles
+        m["conflict"] = bool(titles)
+        gap = str(m.get("gap") or "")
+        # gap「互斥」兜底：无显式对时也打冲突标
+        if "互斥" in gap and not titles:
+            m["conflict"] = True
+            m["conflicts"] = [{"radar_id": "", "title": "同企互斥政策路径"}]
+
+
+def _radar_card_fields(r: dict) -> dict:
+    """匹配卡 / 弹窗共用的雷达收益字段。"""
+    return {
+        "id": r.get("id"),
+        "track": r.get("track"),
+        "title": r.get("title"),
+        "version": r.get("version"),
+        "auth_status": r.get("auth_status"),
+        "disclaimer": r.get("disclaimer"),
+        "helps_park": bool(r.get("helps_park")),
+        "helps_enterprise": bool(r.get("helps_enterprise")),
+        "dual_benefit": bool(r.get("helps_park") and r.get("helps_enterprise")),
+        "park_help": r.get("park_help"),
+        "enterprise_help": r.get("enterprise_help"),
+        "value_one_liner": r.get("value_one_liner") or "",
+        "benefit_one_liner": r.get("benefit_one_liner") or "",
+        "subsidy_detail": r.get("subsidy_detail") or "",
+        "amount_label": r.get("amount_label") or "",
+        "amount_wan": r.get("amount_wan"),
+        "hard_criteria": list(r.get("hard_criteria") or []),
+        "window_end": (r.get("window_end") or r.get("event_end") or "")[:10],
+        "source": r.get("source"),
+        "source_also": r.get("source_also"),
+        "doc_no": r.get("doc_no") or "",
     }
 
 
@@ -273,6 +392,21 @@ CHANNEL_ALIASES = {
     "公开活动": "公开活动",
     "活动": "公开活动",
     "event": "公开活动",
+    "平台规则活动": "平台规则活动",
+    "平台规则": "平台规则活动",
+    "平台": "平台规则活动",
+    "platform": "平台规则活动",
+    "园区服务": "园区服务",
+    "园区": "园区服务",
+    "park": "园区服务",
+    "阿里服务": "阿里服务",
+    "阿里云与生态服务": "阿里服务",
+    "阿里": "阿里服务",
+    "ali": "阿里服务",
+    "aliyun": "阿里服务",
+    "机构服务": "机构服务",
+    "机构": "机构服务",
+    "partner": "机构服务",
 }
 
 
@@ -286,13 +420,21 @@ def _radar_channel(r: dict) -> str:
     if r.get("channel"):
         return _normalize_channel(r["channel"]) or "政府政策"
     track = r.get("track") or ""
+    if "平台规则" in track:
+        return "平台规则活动"
     if "公开活动" in track:
         return "公开活动"
+    if "园区服务" in track:
+        return "园区服务"
+    if "阿里服务" in track or "阿里云" in track:
+        return "阿里服务"
+    if "机构服务" in track:
+        return "机构服务"
     return "政府政策"
 
 
 def _is_coop_radar(r: dict) -> bool:
-    """合作线索已迁出政策雷达，统一不出现在 /api/policy_radar。"""
+    """合作线索已迁出服务雷达，统一不出现在 /api/policy_radar。"""
     if r.get("archived_from_radar"):
         return True
     ch = (r.get("channel") or "") + (r.get("track") or "")
@@ -329,17 +471,35 @@ def _window_urgency(r: dict, today: date | None = None) -> dict:
     return {"days_left": days, "urgency": urgency}
 
 
-def _radar_match_count(data: dict, r: dict, cmap: dict | None = None) -> int:
-    """雷达条目匹配企业数：company_ids ∪ 有效 match_rules。"""
+def _radar_match_company_ids(data: dict, r: dict, cmap: dict | None = None) -> list:
+    """雷达匹配企业 id 列表：company_ids ∪ 通过 _fits_current 的 match_rules（保序去重）。
+
+    与卡片 match_count、/api/policy_match_for 共用，避免「数 6 家、弹窗 1 家」。
+    company_ids 侧不二次过滤（与历史 count 口径一致）；match_rules 仍走 _fits_current。
+    """
     cmap = cmap if cmap is not None else _companies_by_id(data)
-    match_ids = {cid for cid in (r.get("company_ids") or []) if cid in cmap}
+    ordered: list = []
+    seen: set = set()
+    for cid in r.get("company_ids") or []:
+        if cid in cmap and cid not in seen:
+            seen.add(cid)
+            ordered.append(cid)
+    rid = r.get("id")
     for m in data.get("match_rules") or []:
-        if m.get("radar_id") != r.get("id"):
+        if m.get("radar_id") != rid:
             continue
         cid = m.get("company_id")
-        if cid in cmap and _fits_current(cmap.get(cid), r):
-            match_ids.add(cid)
-    return len(match_ids)
+        if not cid or cid in seen or cid not in cmap:
+            continue
+        if _fits_current(cmap.get(cid), r):
+            seen.add(cid)
+            ordered.append(cid)
+    return ordered
+
+
+def _radar_match_count(data: dict, r: dict, cmap: dict | None = None) -> int:
+    """雷达条目匹配企业数：与 policy_match_for 同源。"""
+    return len(_radar_match_company_ids(data, r, cmap))
 
 
 def _fields_all_confirmed(company: dict) -> bool:
@@ -505,13 +665,31 @@ def policy_match_for(radar_id: str, benefit: str | None = "both"):
             "note": "当前受益筛选下不展示",
         }
     cmap = _companies_by_id(DATA)
-    rows = []
+    rules_by_cid = {}
     for m in DATA["match_rules"]:
-        if m["radar_id"] != radar_id:
+        if m.get("radar_id") != radar_id:
             continue
-        c = cmap.get(m["company_id"], {})
-        if not _fits_current(c, radar):
-            continue
+        cid = m.get("company_id")
+        if cid and cid not in rules_by_cid:
+            rules_by_cid[cid] = m
+
+    rows = []
+    for cid in _radar_match_company_ids(DATA, radar, cmap):
+        c = cmap.get(cid) or {}
+        m = rules_by_cid.get(cid)
+        if m is None:
+            # company_ids 有、match_rules 无：合成初筛行，保证弹窗 logo 与卡片数一致
+            m = {
+                "id": f"auto_{radar_id}_{cid}",
+                "company_id": cid,
+                "radar_id": radar_id,
+                "state": "符合",
+                "citation": radar.get("citation")
+                or radar.get("enterprise_help")
+                or radar.get("value_one_liner")
+                or "",
+                "gap": None,
+            }
         conf = CONFIRMED.get(m["id"])
         draft = conf.get("draft") if conf and conf.get("action") == "confirm" else None
         timing = _timing_for_match(c, win["urgency"], win["days_left"])
@@ -524,9 +702,9 @@ def policy_match_for(radar_id: str, benefit: str | None = "both"):
                 "state": m["state"],
                 "review": review_status(m, conf),
                 "label": _label_for(m, conf),
-                "citation": m["citation"],
+                "citation": m.get("citation") or "",
                 "gap": m.get("gap"),
-                "company_id": m["company_id"],
+                "company_id": cid,
                 "company_code": c.get("code"),
                 "display_name": c.get("display_name") or c.get("alias") or c.get("code"),
                 "alias": c.get("alias") or c.get("display_name") or c.get("code"),
@@ -610,8 +788,9 @@ def dashboard():
         ch = _radar_channel(r)
         if ch == "公开活动":
             public_events += 1
-        else:
+        elif ch == "政府政策":
             active_policies += 1
+        # 平台规则活动：演示口径，不计入政府政策/公开活动统计
         subsidy_wan += _parse_subsidy_demo_wan(r.get("subsidy_detail") or "")
         match_n = _radar_match_count(DATA, r, cmap)
         if win["urgency"] in ("urgent", "watch") and win["days_left"] is not None:
@@ -727,12 +906,16 @@ def dashboard():
             "subsidy_label": "累计撬动扶持（万元·样例汇总）",
             "cultivated": cultivated,
             "cultivated_label": "梯度培育入库（家·演示）",
-            "urgent_count": len(deadlines_urgent),
-            "urgent_label": "窗口紧急件数",
-            "watch_count": len(deadlines_watch),
-            "watch_label": "窗口临近件数",
+            "matching": matching,
+            "matching_label": "匹配进行中（条）",
+            "touched": funnel["sent"],
+            "touched_label": "本季触达（条·演示）",
+            "accepted": funnel["accepted"],
+            "accepted_label": "企业接受（条·演示）",
+            "passed": funnel["passed"],
+            "passed_label": "SOP 已通过（条）",
         },
-        # 全部 urgent + watch，不再截断 5 条；过期默认不入此列表
+        # 死线/活动列表仍计算，首页不再渲染；供其他端兼容
         "deadlines": deadline_items,
         "deadlines_urgent": deadlines_urgent,
         "deadlines_watch": deadlines_watch,
@@ -834,22 +1017,9 @@ def policy_match(company_id: str):
                 "label": _label_for(m, conf),
                 "review": review_status(m, conf),
                 "gap": m.get("gap"),
-                "radar": {
-                    "id": r.get("id"),
-                    "track": r.get("track"),
-                    "title": r.get("title"),
-                    "version": r.get("version"),
-                    "auth_status": r.get("auth_status"),
-                    "disclaimer": r.get("disclaimer"),
-                    "helps_park": bool(r.get("helps_park")),
-                    "helps_enterprise": bool(r.get("helps_enterprise")),
-                    "dual_benefit": bool(r.get("helps_park") and r.get("helps_enterprise")),
-                    "park_help": r.get("park_help"),
-                    "enterprise_help": r.get("enterprise_help"),
-                    "source": r.get("source"),
-                    "source_also": r.get("source_also"),
-                    "doc_no": r.get("doc_no") or "",
-                },
+                "reject_reason": sop.get("reject_reason") or m.get("reject_reason") or "",
+                "fail_reason": sop.get("fail_reason") or m.get("fail_reason") or m.get("reject_reason") or "",
+                "radar": _radar_card_fields(r),
                 "draft": draft,
                 "confirm": conf,
                 "sop_step": sop["sop_step"],
@@ -861,6 +1031,7 @@ def policy_match(company_id: str):
                 "can_reject": sop["can_reject"],
             }
         )
+    _annotate_match_conflicts(matches, DATA)
     return {
         "meta": DATA["meta"],
         "company": {
@@ -876,17 +1047,144 @@ def policy_match(company_id: str):
             "service_needs": c.get("service_needs"),
             "headcount_bands": c["headcount_bands"],
             "fields": c.get("fields"),
+            "address": c.get("address") or "",
+            "contact_lead": c.get("contact_lead") or "",
+            "phone": c.get("phone") or c.get("contact_phone") or "",
+            "contact_phone": c.get("contact_phone") or c.get("phone") or "",
         },
         "match_key": ["size_band", "service_needs"],
+        "conflict_pairs": DATA.get("conflict_pairs") or [],
         "matches": matches,
     }
 
 
-def list_companies(size_band: str | None = None):
+def corp_home(company_id: str):
+    """企业端首页：匹配政策（matches）+ 匹配大会/公开活动（events）+ 地址/联系人。"""
+    out = policy_match(company_id)
+    if not out:
+        return None
     DATA = load_data()
+    raw = _companies_by_id(DATA).get(company_id) or {}
+    co = out.setdefault("company", {})
+    co["address"] = co.get("address") or raw.get("address") or ""
+    co["contact_lead"] = co.get("contact_lead") or raw.get("contact_lead") or ""
+    co["phone"] = co.get("phone") or raw.get("phone") or raw.get("contact_phone") or ""
+    co["contact_phone"] = (
+        co.get("contact_phone") or raw.get("contact_phone") or raw.get("phone") or ""
+    )
+    co["headcount_range"] = co.get("headcount_range") or raw.get("headcount_range") or ""
+
+    radar = _radar_by_id(DATA)
+    policies = []
+    events = []
+    for m in out.get("matches") or []:
+        rid = ((m.get("radar") or {}).get("id")) or ""
+        r = radar.get(rid) or {}
+        ch = _radar_channel(r)
+        rad = m.get("radar")
+        if isinstance(rad, dict):
+            rad["channel"] = ch
+            rad["value_one_liner"] = r.get("value_one_liner") or rad.get("value_one_liner") or ""
+            rad["benefit_one_liner"] = r.get("benefit_one_liner") or rad.get("benefit_one_liner") or ""
+            rad["subsidy_detail"] = r.get("subsidy_detail") or rad.get("subsidy_detail") or ""
+            rad["amount_label"] = r.get("amount_label") or rad.get("amount_label") or ""
+            rad["hard_criteria"] = list(r.get("hard_criteria") or rad.get("hard_criteria") or [])
+            rad["window_end"] = (r.get("window_end") or r.get("event_end") or rad.get("window_end") or "")[:10]
+            rad["event_start"] = (r.get("event_start") or r.get("window_start") or "")[:10]
+            rad["event_end"] = (r.get("event_end") or r.get("window_end") or "")[:10]
+            win = _window_urgency(r)
+            rad["days_left"] = win.get("days_left")
+        if ch == "公开活动":
+            events.append(
+                {
+                    "id": m.get("id"),
+                    "match_id": m.get("id"),
+                    "radar_id": rid,
+                    "title": r.get("title") or (rad or {}).get("title") or "",
+                    "event_start": (r.get("event_start") or r.get("window_start") or "")[:10],
+                    "event_end": (r.get("event_end") or r.get("window_end") or "")[:10],
+                    "value_one_liner": (
+                        r.get("value_one_liner")
+                        or r.get("enterprise_help")
+                        or m.get("citation")
+                        or ""
+                    ),
+                    "citation": m.get("citation") or "",
+                    "channel": "公开活动",
+                    "radar": rad,
+                }
+            )
+        else:
+            policies.append(m)
+    out["matches"] = policies
+    out["events"] = events
+    return out
+
+
+# 产业方向短标签：与 data.json companies[].direction_tag / industry 对齐
+DIRECTION_TAGS: dict[str, str] = {
+    "smart_tools": "智能工具",
+    "digital_content": "数字内容",
+    "ecommerce": "电商运营",
+    "hardtech": "硬科创孵化",
+    "industrial_vision": "工业视觉",
+    "logistics": "仓配物流",
+}
+
+_DIRECTION_HINTS: tuple[tuple[str, str], ...] = (
+    ("数字内容", "digital_content"),
+    ("电商", "ecommerce"),
+    ("硬科创", "hardtech"),
+    ("孵化", "hardtech"),
+    ("工业视觉", "industrial_vision"),
+    ("视觉", "industrial_vision"),
+    ("仓配", "logistics"),
+    ("物流", "logistics"),
+    ("供应链", "logistics"),
+    ("智能工具", "smart_tools"),
+    ("OPC", "smart_tools"),
+    ("一人公司", "smart_tools"),
+)
+
+
+def _direction_tag(company: dict) -> str:
+    tag = (company.get("direction_tag") or "").strip()
+    if tag:
+        return tag
+    text = str(company.get("direction") or "")
+    for hint, slug in _DIRECTION_HINTS:
+        if hint in text:
+            return slug
+    return ""
+
+
+def _industry_label(company: dict) -> str:
+    label = (company.get("industry") or "").strip()
+    if label:
+        return label
+    return DIRECTION_TAGS.get(_direction_tag(company), "")
+
+
+def list_companies(size_band: str | None = None, direction: str | None = None):
+    DATA = load_data()
+    cmap = _companies_by_id(DATA)
+    radar = _radar_by_id(DATA)
+    # 与 /api/policy_match「当前可匹配」同源：现行有效 match_rules + _fits_current
+    match_counts: dict[str, int] = {}
+    for m in DATA.get("match_rules") or []:
+        cid = m.get("company_id")
+        if not cid or cid not in cmap:
+            continue
+        r = radar.get(m.get("radar_id"), {})
+        if not _fits_current(cmap.get(cid), r):
+            continue
+        match_counts[cid] = match_counts.get(cid, 0) + 1
     rows = []
     for c in DATA["companies"]:
         if size_band and c.get("size_band") != size_band:
+            continue
+        tag = _direction_tag(c)
+        if direction and tag != direction:
             continue
         rows.append(
             {
@@ -896,15 +1194,21 @@ def list_companies(size_band: str | None = None):
                 "alias": c.get("alias") or c.get("display_name") or c["code"],
                 "logo": c.get("logo") or "",
                 "direction": c["direction"],
+                "direction_tag": tag,
+                "industry": _industry_label(c),
                 "size_band": c.get("size_band"),
                 "headcount_range": c["headcount_range"],
                 "funding_stage": c["funding_stage"],
                 "service_needs": c["service_needs"],
                 "stage_path": _stage_path(c),
                 "address": c.get("address") or "",
+                "contact_lead": c.get("contact_lead") or "",
+                "phone": c.get("phone") or c.get("contact_phone") or "",
+                "contact_phone": c.get("contact_phone") or c.get("phone") or "",
+                "match_count": match_counts.get(c["id"], 0),
             }
         )
-    return {"meta": DATA["meta"], "companies": rows}
+    return {"meta": DATA["meta"], "companies": rows, "direction_tags": DIRECTION_TAGS}
 
 
 def match_board(state: str | None = None, benefit: str | None = "both", review: str | None = None):
@@ -1061,6 +1365,46 @@ def list_coop(from_side: str | None = None):
     }
 
 
+def do_remind(body: dict):
+    """演示通道：记录短信/电话提醒意图，不承诺真发到公网用户。"""
+    DATA = load_data()
+    company_id = (body.get("company_id") or "").strip()
+    channel = (body.get("channel") or "").strip().lower()
+    operator = body.get("operator") or DATA.get("meta", {}).get("operator_default", "OP-01")
+    note = (body.get("note") or "").strip()
+    if channel not in ("sms", "call"):
+        return {"ok": False, "error": "channel 须为 sms 或 call"}, 400
+    cmap = _companies_by_id(DATA)
+    if not company_id or company_id not in cmap:
+        return {"ok": False, "error": "脱敏企业不存在"}, 404
+    c = cmap[company_id]
+    phone = c.get("phone") or c.get("contact_phone") or ""
+    contact_phone = c.get("contact_phone") or c.get("phone") or ""
+    op_label = next(
+        (o["label"] for o in DATA.get("operators", []) if o["id"] == operator), operator
+    )
+    channel_label = "短信" if channel == "sms" else "电话"
+    entry = {
+        "id": f"remind_{uuid.uuid4().hex[:8]}",
+        "at": datetime.now(timezone.utc).isoformat(),
+        "company_id": company_id,
+        "channel": channel,
+        "channel_label": channel_label,
+        "operator": operator,
+        "operator_label": op_label,
+        "phone": phone,
+        "contact_phone": contact_phone,
+        "note": note,
+        "demo": True,
+        "transport": "演示通道",
+        "message": f"已发起{channel_label}提醒（演示通道 · 不发公网）",
+    }
+    # 无真实运营商密钥时仅落盘；若日后配置短信/语音 API，在此薄封装调用。
+    with open(REMIND_PATH, "a", encoding="utf-8") as log:
+        log.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return {"ok": True, "entry": entry, "demo": True, "transport": "演示通道"}, 200
+
+
 def create_coop(body: dict):
     seed_coop()
     DATA = load_data()
@@ -1161,10 +1505,13 @@ def do_attract_handover(body: dict):
     at = datetime.now(timezone.utc).isoformat()
     cid = f"corp_attr_{int(datetime.now().timestamp())}"
     
+    tag = _direction_tag({"direction": direction})
     new_company = {
         "id": cid,
         "code": company_name,
         "direction": direction,
+        "direction_tag": tag or "smart_tools",
+        "industry": DIRECTION_TAGS.get(tag or "smart_tools", "智能工具"),
         "size_band": size_band,
         "headcount_range": f"{headcount}人",
         "funding_stage": "招商签约 / 入驻初期",
@@ -1173,6 +1520,8 @@ def do_attract_handover(body: dict):
         "alias": company_name,
         "address": f"云谷中心 · 招商入驻专属工位（{area}㎡）",
         "contact_lead": f"招商专员 {op_label} 签约交接",
+        "phone": f"135****{(abs(hash(cid)) % 10000):04d}",
+        "contact_phone": f"1350013{(abs(hash(cid)) % 10000):04d}",
         "attraction_memos": [
             {
                 "item": "招商测算红利备忘与交接",
@@ -1255,6 +1604,7 @@ def do_sop(body: dict):
     step = int(st["sop_step"])
     status = st["sop_status"]
     draft = None
+    reason = ""
     op_label = next(
         (o["label"] for o in DATA["operators"] if o["id"] == operator), operator
     )
@@ -1264,8 +1614,14 @@ def do_sop(body: dict):
         if status != "active":
             return {"ok": False, "error": "终态不可再驳回"}, 400
         status = "rejected"
+        reason = (
+            (body.get("reject_reason") or body.get("fail_reason") or "").strip()
+            or (rule.get("reject_reason") or rule.get("fail_reason") or "").strip()
+            or "专员驳回（未填原因）"
+        )
         # 终态旁路：停在当前步，末节点展示「未通过」
     elif action == "reset":
+        reason = ""
         if status == "rejected":
             status = "active"
         elif status == "passed":
@@ -1278,6 +1634,7 @@ def do_sop(body: dict):
         else:
             step -= 1
     elif action in ("next", "accept"):
+        reason = st.get("reject_reason") or ""
         if status != "active":
             return {"ok": False, "error": "终态不可推进"}, 400
         if action == "accept" and step != 1:
@@ -1313,7 +1670,10 @@ def do_sop(body: dict):
     else:
         return {"ok": False, "error": "invalid action"}, 400
 
-    SOP[match_id] = {"sop_step": step, "sop_status": status}
+    sop_entry = {"sop_step": step, "sop_status": status}
+    if status == "rejected" and reason:
+        sop_entry["reject_reason"] = reason
+    SOP[match_id] = sop_entry
     entry = {
         "at": at,
         "match_id": match_id,
@@ -1323,6 +1683,9 @@ def do_sop(body: dict):
         "sop_status": status,
         "operator": operator,
     }
+    if status == "rejected" and reason:
+        entry["reject_reason"] = reason
+        entry["fail_reason"] = reason
     _append_sop_log(entry)
     payload = sop_payload(match_id, rule)
     out = {"ok": True, "entry": entry, **payload}
@@ -1412,8 +1775,8 @@ class Handler(BaseHTTPRequestHandler):
                     "host": HOST,
                     "port": PORT,
                     "lan_urls": _lan_urls(),
-                    "name": "云谷企服运营台",
-                    "product": "云谷企服运营台",
+                    "name": "云谷企服雷达智能匹配系统",
+                    "product": "云谷企服雷达智能匹配系统",
                 },
             )
         if path == "/api/policy_radar":
@@ -1455,8 +1818,18 @@ class Handler(BaseHTTPRequestHandler):
             cid = qs.get("company_id", [None])[0]
             out = policy_match(cid) if cid else None
             return self._json(200, out) if out else self._json(404, {"error": "not found"})
+        if path == "/api/corp_home":
+            cid = qs.get("company_id", [None])[0]
+            out = corp_home(cid) if cid else None
+            return self._json(200, out) if out else self._json(404, {"error": "not found"})
         if path == "/api/companies":
-            return self._json(200, list_companies(qs.get("size_band", [None])[0]))
+            return self._json(
+                200,
+                list_companies(
+                    qs.get("size_band", [None])[0],
+                    qs.get("direction", [None])[0],
+                ),
+            )
         if path == "/api/match_board":
             return self._json(
                 200,
@@ -1520,6 +1893,9 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == "/api/coop_request":
             payload, code = create_coop(body)
             return self._json(code, payload)
+        if parsed.path == "/api/remind":
+            payload, code = do_remind(body)
+            return self._json(code, payload)
         self._json(404, {"error": "not found"})
 
 
@@ -1527,7 +1903,7 @@ def main():
     seed_coop()
     seed_sop()
     server = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"云谷企服运营台 监听 {HOST}:{PORT}")
+    print(f"云谷企服雷达智能匹配系统 监听 {HOST}:{PORT}")
     print(f"  本机  http://127.0.0.1:{PORT}/")
     lan = _lan_urls()
     if lan:

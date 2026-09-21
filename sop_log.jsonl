@@ -15,3 +15,8 @@
 {"at": "2026-09-21T06:50:00.000000+00:00", "match_id": "m_opc1_glm_coding", "company_id": "corp_opc_1", "action": "demo_seed", "sop_step": 4, "sop_status": "passed", "operator": "DEMO", "note": "演示种子·已通过"}
 {"at": "2026-09-21T06:50:00.000000+00:00", "match_id": "m_opc1_clinic", "company_id": "corp_opc_1", "action": "demo_seed", "sop_step": 4, "sop_status": "passed", "operator": "DEMO", "note": "演示种子·已通过"}
 {"at": "2026-09-21T06:50:00.000000+00:00", "match_id": "m_m1_yunqi", "company_id": "corp_m_1", "action": "demo_seed", "sop_step": 4, "sop_status": "passed", "operator": "DEMO", "note": "演示种子·已通过"}
+{"at": "2026-09-21T07:00:47.967385+00:00", "match_id": "m_m1_compute", "company_id": "corp_m_1", "action": "accept", "sop_step": 2, "sop_status": "active", "operator": "OP-01"}
+{"at":"2026-09-21T08:00:00+00:00","match_id":"m_opc_tax_1","company_id":"corp_opc_1","action":"demo_seed","sop_step":3,"sop_status":"rejected","reject_reason":"未建独立研发辅助账，加计扣除汇算清缴驳回","operator":"DEMO","note":"演示种子·已终止"}
+{"at":"2026-09-21T08:00:00+00:00","match_id":"m_opc_rent_2","company_id":"corp_opc_2","action":"demo_seed","sop_step":2,"sop_status":"rejected","reject_reason":"共享工位无独立租赁面积，房租补贴不予受理","operator":"DEMO","note":"演示种子·已终止"}
+{"at":"2026-09-21T08:00:00+00:00","match_id":"m_m1_software","company_id":"corp_m_1","action":"demo_seed","sop_step":3,"sop_status":"rejected","reject_reason":"缺 CNAS 第三方测评报告，首版次软件认定终止","operator":"DEMO","note":"演示种子·已终止"}
+{"at":"2026-09-21T08:00:00+00:00","match_id":"m_opc1_hightech","company_id":"corp_opc_1","action":"demo_seed","sop_step":1,"sop_status":"active","operator":"DEMO","note":"演示种子·冲突样例待补充"}
