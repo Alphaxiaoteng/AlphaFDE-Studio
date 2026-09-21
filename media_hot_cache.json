@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "note": "本地样例/缓存：实时源失败时降级展示。不含密钥。标题为公开热点风格样例，链接为公开检索页，非伪造公文 URL。",
+    "updated": "2026-09-21"
+  },
+  "items": [
+    {
+      "id": "sample_ai_1",
+      "title": "开源了一个 Ai 3D 通用快速建模平台，欢迎技术向讨论",
+      "source": "样例 · 社区热点风格",
+      "url": "https://www.google.com/search?q=%E5%BC%80%E6%BA%90+AI+3D+%E5%BB%BA%E6%A8%A1",
+      "topic": "ai",
+      "media_type": "link",
+      "published_at": "2026-09-20T08:00:00+00:00",
+      "thumb": "",
+      "video_url": "",
+      "summary": "AI 向热点样例（缓存）",
+      "provider": "cache"
+    },
+    {
+      "id": "sample_ai_2",
+      "title": "算力上天：商业航天开始争夺这块蛋糕",
+      "source": "样例 · 产业评论风格",
+      "url": "https://www.google.com/search?q=%E7%AE%97%E5%8A%9B+%E5%95%86%E4%B8%9A%E8%88%AA%E5%A4%A9",
+      "topic": "ai",
+      "media_type": "link",
+      "published_at": "2026-09-19T10:00:00+00:00",
+      "thumb": "",
+      "video_url": "",
+      "summary": "算力相关热点样例（缓存）",
+      "provider": "cache"
+    },
+    {
+      "id": "sample_policy_1",
+      "title": "人工智能相关培育与补贴政策动态（公开检索入口）",
+      "source": "样例 · 政策向",
+      "url": "https://www.gov.cn/zhengce/zuixin.htm",
+      "topic": "policy",
+      "media_type": "link",
+      "published_at": "2026-09-18T06:00:00+00:00",
+      "thumb": "",
+      "video_url": "",
+      "summary": "指向政府网站公开政策列表，非具体公文伪造链接",
+      "provider": "cache"
+    },
+    {
+      "id": "sample_policy_2",
+      "title": "大模型产业培育：地方补贴与算力券线索（检索）",
+      "source": "样例 · 政策向",
+      "url": "https://www.google.com/search?q=%E5%A4%A7%E6%A8%A1%E5%9E%8B+%E5%9F%B9%E8%82%B2+%E8%A1%A5%E8%B4%B4+%E7%AE%97%E5%8A%9B%E5%88%B8",
+      "topic": "policy",
+      "media_type": "link",
+      "published_at": "2026-09-17T06:00:00+00:00",
+      "thumb": "",
+      "video_url": "",
+      "summary": "政策关键词检索入口（缓存）",
+      "provider": "cache"
+    },
+    {
+      "id": "sample_video_1",
+      "title": "【样例】AIGC 短视频封面占位 · 配置 TikHub 后显示真实封面/播放",
+      "source": "样例 · 视频占位",
+      "url": "https://www.douyin.com/search/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%94%BF%E7%AD%96",
+      "topic": "ai",
+      "media_type": "video",
+      "published_at": "2026-09-16T12:00:00+00:00",
+      "thumb": "",
+      "video_url": "",
+      "summary": "无密钥时仅作形态样例；有密钥时由 TikHub 返回真实媒体字段",
+      "provider": "cache"
+    }
+  ]
+}

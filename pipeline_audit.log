@@ -1,0 +1,19 @@
+{"timestamp": "2026-09-21T04:53:15.037102+00:00", "event": "DAILY_RADAR_UPDATE", "policies_count": 7, "rules_count": 10, "status": "SUCCESS", "doc_references": ["西经信〔2025〕10号", "西经信〔2025〕10号", "杭市监〔2026〕43号", "西经信〔2025〕8号", "杭科高〔2024〕62号", "财政部 税务总局 科技部公告 2023年 第7号", "国科发火〔2016〕32号"]}
+{"timestamp": "2026-09-21T05:35:43.338472+00:00", "event": "DAILY_RADAR_UPDATE", "policies_count": 15, "rules_count": 17, "status": "SUCCESS", "doc_references": ["西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "杭政办函〔2024〕40号", "杭市监〔2026〕43号", "西经信〔2025〕8号", "财建〔2024〕148号", "银发〔2024〕63号 / 央行2026扩容政策", "杭科高〔2024〕62号", "财政部 税务总局 科技部公告 2023年 第7号", "国科发火〔2016〕32号", "杭经信数经〔2024〕78号", "西科发〔2024〕19号", "杭政办〔2023〕1号 / 市交通运管公文"]}
+{"timestamp": "2026-09-21T05:43:41.379903+00:00", "event": "DAILY_RADAR_UPDATE", "policies_count": 15, "rules_count": 17, "status": "SUCCESS", "doc_references": ["西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "杭政办函〔2024〕40号", "杭市监〔2026〕43号", "西经信〔2025〕8号", "财建〔2024〕148号", "银发〔2024〕63号 / 央行2026扩容政策", "杭科高〔2024〕62号", "财政部 税务总局 科技部公告 2023年 第7号", "国科发火〔2016〕32号", "杭经信数经〔2024〕78号", "西科发〔2024〕19号", "杭政办〔2023〕1号 / 市交通运管公文"]}
+{"timestamp": "2026-09-21T05:44:07.467322+00:00", "event": "DAILY_POLICY_RADAR_REFRESH", "policy_count": 18, "match_rule_count": 14, "status": "SUCCESS", "verified_docs": ["西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "西经信〔2025〕10号", "杭政办函〔2024〕40号", "杭市监〔2026〕43号", "西经信〔2025〕8号", "工信部联科〔2026〕专项", "发改环资〔2025〕专项 / 2026特别国债细则", "财建〔2024〕148号", "银发〔2024〕63号 / 央行2026扩容政策", "浙政办发〔2025〕24号", "浙政办发〔2025〕27号", "浙政办发〔2024〕14号", "浙政办发〔2024〕21号", "杭科高〔2024〕62号", "杭经信数经〔2024〕78号", "西科发〔2024〕19号"]}
+{"timestamp": "2026-09-21T06:03:31.689047+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "active_valid_count": 8, "superseded_count": 1, "expired_count": 1, "rules_count": 11, "status": "SUCCESS"}
+{"timestamp": "2026-09-21T06:13:04.030880+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "active_valid_count": 8, "superseded_count": 1, "expired_count": 1, "rules_count": 11, "status": "SUCCESS"}
+{"timestamp": "2026-09-21T06:15:51.417376+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "active_valid_count": 12, "superseded_count": 1, "expired_count": 1, "rules_count": 15, "status": "SUCCESS"}
+[2026-09-21T06:23:11Z] 触发每日政策雷达自动清洗与更新任务...
+{"timestamp": "2026-09-21T06:23:11.484650+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "active_valid_count": 12, "superseded_count": 1, "expired_count": 1, "rules_count": 15, "status": "SUCCESS"}
+[2026-09-21T06:23:11.482952+00:00] 启动每日政策雷达自动化更新管道 (三层漏斗引擎)...
+✓ 三层漏斗引擎运行完毕！共处理 14 条公文：
+   • 有效申报中政策：12 条
+   • 已被新规废止替代：1 条
+   • 申报窗口已关闭归档：1 条
+✓ 企业比对规则更新完成：15 项已完成动态映射。
+✓ 审计留痕日志：/Users/albert/Documents/project/tmp/fde/ops-console/pipeline_audit.log
+[2026-09-21T06:23:11Z] 每日政策雷达清洗成功完成 (Exit Code 0)。
+{"timestamp": "2026-09-21T06:38:02.360659+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "total_radar_count": 20, "policies_count": 14, "events_count": 6, "active_valid_count": 18, "superseded_count": 1, "expired_count": 1, "rules_count": 19, "status": "SUCCESS"}
+{"timestamp": "2026-09-21T06:39:16.199935+00:00", "event": "THREE_LAYER_FUNNEL_RADAR_UPDATE", "total_radar_count": 20, "policies_count": 14, "events_count": 6, "active_valid_count": 18, "superseded_count": 1, "expired_count": 1, "rules_count": 19, "status": "SUCCESS"}

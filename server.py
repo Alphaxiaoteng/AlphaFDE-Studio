@@ -24,7 +24,7 @@ LOG_PATH = os.path.join(ROOT, "confirm_log.jsonl")
 COOP_PATH = os.path.join(ROOT, "coop_requests.jsonl")
 SOP_PATH = os.path.join(ROOT, "sop_log.jsonl")
 HOST = os.environ.get("HOST", "0.0.0.0")
-PORT = int(os.environ.get("PORT", "8766"))
+PORT = int(os.environ.get("PORT", "7860"))
 
 # 政策办理 SOP：固定 5 步；不代发微信，仅记状态
 SOP_STEPS = (
@@ -87,29 +87,58 @@ def load_data():
         return json.load(f)
 
 
+# 看板演示种子：多阶段覆盖（非真实业绩）。末条覆盖；未列出的 match 仍走默认（待发送）。
+DEMO_SOP_SEED = (
+    # 已发送·待企业接受 → pending_accept
+    ("m_opc_hz_2", 1, "active"),
+    ("m_s1_tax", 1, "active"),
+    ("m_m1_compute", 1, "active"),
+    ("m_m1_model", 1, "active"),
+    ("m_m1_rent", 1, "active"),
+    ("m_opc1_token", 1, "active"),
+    # 已接受 / 申请提交
+    ("m_opc_hz_1", 2, "active"),
+    ("m_m1_chuying", 2, "active"),
+    ("m_s1_consume", 2, "active"),
+    # 办理中
+    ("m_m1_hightech", 3, "active"),
+    ("m_opc1_opc_action", 3, "active"),
+    ("m_m1_reloan", 3, "active"),
+    # 已通过
+    ("m_opc1_glm_coding", 4, "passed"),
+    ("m_opc1_clinic", 4, "passed"),
+    ("m_m1_yunqi", 4, "passed"),
+)
+
+
 def seed_sop():
-    """从 sop_log.jsonl 恢复最新 SOP 状态（末条覆盖）。"""
-    if SOP or not os.path.isfile(SOP_PATH):
+    """从 sop_log.jsonl 恢复最新 SOP 状态（末条覆盖）；缺演示覆盖时补 DEMO_SOP_SEED。"""
+    if SOP:
         return
-    try:
-        with open(SOP_PATH, "r", encoding="utf-8") as log:
-            for line in log:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    row = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                mid = row.get("match_id")
-                if not mid:
-                    continue
-                SOP[mid] = {
-                    "sop_step": int(row.get("sop_step", 0)),
-                    "sop_status": row.get("sop_status") or "active",
-                }
-    except OSError:
-        pass
+    if os.path.isfile(SOP_PATH):
+        try:
+            with open(SOP_PATH, "r", encoding="utf-8") as log:
+                for line in log:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        row = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    mid = row.get("match_id")
+                    if not mid:
+                        continue
+                    SOP[mid] = {
+                        "sop_step": int(row.get("sop_step", 0)),
+                        "sop_status": row.get("sop_status") or "active",
+                    }
+        except OSError:
+            pass
+    # 演示种子：仅填尚未出现在日志中的 match_id，不覆盖运行时推进
+    for mid, step, status in DEMO_SOP_SEED:
+        if mid not in SOP:
+            SOP[mid] = {"sop_step": int(step), "sop_status": status}
 
 
 def _sop_defaults(match_id: str, rule: dict | None = None) -> dict:
@@ -298,6 +327,19 @@ def _window_urgency(r: dict, today: date | None = None) -> dict:
     else:
         urgency = "ok"
     return {"days_left": days, "urgency": urgency}
+
+
+def _radar_match_count(data: dict, r: dict, cmap: dict | None = None) -> int:
+    """雷达条目匹配企业数：company_ids ∪ 有效 match_rules。"""
+    cmap = cmap if cmap is not None else _companies_by_id(data)
+    match_ids = {cid for cid in (r.get("company_ids") or []) if cid in cmap}
+    for m in data.get("match_rules") or []:
+        if m.get("radar_id") != r.get("id"):
+            continue
+        cid = m.get("company_id")
+        if cid in cmap and _fits_current(cmap.get(cid), r):
+            match_ids.add(cid)
+    return len(match_ids)
 
 
 def _fields_all_confirmed(company: dict) -> bool:
@@ -554,10 +596,12 @@ def dashboard():
     radar_raw = [r for r in (DATA.get("radar") or []) if not _is_coop_radar(r)]
     match_rules = DATA.get("match_rules") or []
     cmap = _companies_by_id(DATA)
+    radar_map = _radar_by_id(DATA)
 
     active_policies = 0
     public_events = 0
-    urgent_items = []
+    deadline_items = []
+    upcoming_events = []
     subsidy_wan = 0.0
     for r in radar_raw:
         win = _window_urgency(r)
@@ -569,8 +613,9 @@ def dashboard():
         else:
             active_policies += 1
         subsidy_wan += _parse_subsidy_demo_wan(r.get("subsidy_detail") or "")
+        match_n = _radar_match_count(DATA, r, cmap)
         if win["urgency"] in ("urgent", "watch") and win["days_left"] is not None:
-            urgent_items.append(
+            deadline_items.append(
                 {
                     "id": r.get("id"),
                     "title": r.get("title"),
@@ -578,42 +623,83 @@ def dashboard():
                     "urgency": win["urgency"],
                     "doc_no": r.get("doc_no") or "",
                     "channel": ch,
+                    "match_count": match_n,
                 }
             )
-    urgent_items.sort(
+        if ch == "公开活动" and win["days_left"] is not None and win["days_left"] >= 0:
+            upcoming_events.append(
+                {
+                    "id": r.get("id"),
+                    "title": r.get("title"),
+                    "days_left": win["days_left"],
+                    "urgency": win["urgency"],
+                    "event_start": (r.get("event_start") or r.get("window_start") or "")[:10],
+                    "event_end": (r.get("event_end") or r.get("window_end") or "")[:10],
+                    "doc_no": r.get("doc_no") or "",
+                    "match_count": match_n,
+                }
+            )
+    deadline_items.sort(
         key=lambda x: (
             URGENCY_RANK.get(x["urgency"], 9),
             x["days_left"] if x["days_left"] is not None else 10**9,
         )
     )
+    upcoming_events.sort(
+        key=lambda x: (
+            x["days_left"] if x["days_left"] is not None else 10**9,
+            x.get("event_start") or "",
+        )
+    )
+    deadlines_urgent = [x for x in deadline_items if x["urgency"] == "urgent"]
+    deadlines_watch = [x for x in deadline_items if x["urgency"] == "watch"]
 
     matching = 0
     for m in match_rules:
         c = cmap.get(m.get("company_id"))
-        r = _radar_by_id(DATA).get(m.get("radar_id"), {})
+        r = radar_map.get(m.get("radar_id"), {})
         if c and r and _fits_current(c, r) and m.get("state") in ("符合", "待核验"):
             matching += 1
 
-    # SOP 漏斗：触达(>=1) / 接受(>=2) / 通过(passed)
+    # SOP：五步分布 + 兼容旧漏斗；本周待办从状态聚合
+    sop_progress = {"send": 0, "accept": 0, "apply": 0, "processing": 0, "passed": 0}
     funnel = {"sent": 0, "accepted": 0, "passed": 0}
+    todos = {"pending_send": 0, "pending_accept": 0}
     seen = set()
     for m in match_rules:
         mid = m.get("id")
         if not mid or mid in seen:
             continue
         seen.add(mid)
+        c = cmap.get(m.get("company_id"))
+        r = radar_map.get(m.get("radar_id"), {})
+        if not (c and r and _fits_current(c, r)):
+            continue
+        if m.get("state") not in ("符合", "待核验"):
+            continue
         st = get_sop_state(mid, m)
         step = int(st.get("sop_step", 0))
         status = st.get("sop_status") or "active"
+        if status == "rejected":
+            continue
         if status == "passed" or step >= 5:
+            sop_progress["passed"] += 1
             funnel["passed"] += 1
             funnel["accepted"] += 1
             funnel["sent"] += 1
-        elif step >= 2:
-            funnel["accepted"] += 1
-            funnel["sent"] += 1
-        elif step >= 1 or (CONFIRMED.get(mid) or {}).get("action") == "confirm":
-            funnel["sent"] += 1
+        else:
+            keys = ("send", "accept", "apply", "processing", "passed")
+            idx = max(0, min(4, step))
+            sop_progress[keys[idx]] += 1
+            if step >= 2:
+                funnel["accepted"] += 1
+                funnel["sent"] += 1
+            elif step >= 1 or (CONFIRMED.get(mid) or {}).get("action") == "confirm":
+                funnel["sent"] += 1
+            if step <= 0:
+                todos["pending_send"] += 1
+            elif step == 1:
+                todos["pending_accept"] += 1
 
     # 梯度培育：有匹配进行中的企业数（演示口径）
     cultivated = len(
@@ -641,10 +727,29 @@ def dashboard():
             "subsidy_label": "累计撬动扶持（万元·样例汇总）",
             "cultivated": cultivated,
             "cultivated_label": "梯度培育入库（家·演示）",
-            "urgent_count": len([u for u in urgent_items if u["urgency"] == "urgent"]),
+            "urgent_count": len(deadlines_urgent),
             "urgent_label": "窗口紧急件数",
+            "watch_count": len(deadlines_watch),
+            "watch_label": "窗口临近件数",
         },
-        "deadlines": urgent_items[:5],
+        # 全部 urgent + watch，不再截断 5 条；过期默认不入此列表
+        "deadlines": deadline_items,
+        "deadlines_urgent": deadlines_urgent,
+        "deadlines_watch": deadlines_watch,
+        "upcoming_events": upcoming_events,
+        "todos": todos,
+        "todo_labels": {
+            "pending_send": "待发送匹配",
+            "pending_accept": "待企业接受",
+        },
+        "sop_progress": sop_progress,
+        "sop_progress_labels": {
+            "send": "发送",
+            "accept": "接受",
+            "apply": "申请",
+            "processing": "办理",
+            "passed": "通过",
+        },
         "funnel": funnel,
         "funnel_labels": {"sent": "本季触达", "accepted": "企业接受", "passed": "已通过"},
     }
@@ -1044,6 +1149,63 @@ def do_confirm(body: dict):
     return {"ok": True, "entry": entry, "draft": draft}, 200
 
 
+def do_attract_handover(body: dict):
+    DATA = load_data()
+    company_name = body.get("name") or "意向企业"
+    direction = body.get("direction") or "人工智能/智能体研发"
+    size_band = body.get("size_band") or "s_3_20"
+    headcount = body.get("headcount") or 10
+    area = body.get("area") or 120
+    operator = body.get("operator") or DATA.get("meta", {}).get("operator_default", "OP-01")
+    op_label = next((o["label"] for o in DATA.get("operators", []) if o["id"] == operator), operator)
+    at = datetime.now(timezone.utc).isoformat()
+    cid = f"corp_attr_{int(datetime.now().timestamp())}"
+    
+    new_company = {
+        "id": cid,
+        "code": company_name,
+        "direction": direction,
+        "size_band": size_band,
+        "headcount_range": f"{headcount}人",
+        "funding_stage": "招商签约 / 入驻初期",
+        "service_needs": ["政策申报辅导", "算力补贴对接", "工商/场地合规"],
+        "display_name": company_name,
+        "alias": company_name,
+        "address": f"云谷中心 · 招商入驻专属工位（{area}㎡）",
+        "contact_lead": f"招商专员 {op_label} 签约交接",
+        "attraction_memos": [
+            {
+                "item": "招商测算红利备忘与交接",
+                "role": f"{op_label}（留痕）",
+                "note": f"首年降本测算交接归档，意向面积{area}㎡，招商政策承诺已冻结"
+            }
+        ],
+        "evidence": [
+            {"key": "招商入驻意向协议", "status": "verified", "label": "已签署"},
+            {"key": "2026政策红利测算单", "status": "verified", "label": "已出具"},
+            {"key": "工商设立/工位备案", "status": "pending", "label": "办理中"}
+        ]
+    }
+    
+    DATA["companies"].append(new_company)
+    with open(DATA_PATH, "w", encoding="utf-8") as f:
+        json.dump(DATA, f, ensure_ascii=False, indent=2)
+        
+    entry = {
+        "at": at,
+        "kind": "attract_handover",
+        "company_id": cid,
+        "company_name": company_name,
+        "operator": operator,
+        "operator_label": op_label,
+        "note": f"招商签约成功，移交企服团队履约"
+    }
+    with open(LOG_PATH, "a", encoding="utf-8") as log:
+        log.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        
+    return {"ok": True, "company_id": cid, "message": "签约交接成功，已归档至企服运营名册"}, 200
+
+
 def do_review(body: dict):
     DATA = load_data()
     company_id = body.get("company_id")
@@ -1204,6 +1366,12 @@ class Handler(BaseHTTPRequestHandler):
         self._cors()
         self.end_headers()
 
+    def do_HEAD(self):
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
@@ -1222,6 +1390,10 @@ class Handler(BaseHTTPRequestHandler):
         if path in ("/POLICY_COLLECTION_SOP.md", "/sop.md"):
             return self._file(
                 os.path.join(ROOT, "POLICY_COLLECTION_SOP.md"), "text/markdown; charset=utf-8"
+            )
+        if path in ("/CLI_DOCKER_SOP.md", "/docker-sop.md", "/cli-sop.md"):
+            return self._file(
+                os.path.join(ROOT, "CLI_DOCKER_SOP.md"), "text/markdown; charset=utf-8"
             )
         if path.startswith("/logos/") and path.count("/") == 2:
             name = path.rsplit("/", 1)[-1]
@@ -1341,6 +1513,9 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(code, payload)
         if parsed.path == "/api/sop":
             payload, code = do_sop(body)
+            return self._json(code, payload)
+        if parsed.path == "/api/attract/handover":
+            payload, code = do_attract_handover(body)
             return self._json(code, payload)
         if parsed.path == "/api/coop_request":
             payload, code = create_coop(body)

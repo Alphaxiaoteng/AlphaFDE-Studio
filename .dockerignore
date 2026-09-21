@@ -1,8 +1,12 @@
 .git
-.venv
-__pycache__
+.gitignore
+.DS_Store
+__pycache__/
 *.pyc
-*.png
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+debug*.png
+ops_console*.png
 .env
-pipeline_audit.log
-fetched.html

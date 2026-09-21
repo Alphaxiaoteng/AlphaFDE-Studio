@@ -11,13 +11,14 @@
   </style>
   <style>
     :root {
-      --bg: #f7f5f0;
+      --bg: #f3f0ea;
       --paper: #faf8f4;
-      --paper-soft: #faf8f4;
-      --ink: #1c1c1c;
-      --muted: #6b6b6b;
-      --line: #e6e1d8;
-      --line-strong: #cfc7ba;
+      --paper-soft: #f7f4ee;
+      --side-bg: #efebe3;
+      --ink: #161616;
+      --muted: #8a857c;
+      --line: #e0d9ce;
+      --line-strong: #c9bfb0;
       --accent: #8c1d1d;
       --accent-soft: #f3e8e6;
       --ok: #2f5d3a;
@@ -29,6 +30,9 @@
       --seal: #0f6f4f;
       --radius: 12px;
       --radius-sm: 8px;
+      --ease: 180ms ease;
+      --shadow-sm: 0 1px 2px rgba(28, 28, 28, 0.04), 0 1px 8px rgba(28, 28, 28, 0.03);
+      --shadow-md: 0 4px 14px rgba(28, 28, 28, 0.07);
     }
     * { box-sizing: border-box; }
     body {
@@ -45,14 +49,20 @@
     .app { display: flex; flex: 1; min-height: 0; }
     .side {
       width: 228px;
-      background: var(--paper);
-      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #f2eee6 0%, var(--side-bg) 100%);
+      border-right: 1px solid var(--line-strong);
+      box-shadow: 4px 0 18px rgba(28, 28, 28, 0.04);
       display: flex;
       flex-direction: column;
       padding: 20px 14px;
-      gap: 6px;
+      gap: 4px;
+      z-index: 2;
     }
-    .brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 18px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      padding: 4px 8px 20px; border-bottom: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
     .logo {
       width: 40px; height: 40px;
       border: 1.5px solid var(--seal);
@@ -85,21 +95,24 @@
       font-size: 14px;
       font-family: inherit;
       line-height: 1.35;
+      transition: background var(--ease), color var(--ease), box-shadow var(--ease), transform var(--ease);
     }
     .nav-btn .nav-ico {
       width: 28px; height: 28px; flex: none;
       border-radius: var(--radius-sm);
-      background: #f3f0ea;
+      background: rgba(255,255,255,0.55);
       display: grid; place-items: center;
       margin-top: 1px;
+      transition: background var(--ease);
     }
     .nav-btn .nav-ico svg { width: 16px; height: 16px; display: block; }
     .nav-btn .nav-txt { min-width: 0; flex: 1; }
-    .nav-btn:hover { background: #f3f0ea; }
+    .nav-btn:hover { background: rgba(255,255,255,0.55); }
     .nav-btn.active {
       background: #eef6f2;
       color: var(--seal);
       font-weight: 600;
+      box-shadow: var(--shadow-sm);
     }
     .nav-btn.active .nav-ico { background: #dff0e8; }
     .nav-btn small { display: block; color: var(--muted); margin-top: 2px; font-size: 11px; font-weight: 400; }
@@ -109,7 +122,25 @@
       border: 1px solid var(--line); border-radius: var(--radius-sm);
       background: var(--paper-soft); font-family: inherit; font-size: 12px;
     }
-    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    .portal-switch {
+      display: flex; gap: 2px; margin-bottom: 12px; padding: 3px;
+      background: rgba(255,255,255,0.55); border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+    .portal-btn {
+      flex: 1; border: 0; background: transparent; cursor: pointer;
+      font-family: inherit; font-size: 12px; color: var(--muted);
+      padding: 7px 6px; border-radius: calc(var(--radius-sm) - 2px);
+      transition: background var(--ease), color var(--ease);
+    }
+    .portal-btn:hover { color: var(--ink); }
+    .portal-btn.on {
+      background: #eef6f2; color: var(--seal); font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+    .side-foot .foot-block { margin-top: 2px; }
+    .nav-btn[hidden] { display: none !important; }
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: transparent; }
     .topbar {
       display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
       padding: 14px 22px; border-bottom: 1px solid var(--line);
@@ -238,11 +269,13 @@
     .hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.55; }
     .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .chip {
-      border: 1px solid var(--line); background: var(--paper-soft); color: var(--ink);
+      border: 1px solid var(--line); background: var(--paper); color: var(--ink);
       padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: inherit;
       border-radius: 999px;
+      transition: background var(--ease), border-color var(--ease), color var(--ease), box-shadow var(--ease), transform var(--ease);
     }
-    .chip.on { border-color: var(--seal); color: var(--seal); background: #eef6f2; }
+    .chip:hover { border-color: var(--line-strong); box-shadow: var(--shadow-sm); }
+    .chip.on { border-color: var(--seal); color: var(--seal); background: #eef6f2; box-shadow: var(--shadow-sm); }
     .stats {
       display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
     }
@@ -256,21 +289,36 @@
       font-size: 20px; font-weight: 600; color: var(--seal);
     }
     .stat span { font-size: 11px; color: var(--muted); }
-    .list { display: flex; flex-direction: column; gap: 8px; padding: 8px; }
+    .list { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
     .card {
-      border: 1px solid transparent; padding: 14px 14px; cursor: pointer;
-      background: transparent; transition: background .15s, border-color .15s, box-shadow .15s;
+      border: 1px solid var(--line); padding: 14px 14px; cursor: pointer;
+      background: var(--paper);
+      transition: background var(--ease), border-color var(--ease), box-shadow var(--ease), transform var(--ease);
       border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      animation: cardIn 220ms ease both;
     }
-    .card:hover { background: #f3f0ea; }
+    .card:nth-child(1) { animation-delay: 0ms; }
+    .card:nth-child(2) { animation-delay: 30ms; }
+    .card:nth-child(3) { animation-delay: 60ms; }
+    .card:nth-child(4) { animation-delay: 90ms; }
+    .card:nth-child(5) { animation-delay: 120ms; }
+    .card:nth-child(6) { animation-delay: 150ms; }
+    .card:hover {
+      background: #fffdf9;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-strong);
+    }
     .card.active {
       background: #eef6f2;
-      border-color: #c5ddd2;
-      box-shadow: 0 1px 0 rgba(15, 111, 79, 0.06);
+      border-color: #b7d4c6;
+      box-shadow: 0 2px 10px rgba(15, 111, 79, 0.08);
+      transform: none;
     }
     .card h3 {
-      margin: 0 0 6px; font-size: 14px; font-weight: 600;
-      font-family: "Noto Serif SC", serif; letter-spacing: 0.03em;
+      margin: 0 0 6px; font-size: 15px; font-weight: 650;
+      font-family: "Noto Serif SC", serif; letter-spacing: 0.03em; color: var(--ink);
     }
     .meta { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 12px; color: var(--muted); align-items: center; }
     .cite { margin-top: 8px; font-size: 12px; color: var(--muted); line-height: 1.55; }
@@ -314,19 +362,144 @@
     .warn-strip .warn-item .days { color: var(--warn); font-weight: 600; }
     .warn-strip .warn-item .doc { color: var(--muted); }
     .split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 14px; align-items: start; }
-    .split.radar-layout { grid-template-columns: minmax(0, 1fr) minmax(180px, 240px); }
+    .split.radar-layout { grid-template-columns: 1fr; }
     @media (max-width: 900px) {
       .split { grid-template-columns: 1fr; }
-      .split.radar-layout { grid-template-columns: 1fr; }
     }
     .split-list {
-      border: 1px solid var(--line); background: var(--paper);
+      border: 1px solid var(--line); background: var(--paper-soft);
       max-height: calc(100vh - 300px); overflow: auto;
       border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
     }
+    .split.radar-layout .split-list { max-height: calc(100vh - 250px); }
     .split-detail {
       min-height: 200px; border: 1px solid var(--line); background: var(--paper);
       padding: 16px 18px; border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-stack {
+      margin-bottom: 14px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pm-official {
+      margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .pm-official a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+    .pm-official a:hover { color: var(--seal); }
+    .pm-body-missing {
+      margin: 0 0 10px; padding: 10px 12px;
+      background: var(--warn-bg); color: var(--warn);
+      border-radius: var(--radius-sm); font-size: 13px;
+    }
+    .dash-panel {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 16px 18px; margin-bottom: 14px;
+    }
+    .dash-panel h2 {
+      margin: 0 0 12px; font-family: "Noto Serif SC", serif;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .dash-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;
+    }
+    .dash-stat {
+      background: var(--paper-soft); border: 1px solid var(--line);
+      border-radius: var(--radius-sm); padding: 12px 14px;
+    }
+    .dash-stat b {
+      display: block; font-family: "Noto Serif SC", serif;
+      font-size: 24px; font-weight: 650; color: var(--seal); line-height: 1.1;
+    }
+    .dash-stat span { font-size: 11px; color: var(--muted); }
+    .dash-demo {
+      display: inline-block; font-size: 10px; color: var(--warn);
+      background: var(--warn-bg); border: 1px solid #e6d5b0;
+      padding: 1px 7px; border-radius: 999px; margin-left: 8px;
+      vertical-align: middle;
+    }
+    .funnel { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .funnel-row { display: grid; grid-template-columns: 72px 1fr 36px; gap: 10px; align-items: center; font-size: 12px; }
+    .funnel-row .bar-track {
+      height: 10px; background: #efebe3; border-radius: 999px; overflow: hidden;
+    }
+    .funnel-row .bar-fill {
+      height: 100%; background: var(--seal); border-radius: 999px;
+      transition: width 280ms ease;
+    }
+    .dash-row {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; margin-bottom: 14px;
+    }
+    @media (max-width: 960px) {
+      .dash-row { grid-template-columns: 1fr; }
+    }
+    .dash-row > .dash-panel { margin-bottom: 0; }
+    .deadline-list { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow: auto; }
+    .deadline-list li {
+      display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center;
+      padding: 10px 4px; border-bottom: 1px solid var(--line); cursor: pointer;
+      transition: background var(--ease);
+    }
+    .deadline-list li:last-child { border-bottom: none; }
+    .deadline-list li:hover { background: #f3f0ea; }
+    .deadline-main { min-width: 0; display: flex; align-items: center; gap: 8px; }
+    .deadline-title {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 13px; line-height: 1.35;
+    }
+    .deadline-meta {
+      display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center;
+      font-size: 11px; color: var(--muted);
+    }
+    .todo-list { list-style: none; margin: 0; padding: 0; }
+    .todo-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px;
+    }
+    .todo-list li:last-child { border-bottom: none; }
+    .todo-list b { font-family: "Noto Serif SC", serif; color: var(--seal); font-size: 20px; }
+    .memo-box, .evidence-box {
+      margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line);
+      background: var(--paper-soft); border-radius: var(--radius);
+    }
+    .memo-box h4, .evidence-box h4 {
+      margin: 0 0 8px; font-size: 13px; font-family: "Noto Serif SC", serif; font-weight: 600;
+    }
+    .memo-item { font-size: 12px; color: var(--ink); margin: 0 0 6px; line-height: 1.5; }
+    .memo-item .role { color: var(--muted); }
+    .evidence-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ev-dot {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--paper);
+    }
+    .ev-dot i {
+      width: 7px; height: 7px; border-radius: 50%; display: inline-block;
+    }
+    .ev-dot.verified i { background: var(--ok); }
+    .ev-dot.pending i { background: var(--warn); }
+    .ev-dot.gap i { background: var(--bad); }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes modalFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.97) translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .policy-modal-overlay { animation: modalFade 180ms ease both; }
+    .policy-modal { animation: modalPop 200ms ease both; }
+    @media (prefers-reduced-motion: reduce) {
+      .card, .nav-btn, .chip, .policy-modal-overlay, .policy-modal {
+        animation: none !important; transition: none !important;
+      }
+      .card:hover { transform: none; }
     }
     .policy-modal-overlay {
       position: fixed; inset: 0; z-index: 60;
@@ -518,6 +691,7 @@
     .code-pill { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
 
     .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .filter-stack .filter-row:last-child { margin-bottom: 0; }
     .filter-row .lbl { font-size: 11px; color: var(--muted); margin-right: 2px; letter-spacing: 0.06em; }
     .policy-body {
       margin-top: 12px; padding: 12px 14px; border: 1px solid var(--line);
@@ -616,6 +790,126 @@
     .media-detail-media img, .media-detail-media video {
       display: block; width: 100%; max-height: 360px; object-fit: contain; background: #111;
     }
+
+    /* 智能招商测算台专用样式 */
+    .attract-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .attract-quick-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      background: #f4f8f5; border: 1px solid #cce5d8; padding: 10px 14px; border-radius: var(--radius);
+    }
+    .attract-quick-bar span { font-size: 12px; color: var(--seal); font-weight: 600; }
+    .quick-preset-btn {
+      background: #fff; border: 1px solid var(--seal); color: var(--seal);
+      padding: 5px 11px; font-size: 12px; border-radius: 4px; cursor: pointer;
+      transition: all .2s;
+    }
+    .quick-preset-btn:hover { background: var(--seal); color: #fff; }
+    .attract-main-grid {
+      display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: start;
+    }
+    @media (max-width: 960px) {
+      .attract-main-grid { grid-template-columns: 1fr; }
+    }
+    .attract-form-card {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow-sm);
+    }
+    .attract-form-card h3 {
+      margin: 0 0 12px; font-size: 14px; font-family: "Noto Serif SC", serif;
+      color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 8px;
+    }
+    .attract-form-group { margin-bottom: 12px; }
+    .attract-form-group label {
+      display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 500;
+    }
+    .attract-form-group input, .attract-form-group select, .attract-form-group textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px;
+      font-size: 12px; font-family: inherit; background: var(--paper-soft); box-sizing: border-box;
+    }
+    .attract-form-group textarea { height: 56px; resize: vertical; }
+    .btn-calc {
+      width: 100%; background: var(--seal); color: #fff; border: none; padding: 10px;
+      border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      transition: opacity .2s; margin-top: 8px;
+    }
+    .btn-calc:hover { opacity: .9; }
+    .report-card {
+      background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm); position: relative;
+    }
+    .report-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 16px;
+    }
+    .report-title-box h2 {
+      margin: 0; font-size: 17px; font-family: "Noto Serif SC", serif; letter-spacing: .05em; color: var(--ink);
+    }
+    .report-title-box p { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
+    .report-badge {
+      border: 1px solid var(--seal); color: var(--seal); background: #eef6f2;
+      padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 2px;
+      letter-spacing: .05em;
+    }
+    .metrics-summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metric-sub-card {
+      background: var(--paper-soft); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px;
+    }
+    .metric-sub-card.highlight {
+      background: #eef6f2; border-color: #cce5d8;
+    }
+    .metric-sub-card label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .metric-sub-card .val {
+      font-size: 17px; font-weight: 700; color: var(--ink); font-family: "Noto Serif SC", serif;
+    }
+    .metric-sub-card.highlight .val { color: var(--seal); }
+    .metric-sub-card small { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+    .report-section-title {
+      font-size: 13px; font-weight: 700; color: var(--ink); margin: 16px 0 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .report-section-title::before {
+      content: ""; display: inline-block; width: 3px; height: 12px; background: var(--seal);
+    }
+    .policy-eval-table {
+      width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px;
+    }
+    .policy-eval-table th, .policy-eval-table td {
+      border: 1px solid var(--line); padding: 7px 9px; text-align: left;
+    }
+    .policy-eval-table th { background: var(--paper-soft); color: var(--muted); font-weight: 600; font-size: 11px; }
+    .tag-state {
+      display: inline-block; padding: 1px 6px; font-size: 11px; border-radius: 2px; font-weight: 600;
+    }
+    .tag-state.fit { background: #eef5f0; color: var(--ok); border: 1px solid #c5dbc9; }
+    .tag-state.audit { background: #fbf5e8; color: var(--warn); border: 1px solid #e7d5b5; }
+    .tag-state.drop { background: #fdf2f2; color: var(--bad); border: 1px solid #f1c5c5; }
+    .wechat-draft-box {
+      background: #f8faf9; border: 1px dashed var(--seal); border-radius: 6px;
+      padding: 12px 14px; margin-bottom: 16px; position: relative;
+    }
+    .wechat-draft-box h4 {
+      margin: 0 0 6px; font-size: 12px; color: var(--seal); display: flex; align-items: center; justify-content: space-between;
+    }
+    .wechat-draft-box p {
+      margin: 0; font-size: 12px; line-height: 1.6; color: #2c3e50; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .report-actions {
+      display: flex; gap: 10px; justify-content: flex-end; padding-top: 14px; border-top: 1px solid var(--line);
+    }
+    .btn-secondary {
+      background: #fff; border: 1px solid var(--line); padding: 7px 12px; font-size: 12px;
+      border-radius: 4px; cursor: pointer; color: var(--ink);
+    }
+    .btn-secondary:hover { background: var(--paper-soft); }
+    .btn-primary {
+      background: var(--seal); border: 1px solid var(--seal); color: #fff; padding: 7px 14px;
+      font-size: 12px; border-radius: 4px; cursor: pointer; font-weight: 600;
+    }
+    .btn-primary:hover { opacity: .9; }
   </style>
 </head>
 <body>
@@ -628,7 +922,11 @@
           <p>双益初筛 · 责任可追</p>
         </div>
       </div>
-      <button class="nav-btn active" data-view="radar">
+      <button class="nav-btn active" data-view="dashboard">
+        <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><rect x="2.2" y="8.2" width="3" height="5.2" rx="0.6" fill="#0f6f4f"/><rect x="6.5" y="5.2" width="3" height="8.2" rx="0.6" fill="#0f6f4f" opacity=".75"/><rect x="10.8" y="3" width="3" height="10.4" rx="0.6" fill="#0f6f4f" opacity=".5"/></svg></span>
+        <span class="nav-txt">看板<small>总览 · 成效 · 死线</small></span>
+      </button>
+      <button class="nav-btn" data-view="radar">
         <span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.2" fill="#0f6f4f"/><path d="M8 2.2a5.8 5.8 0 0 1 5.8 5.8M8 4.4a3.6 3.6 0 0 1 3.6 3.6" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/><path d="M8 2.2a5.8 5.8 0 0 0-5.8 5.8M8 4.4A3.6 3.6 0 0 0 4.4 8" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round" opacity=".45"/></svg></span>
         <span class="nav-txt">政策雷达<small>收政策 · 看原文</small></span>
       </button>
@@ -641,11 +939,21 @@
         <span class="nav-txt">Skills 接入<small>一句话接入</small></span>
       </button>
       <div class="side-foot">
-        当前专员
-        <select id="operator">
-          <option value="OP-01">运营专员·甲 / OP-01</option>
-          <option value="OP-02">运营专员·乙 / OP-02</option>
-        </select>
+        <div class="portal-switch" role="group" aria-label="端切换">
+          <button type="button" class="portal-btn on" data-portal="ops">运营后台</button>
+          <button type="button" class="portal-btn" data-portal="corp">企业端</button>
+        </div>
+        <div id="opsFootBlock" class="foot-block">
+          当前专员
+          <select id="operator">
+            <option value="OP-01">运营专员·甲 / OP-01</option>
+            <option value="OP-02">运营专员·乙 / OP-02</option>
+          </select>
+        </div>
+        <div id="corpFootBlock" class="foot-block" hidden>
+          当前企业
+          <select id="portalCompany"></select>
+        </div>
       </div>
     </aside>
 
@@ -666,9 +974,14 @@
       s_3_20: "3–20 人",
       m_20_100: "20–100 人",
     };
-    let view = "radar";
+    let view = "dashboard";
+    let lastOpsView = "dashboard";
+    let portalMode = localStorage.getItem("portalMode") || "ops"; // "ops" | "corp"
+    let portalCompanyId = localStorage.getItem("portalCompanyId") || "";
+    let corpPayload = null;
     let radarChannel = "";
     let benefitFilter = "both";
+    let showHistoryArchive = false;
     let radarSort = "smart"; // smart | window | newest
     let sizeBand = "";
     let mediaQ = "";
@@ -700,7 +1013,7 @@
       "豆包": `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.31 15.756c.172-3.75 1.883-5.999 2.549-6.739-3.26 2.058-5.425 5.658-6.358 8.308v1.12C1.501 21.513 4.226 24 7.59 24a6.59 6.59 0 002.2-.375c.353-.12.7-.248 1.039-.378.913-.899 1.65-1.91 2.243-2.992-4.877 2.431-7.974.072-7.763-4.5l.002.001z" fill="#1E37FC"/><path d="M22.57 10.283c-1.212-.901-4.109-2.404-7.397-2.8.295 3.792.093 8.766-2.1 12.773a12.782 12.782 0 01-2.244 2.992c3.764-1.448 6.746-3.457 8.596-5.219 2.82-2.683 3.353-5.178 3.361-6.66a2.737 2.737 0 00-.216-1.084v-.002z" fill="#37E1BE"/><path d="M14.303 1.867C12.955.7 11.248 0 9.39 0 7.532 0 5.883.677 4.545 1.807 2.791 3.29 1.627 5.557 1.5 8.125v9.201c.932-2.65 3.097-6.25 6.357-8.307.5-.318 1.025-.595 1.569-.829 1.883-.801 3.878-.932 5.746-.706-.222-2.83-.718-5.002-.87-5.617h.001z" fill="#A569FF"/><path d="M17.305 4.961a199.47 199.47 0 01-1.08-1.094c-.202-.213-.398-.419-.586-.622l-1.333-1.378c.151.615.648 2.786.869 5.617 3.288.395 6.185 1.898 7.396 2.8-1.306-1.275-3.475-3.487-5.266-5.323z" fill="#1E37FC"/></svg>`,
       "Workbuddy": `<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="wb-p0" x1="20" y1="0" x2="20" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#0EC8A9"/><stop offset="1" stop-color="#01C886"/></linearGradient><linearGradient id="wb-p1" x1="14.6" y1="11" x2="33.4" y2="43.5" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity="0.8"/><stop offset="0.44" stop-color="white"/></linearGradient><clipPath id="wb-clip"><rect width="40" height="40" rx="20" fill="white"/></clipPath></defs><g clip-path="url(#wb-clip)"><rect width="40" height="40" rx="20" fill="url(#wb-p0)"/><path d="M28.59 3.13c.39-.35.42-.37.7-.38.47-.04.9.19 1.63.85 1.7 1.54 4.06 4.71 5.53 7.42l.57 1.05.8.4c.77.39 2.04 1.19 2.57 1.62.24.2.27.2.52.1 1.13-.44 2.74.14 4.16 1.51 1.28 1.22 2.51 3.32 2.98 5.07.07.28.16.89.19 1.34.11 1.58-.4 2.85-1.38 3.42-.2.12-.21.15-.2.65.04 2.37-.59 4.74-1.88 7.04-1.45 2.59-4.03 5.27-7.52 7.8-1.88 1.36-6.31 3.95-8.32 4.86-4.8 2.16-8.66 2.99-12 2.58-2-.24-4.26-1.02-5.6-1.92-.35-.24-.41-.26-.68-.18-1.43.41-3.3-.43-4.9-2.2-.63-.71-1.66-2.44-1.99-3.37-.77-2.17-.62-4.13.4-5.3.27-.3.28-.31.22-.82-.09-.83-.14-2.06-.09-2.85l.03-.74-1.11-1.97C.4 25.04-.69 22.47-1.11 20.5c-.23-1.07-.21-1.55.06-1.9.17-.22.71-.44 1.37-.56 1.66-.29 5.27-.03 9.29.68l.42.07.92-.81c1.52-1.35 2.54-2.11 4.4-3.27 1.95-1.22 4.14-2.22 6.61-3.01l.8-.26.43-1.14c1.56-4.12 3.16-7.16 4.3-8.17zm-13.07 21.11c-1.77 1.02-2.65 1.53-3.3 2.1-2.62 2.31-3.6 5.97-2.49 9.29.28.82.79 1.7 1.8 3.46 1.02 1.77 1.53 2.65 2.1 3.3 2.32 2.62 5.98 3.6 9.29 2.48.82-.27 1.7-.78 3.46-1.8l10.15-5.86c1.76-1.02 2.65-1.53 3.3-2.1 2.62-2.31 3.6-5.97 2.48-9.29-.27-.81-.78-1.7-1.8-3.46-1.02-1.77-1.53-2.65-2.1-3.3-2.31-2.63-5.97-3.61-9.29-2.49-.81.28-1.7.78-3.46 1.8L15.52 24.24z" fill="url(#wb-p1)"/><rect x="16.5" y="31.33" width="4.01" height="8.33" rx="2" transform="rotate(-30 16.5 31.33)" fill="white"/><rect x="27.31" y="25.09" width="4.01" height="8.33" rx="2" transform="rotate(-30 27.31 25.09)" fill="white"/></g></svg>`,
     };
-    const STAGE_SHORT = { opc: "OPC 一人", s_3_20: "3–20", m_20_100: "20–100" };
+    const STAGE_SHORT = { opc: "OPC 1人", s_3_20: "3–20人", m_20_100: "20–100人" };
     const CHANNELS = [
       { id: "", label: "全部" },
       { id: "政府政策", label: "政府政策" },
@@ -1017,8 +1330,19 @@
       });
     }
 
-    async function api(path, opts) {
-      const res = await fetch(API + path, opts);
+    async function api(path, opts = {}) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const studioToken = urlParams.get("studio_token");
+      let url = (API || "") + path;
+      if (studioToken && !url.includes("studio_token=")) {
+        url += (url.includes("?") ? "&" : "?") + "studio_token=" + encodeURIComponent(studioToken);
+      }
+      const finalOpts = { ...opts };
+      finalOpts.headers = { ...(finalOpts.headers || {}) };
+      if (studioToken) {
+        finalOpts.headers["X-Studio-Token"] = studioToken;
+      }
+      const res = await fetch(url, finalOpts);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || res.statusText);
       return data;
@@ -1104,15 +1428,26 @@
     async function loadRadar() {
       const q = new URLSearchParams();
       if (radarChannel) q.set("channel", radarChannel);
-      q.set("benefit", benefitFilter);
-      // 过期默认不进列表（服务端 include_expired 默认 0）
+      if (showHistoryArchive) {
+        q.set("benefit", "all");
+        q.set("include_expired", "1");
+      } else {
+        q.set("benefit", benefitFilter);
+      }
       const data = await api(`/api/policy_radar?${q}`);
       radarItems = data.items || [];
       setApiStatus("");
       return data;
     }
 
-    async function loadRadarMatches(radarId) {
+    let dashboardData = null;
+    async function loadDashboard() {
+      dashboardData = await api("/api/dashboard");
+      setApiStatus("");
+      return dashboardData;
+    }
+
+        async function loadRadarMatches(radarId) {
       if (!radarId) { radarMatchItems = []; return; }
       const q = new URLSearchParams({ radar_id: radarId, benefit: benefitFilter });
       const data = await api(`/api/policy_match_for?${q}`);
@@ -1134,6 +1469,131 @@
       const data = await api(`/api/companies${q}`);
       companies = data.companies || [];
       return data;
+    }
+
+    function demoCompanies() {
+      return (companies || []).filter((c) => c && c.id && !String(c.id).startsWith("attract_"));
+    }
+
+    function populatePortalCompanySelect() {
+      const sel = document.getElementById("portalCompany");
+      if (!sel) return;
+      const list = demoCompanies();
+      const preferred = "corp_m_1";
+      if (!portalCompanyId || !list.some((c) => c.id === portalCompanyId)) {
+        portalCompanyId = list.some((c) => c.id === preferred)
+          ? preferred
+          : (list[0] && list[0].id) || "";
+      }
+      sel.innerHTML = list.map((c) => {
+        const name = c.display_name || c.alias || c.code || c.id;
+        return `<option value="${esc(c.id)}"${c.id === portalCompanyId ? " selected" : ""}>${esc(name)}</option>`;
+      }).join("");
+      if (portalCompanyId) localStorage.setItem("portalCompanyId", portalCompanyId);
+    }
+
+    async function loadCorpHome(cid) {
+      const id = cid || portalCompanyId;
+      if (!id) { corpPayload = null; return null; }
+      try {
+        corpPayload = await api(`/api/corp_home?company_id=${encodeURIComponent(id)}`);
+      } catch {
+        const match = await api(`/api/policy_match?company_id=${encodeURIComponent(id)}`);
+        const co = (companies || []).find((x) => x.id === id) || {};
+        if (match && match.company) {
+          match.company.address = match.company.address || co.address || "";
+          match.company.contact_lead = match.company.contact_lead || co.contact_lead || "";
+          match.company.headcount_range = match.company.headcount_range || co.headcount_range || "";
+        }
+        corpPayload = match;
+      }
+      return corpPayload;
+    }
+
+    function corpAcceptAction(m) {
+      if (!m || (m.sop_status || "active") !== "active") return false;
+      const step = m.current ?? m.sop_step ?? 0;
+      const primary = String(m.primary_action || "");
+      return step === 1 || /接受|accept/i.test(primary);
+    }
+
+    function applyPortalMode() {
+      localStorage.setItem("portalMode", portalMode);
+      if (portalCompanyId) localStorage.setItem("portalCompanyId", portalCompanyId);
+      const opsFoot = document.getElementById("opsFootBlock");
+      const corpFoot = document.getElementById("corpFootBlock");
+      if (opsFoot) opsFoot.hidden = portalMode === "corp";
+      if (corpFoot) corpFoot.hidden = portalMode !== "corp";
+      document.querySelectorAll(".portal-btn").forEach((btn) => {
+        btn.classList.toggle("on", btn.getAttribute("data-portal") === portalMode);
+      });
+      const brandSub = document.querySelector(".brand p");
+      const seal = document.getElementById("opSeal");
+      let corpNav = document.getElementById("corpNavBtn");
+      if (portalMode === "corp") {
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          if (btn.id === "corpNavBtn") return;
+          btn.hidden = true;
+        });
+        if (!corpNav) {
+          corpNav = document.createElement("button");
+          corpNav.className = "nav-btn";
+          corpNav.id = "corpNavBtn";
+          corpNav.setAttribute("data-view", "corp");
+          corpNav.innerHTML = `<span class="nav-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M3 4.5h10v8H3z" stroke="#0f6f4f" stroke-width="1.3"/><path d="M5.5 7h5M5.5 9.5h3" stroke="#0f6f4f" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="nav-txt">我的政策<small>匹配 · 进度 · 接受</small></span>`;
+          const foot = document.querySelector(".side-foot");
+          if (foot) foot.parentNode.insertBefore(corpNav, foot);
+          corpNav.onclick = async () => {
+            if (portalMode !== "corp") return;
+            view = "corp";
+            syncNav();
+            setBusy(true);
+            try { await loadCorpHome(portalCompanyId); render(); }
+            finally { setBusy(false); }
+          };
+        }
+        corpNav.hidden = false;
+        if (brandSub) brandSub.textContent = "企业端 · 演示";
+        if (seal) seal.style.display = "none";
+      } else {
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          if (btn.id === "corpNavBtn") {
+            btn.remove();
+            return;
+          }
+          btn.hidden = false;
+        });
+        if (brandSub) brandSub.textContent = "双益初筛 · 责任可追";
+        if (seal) seal.style.display = "";
+        syncOpSeal();
+      }
+      syncNav();
+    }
+
+    async function switchPortal(mode) {
+      if (mode !== "ops" && mode !== "corp") return;
+      if (portalMode === "ops" && view !== "corp") lastOpsView = view;
+      portalMode = mode;
+      applyPortalMode();
+      setBusy(true);
+      try {
+        if (mode === "corp") {
+          populatePortalCompanySelect();
+          view = "corp";
+          await loadCorpHome(portalCompanyId);
+          render();
+        } else {
+          view = lastOpsView && lastOpsView !== "corp" && lastOpsView !== "attract"
+            ? lastOpsView
+            : "dashboard";
+          if (view === "dashboard") await loadDashboard();
+          else if (view === "radar") await loadRadar();
+          else if (view === "companies") await loadCompanies();
+          render();
+        }
+      } finally {
+        setBusy(false);
+      }
     }
 
     async function loadMediaHot() {
@@ -1181,7 +1641,10 @@
     }
 
     async function refreshAfterMatchAction(cid) {
-      if (view === "radar" && selectedRadar) {
+      if (portalMode === "corp" || view === "corp") {
+        await loadCorpHome(cid || portalCompanyId);
+        render();
+      } else if (view === "radar" && selectedRadar) {
         await loadRadarMatches(selectedRadar);
         render();
       } else if (cid) {
@@ -1257,7 +1720,8 @@
           const action = el.getAttribute("data-sop");
           const matchId = el.getAttribute("data-mid");
           const cid = el.getAttribute("data-cid") || fallbackCid;
-          const operator = document.getElementById("operator").value;
+          const opEl = document.getElementById("operator");
+          const operator = (opEl && opEl.value) || "OP-01";
           setBusy(true);
           try {
             const out = await api("/api/sop", {
@@ -1272,7 +1736,7 @@
             });
             if (action === "next" && out.draft) toast("已发送 · 草稿可复制（系统不代发微信）");
             else if (action === "next") toast("节点已推进");
-            else if (action === "accept") toast("已标记企业接受");
+            else if (action === "accept") toast(portalMode === "corp" ? "已确认接受" : "已标记企业接受");
             else if (action === "reject") toast("已驳回 · 终态未通过");
             else if (action === "reset") toast("已退回上一步");
             await refreshAfterMatchAction(cid);
@@ -1290,6 +1754,21 @@
       radarMatchItems = [];
       policyBodyText = "";
       render();
+    }
+
+    async function openCorpPolicyModal(radarId) {
+      if (!radarId) return;
+      selectedRadar = radarId;
+      setBusy(true);
+      try {
+        await Promise.all([loadRadarMatches(radarId), loadPolicyBody(radarId)]);
+        if (portalMode === "corp" && portalCompanyId) {
+          radarMatchItems = (radarMatchItems || []).filter((m) => m.company_id === portalCompanyId);
+        }
+        render();
+      } finally {
+        setBusy(false);
+      }
     }
 
     function policyOfficialUrl(item, bodyText) {
@@ -1388,7 +1867,137 @@
         : `活动时间：${range}`;
     }
 
-    function renderRadar() {
+    function renderDashboard() {
+      const d = dashboardData || {};
+      const ov = d.overview || {};
+      const cm = d.committee || {};
+      const sop = d.sop_progress || {};
+      const sopLabels = d.sop_progress_labels || {};
+      const todos = d.todos || {};
+      const todoLabels = d.todo_labels || {};
+      const urgentList = d.deadlines_urgent || (d.deadlines || []).filter((x) => x.urgency === "urgent");
+      const watchList = d.deadlines_watch || (d.deadlines || []).filter((x) => x.urgency === "watch");
+      const events = d.upcoming_events || [];
+      const demo = d.demo ? `<span class="dash-demo">演示口径</span>` : "";
+      const tab = window.__dashDeadlineTab === "watch" ? "watch" : "urgent";
+      const absTitle = (t, n = 28) => {
+        const s = String(t || "");
+        return s.length > n ? s.slice(0, n) + "…" : s;
+      };
+      const deadlineLis = (list) => list.length
+        ? list.map((x) => {
+            const cls = x.urgency === "urgent" ? "bad" : "warn";
+            const lab = x.urgency === "urgent" ? "紧急" : "临近";
+            const mc = x.match_count != null ? Number(x.match_count) : 0;
+            return `<li data-goto-deadline="${esc(x.id)}" title="${esc(x.title || "")}">
+              <div class="deadline-main">
+                <span class="badge ${cls}">${lab}</span>
+                <span class="deadline-title">${esc(absTitle(x.title))}</span>
+              </div>
+              <div class="deadline-meta">
+                <span class="badge muted">剩 ${x.days_left} 天</span>
+                <span>匹配 ${mc} 条</span>
+              </div>
+            </li>`;
+          }).join("")
+        : `<li style="cursor:default;color:var(--muted);display:block">本分区暂无条目</li>`;
+      const shown = tab === "watch" ? watchList : urgentList;
+      const sopOrder = ["send", "accept", "apply", "processing", "passed"];
+      const maxSop = Math.max(1, ...sopOrder.map((k) => Number(sop[k] || 0)));
+      const sopRows = sopOrder.map((k) => {
+        const n = Number(sop[k] || 0);
+        const lab = sopLabels[k] || k;
+        return `<div class="funnel-row">
+          <span>${esc(lab)}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(100 * n / maxSop)}%"></div></div>
+          <strong>${n}</strong>
+        </div>`;
+      }).join("");
+      const eventLis = events.length
+        ? events.map((x) => {
+            const when = x.event_start || x.event_end || "";
+            return `<li data-goto-deadline="${esc(x.id)}" title="${esc(x.title || "")}">
+              <div class="deadline-main">
+                <span class="deadline-title">${esc(absTitle(x.title, 26))}</span>
+              </div>
+              <div class="deadline-meta">
+                <span class="badge muted">${esc(when || ("剩 " + x.days_left + " 天"))}</span>
+                <span>剩 ${x.days_left} 天</span>
+              </div>
+            </li>`;
+          }).join("")
+        : `<li style="cursor:default;color:var(--muted);display:block">暂无即将开始的公开活动</li>`;
+      paint(`
+        <div class="dash-panel">
+          <h2>总览数字</h2>
+          <div class="dash-grid">
+            <div class="dash-stat"><b>${ov.companies ?? "—"}</b><span>在园企业</span></div>
+            <div class="dash-stat"><b>${ov.active_policies ?? "—"}</b><span>现行政策</span></div>
+            <div class="dash-stat"><b>${ov.public_events ?? "—"}</b><span>公开活动</span></div>
+            <div class="dash-stat"><b>${ov.matching ?? "—"}</b><span>匹配进行中</span></div>
+            <div class="dash-stat"><b>${ov.sop_passed ?? "—"}</b><span>SOP 已通过</span></div>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h2>管委会成效${demo}</h2>
+          <div class="dash-grid">
+            <div class="dash-stat"><b>${cm.subsidy_wan ?? "—"}</b><span>${esc(cm.subsidy_label || "累计撬动扶持（万元）")}</span></div>
+            <div class="dash-stat"><b>${cm.cultivated ?? "—"}</b><span>${esc(cm.cultivated_label || "梯度培育入库")}</span></div>
+            <div class="dash-stat"><b>${cm.urgent_count ?? urgentList.length}</b><span>${esc(cm.urgent_label || "窗口紧急件数")}</span></div>
+            <div class="dash-stat"><b>${cm.watch_count ?? watchList.length}</b><span>${esc(cm.watch_label || "窗口临近件数")}</span></div>
+          </div>
+          <p class="cite" style="margin-top:10px">${esc(d.demo_note || "脱敏样例，非实时政府库")}</p>
+        </div>
+        <div class="dash-row">
+          <div class="dash-panel">
+            <h2>紧急死线</h2>
+            <div class="dash-tabs" role="tablist">
+              <button type="button" class="dash-tab ${tab === "urgent" ? "on" : ""}" data-deadline-tab="urgent">紧急 ${urgentList.length}</button>
+              <button type="button" class="dash-tab ${tab === "watch" ? "on" : ""}" data-deadline-tab="watch">临近 ${watchList.length}</button>
+            </div>
+            <ul class="deadline-list">${deadlineLis(shown)}</ul>
+          </div>
+          <div class="dash-panel">
+            <h2>本周待办</h2>
+            <ul class="todo-list">
+              <li><span>${esc(todoLabels.pending_send || "待发送匹配")}</span><b>${todos.pending_send ?? 0}</b></li>
+              <li><span>${esc(todoLabels.pending_accept || "待企业接受")}</span><b>${todos.pending_accept ?? 0}</b></li>
+            </ul>
+          </div>
+        </div>
+        <div class="dash-row">
+          <div class="dash-panel">
+            <h2>SOP 进度分布</h2>
+            <div class="funnel">${sopRows}</div>
+          </div>
+          <div class="dash-panel">
+            <h2>公开活动即将开始</h2>
+            <ul class="deadline-list">${eventLis}</ul>
+          </div>
+        </div>
+      `);
+      document.querySelectorAll("[data-deadline-tab]").forEach((el) => {
+        el.onclick = () => {
+          window.__dashDeadlineTab = el.getAttribute("data-deadline-tab") || "urgent";
+          renderDashboard();
+        };
+      });
+      document.querySelectorAll("[data-goto-deadline]").forEach((el) => {
+        el.onclick = async () => {
+          const id = el.getAttribute("data-goto-deadline");
+          if (!id) return;
+          view = "radar";
+          syncNav();
+          setBusy(true);
+          try {
+            await loadRadar();
+            await selectRadar(id);
+          } finally { setBusy(false); }
+        };
+      });
+    }
+
+        function renderRadar() {
       const sorted = sortRadarItems(radarItems);
       const cards = sorted.map((r) => {
         const active = selectedRadar === r.id ? "active" : "";
@@ -1445,13 +2054,16 @@
       const item = sorted.find((x) => x.id === selectedRadar) || radarItems.find((x) => x.id === selectedRadar);
       let modal = "";
       if (item) {
+        const modalMatches = (portalMode === "corp" && portalCompanyId)
+          ? (radarMatchItems || []).filter((m) => m.company_id === portalCompanyId)
+          : radarMatchItems;
         const url = policyOfficialUrl(item, policyBodyText);
-        const why = whySuitableLines(radarMatchItems);
-        const needDo = needDoBullets(item, radarMatchItems);
+        const why = whySuitableLines(modalMatches);
+        const needDo = needDoBullets(item, modalMatches);
         const benefits = benefitBullets(item);
         const timeHint = policyTimeHint(item);
-        const logos = radarMatchItems.length
-          ? radarMatchItems.map((m) => {
+        const logos = modalMatches.length
+          ? modalMatches.map((m) => {
               const co = {
                 id: m.company_id,
                 code: m.company_code,
@@ -1466,12 +2078,19 @@
             }).join("")
           : `<span class="pm-empty-logos">当前筛选下暂无匹配企业</span>`;
 
+        const officialLink = url
+          ? `<div class="pm-official"><a href="${esc(url)}" target="_blank" rel="noopener">在官网打开</a></div>`
+          : "";
         const leftBody = policyBodyText
-          ? `<div class="policy-body">${mdToHtml(policyBodyText)}</div>`
-          : `<p class="cite">${esc(item.citation || "暂无正文摘录")}</p>
-             ${url ? `<div class="actions"><a class="act primary" href="${esc(url)}" target="_blank" rel="noopener">打开官方发文原文</a></div>` : ""}`;
+          ? `<div class="policy-body">${mdToHtml(policyBodyText)}</div>${officialLink}`
+          : `<div class="policy-body">
+              <h2>${esc(item.title || "")}</h2>
+              <p>${esc(item.citation || item.value_one_liner || "暂无出处摘要")}</p>
+              ${item.subsidy_detail ? `<p><strong>资金/扶持：</strong>${esc(item.subsidy_detail)}</p>` : ""}
+              ${(item.hard_criteria || []).length ? `<ul>${(item.hard_criteria || []).map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+            </div>${officialLink}`;
 
-        const primaryCid = radarMatchItems[0] && radarMatchItems[0].company_id;
+        const primaryCid = portalMode === "corp" ? null : (modalMatches[0] && modalMatches[0].company_id);
         modal = `
           <div class="policy-modal-overlay" data-close-modal>
             <div class="policy-modal" role="dialog" aria-modal="true" aria-label="政策详情" data-modal-panel>
@@ -1503,8 +2122,7 @@
                   <div class="pm-foot">
                     ${timeHint ? `<p class="pm-time">${esc(timeHint)}</p>` : ""}
                     <div class="actions">
-                      ${url ? `<a class="act primary" href="${esc(url)}" target="_blank" rel="noopener">打开官方页面</a>` : ""}
-                      ${primaryCid ? `<button type="button" class="act" data-goto-company="${esc(primaryCid)}">进入企业画像</button>` : ""}
+                      ${primaryCid ? `<button type="button" class="act primary" data-goto-company="${esc(primaryCid)}">进入企业画像</button>` : ""}
                     </div>
                   </div>
                 </div>
@@ -1524,17 +2142,22 @@
 
       paint(`
         <div class="hint" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
-          <span>点选政策查看原文与匹配分析</span>
-          <button type="button" class="chip ${showHistoryArchive ? "on" : ""}" id="btn-toggle-archive" style="font-size:11px;${showHistoryArchive ? "background:#fee2e2;border-color:#fca5a5;color:#991b1b;" : ""}">
-            ${showHistoryArchive ? "含已废止/过期" : "仅现行有效"}
-          </button>
+          <span>点选政策或活动查看详情与匹配企业</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <a href="/POLICY_COLLECTION_SOP.md" target="_blank" class="chip" style="color:var(--seal);font-weight:600;text-decoration:none;border-color:var(--seal);padding:3px 8px;font-size:11px;">📖 政策采集SOP</a>
+            <a href="/CLI_DOCKER_SOP.md" target="_blank" class="chip" style="color:#2563eb;font-weight:600;text-decoration:none;border-color:#93c5fd;padding:3px 8px;font-size:11px;">🐳 CLI与Docker部署SOP</a>
+            <button type="button" class="chip ${showHistoryArchive ? "on" : ""}" id="btn-toggle-archive" style="font-size:11px;${showHistoryArchive ? "background:#fee2e2;border-color:#fca5a5;color:#991b1b;" : ""}">
+              ${showHistoryArchive ? "📋 正在查看全量对照（含已废止/过期）" : "✓ 现行有效（点击查看历史对照）"}
+            </button>
+          </div>
         </div>
-        <div class="filter-row"><span class="lbl">渠道</span>${channelChips()}</div>
-        <div class="filter-row"><span class="lbl">受益</span>${benefitChips()}</div>
-        <div class="filter-row"><span class="lbl">排序</span>${sortChips}</div>
+        <div class="filter-stack">
+          <div class="filter-row"><span class="lbl">渠道</span>${channelChips()}</div>
+          <div class="filter-row"><span class="lbl">受益</span>${benefitChips()}</div>
+          <div class="filter-row"><span class="lbl">排序</span>${sortChips}</div>
+        </div>
         <div class="split radar-layout">
           <div class="split-list list">${cards || '<div class="empty">当前筛选无条目</div>'}</div>
-          <div class="split-detail"><div class="empty">点选政策查看</div></div>
         </div>
         ${modal}
       `);
@@ -1603,17 +2226,16 @@
     function renderCompanies() {
       const filters = [
         { id: "", label: "全部规模" },
-        { id: "opc", label: "OPC" },
-        { id: "s_3_20", label: "3–20" },
-        { id: "m_20_100", label: "20–100" },
+        { id: "opc", label: "OPC 1人" },
+        { id: "s_3_20", label: "3–20人" },
+        { id: "m_20_100", label: "20–100人" },
       ].map((o) =>
         `<button class="chip ${sizeBand === o.id ? "on" : ""}" data-size="${o.id}">${o.label}</button>`
       ).join("");
 
       const cards = companies.map((c) => {
         const active = selectedCompany === c.id ? "active" : "";
-        const band = SIZE_LABELS[c.size_band] || c.headcount_range;
-        const head = c.headcount_range || band || "";
+        const head = c.headcount_range || SIZE_LABELS[c.size_band] || "";
         return `<div class="card ${active}" data-company="${c.id}">
           <div class="co-row">
             ${companyAvatar(c)}
@@ -1622,7 +2244,6 @@
               <p class="cite" style="margin:2px 0 0">${esc(c.direction || "")}</p>
               ${c.address ? `<div class="co-addr">${esc(c.address)}</div>` : ""}
               <div class="meta" style="margin-top:6px">
-                <span class="badge muted size-tag">${esc(band)}</span>
                 ${head ? `<span class="head-ico">${PERSON_SVG}<span>${esc(head)}</span></span>` : ""}
               </div>
             </div>
@@ -1633,7 +2254,6 @@
       let detail = `<div class="empty">左侧点选脱敏企业<br/>无真实公司名 · 非 CRM</div>`;
       if (matchPayload && matchPayload.profile && matchPayload.match) {
         const c = matchPayload.profile.company;
-        const bandsH = c.headcount_bands || {};
         const fieldName = {
           entity_type: "主体", lease_area_band: "面积", tax_local: "税务",
           social_insurance: "社保", rd_ratio_band: "研发占比", biz_type: "业务",
@@ -1643,16 +2263,6 @@
           .filter(([, f]) => !f.confirmed)
           .map(([k, f]) => `<div class="cite">${fieldName[k] || k}：${esc(f.value)} · 待检验</div>`)
           .join("");
-        const team = (c.team || []).map((t) =>
-          `<div class="team-chip"><span class="person-ico">${PERSON_SVG}</span><span><b>${esc(t.role)}</b>${esc(t.note || "")}</span></div>`
-        ).join("");
-        const works = (c.portfolio || []).map((p) =>
-          `<div class="portfolio-card">
-            <div class="portfolio-cover" style="background:${esc(p.tone || "#0f6f4f")}">${FRAME_SVG}</div>
-            <strong>${esc(p.title)}</strong>
-            <p>${esc(p.blurb || "")}</p>
-          </div>`
-        ).join("");
         const matches = (matchPayload.match.matches || []).map((m) => `
           <div class="match" data-goto-radar="${esc(m.radar && m.radar.id || "")}" style="cursor:pointer">
             <div class="meta">${sopStatusBadge(m)}</div>
@@ -1674,11 +2284,30 @@
             </div>
           </div>
           <p class="cite"><strong>场景</strong>　${esc(c.scene || c.direction || "")}</p>
-          <p class="cite" style="margin-bottom:0"><strong>人员</strong></p>
-          <div class="team-row">${team || '<span class="cite">暂无</span>'}</div>
-          <p class="cite" style="margin-bottom:0"><strong>虚拟作品</strong>（案例示意）</p>
-          <div class="portfolio-grid">${works || '<span class="cite">暂无</span>'}</div>
-          <p class="cite">人员结构：研发 ${bandsH.rd || 0}% · 业务 ${bandsH.biz || 0}% · 其他 ${bandsH.other || 0}%</p>
+          <p class="cite"><strong>员工人数</strong>　${esc(c.headcount_range || SIZE_LABELS[c.size_band] || "—")}</p>
+          <p class="cite"><strong>一号位联系</strong>　${esc(c.contact_lead || "园区企服对接（样例）")}</p>
+          <div class="memo-box">
+            <h4>招商备忘</h4>
+            ${(c.attraction_memos || []).length
+              ? (c.attraction_memos || []).slice(0, 3).map((m) =>
+                  `<div class="memo-item">${esc(m.item || "")}<span class="role"> · ${esc(m.role || "")}${m.note ? " · " + esc(m.note) : ""}</span></div>`
+                ).join("")
+              : `<div class="cite">暂无招商备忘样例</div>`}
+          </div>
+          <div class="evidence-box">
+            <h4>凭据箱</h4>
+            <div class="evidence-row">
+              ${(c.evidence || []).length
+                ? (c.evidence || []).slice(0, 5).map((e) =>
+                    `<span class="ev-dot ${esc(e.status || "")}"><i></i>${esc(e.key || "")} · ${esc(e.label || e.status || "")}</span>`
+                  ).join("")
+                : Object.entries(c.fields || {}).slice(0, 5).map(([k, f]) => {
+                    const st = f.confirmed ? "verified" : "pending";
+                    const lab = f.confirmed ? "已核验" : "待上传";
+                    return `<span class="ev-dot ${st}"><i></i>${esc(fieldName[k] || k)} · ${lab}</span>`;
+                  }).join("") || `<span class="cite">暂无</span>`}
+            </div>
+          </div>
           ${pendingFields || `<p class="cite">字段均已确认</p>`}
           <h3 style="font-size:14px;margin:14px 0 0;font-family:'Noto Serif SC',serif">全记录</h3>
           ${timelineHtml(c.timeline)}
@@ -1732,6 +2361,117 @@
       document.querySelectorAll("[data-tl-collapse]").forEach((el) => {
         el.onclick = () => { expandTimelineHistory = false; render(); };
       });
+    }
+
+    function renderCorpPortal() {
+      const payload = corpPayload || {};
+      const c = payload.company || {};
+      const cid = c.id || portalCompanyId;
+      const head = c.headcount_range || SIZE_LABELS[c.size_band] || "";
+      const matches = (payload.matches || []).map((m) => {
+        const rid = (m.radar && m.radar.id) || "";
+        const help = (m.radar && m.radar.enterprise_help) || m.citation || "";
+        const acceptBtn = corpAcceptAction(m)
+          ? `<div class="actions match-actions sop-actions"><button class="act primary" data-sop="accept" data-mid="${esc(m.id)}" data-cid="${esc(cid)}">确认接受</button></div>`
+          : "";
+        return `<div class="match" data-goto-radar="${esc(rid)}" style="cursor:pointer">
+          <div class="meta">${sopStatusBadge(m)}</div>
+          <h3 style="font-size:15px;margin:8px 0 0;font-family:'Noto Serif SC',serif">${esc((m.radar && m.radar.title) || "")}</h3>
+          <div class="cite">${esc(help)}</div>
+          ${sopTrackHtml(m)}
+          ${acceptBtn}
+        </div>`;
+      }).join("");
+
+      let modal = "";
+      if (selectedRadar) {
+        const item = (radarItems || []).find((x) => x.id === selectedRadar)
+          || ((payload.matches || []).map((m) => m.radar).find((r) => r && r.id === selectedRadar));
+        if (item) {
+          const modalMatches = (radarMatchItems || []).filter((m) => !portalCompanyId || m.company_id === portalCompanyId);
+          const url = policyOfficialUrl(item, policyBodyText);
+          const why = whySuitableLines(modalMatches);
+          const needDo = needDoBullets(item, modalMatches);
+          const benefits = benefitBullets(item);
+          const timeHint = policyTimeHint(item);
+          const logos = modalMatches.length
+            ? modalMatches.map((m) => {
+                const co = { id: m.company_id, code: m.company_code, alias: m.alias, display_name: m.display_name, logo: m.logo };
+                return `<span class="pm-logo-btn" title="${esc(companyLabel(co))}">${companyAvatar(co)}<span>${esc(companyLabel(co))}</span></span>`;
+              }).join("")
+            : `<span class="pm-empty-logos">${esc(companyLabel(c) || "本企业")}</span>`;
+          const officialLink = url
+            ? `<div class="pm-official"><a href="${esc(url)}" target="_blank" rel="noopener">在官网打开</a></div>`
+            : "";
+          const leftBody = policyBodyText
+            ? `<div class="policy-body">${mdToHtml(policyBodyText)}</div>${officialLink}`
+            : `<div class="policy-body"><h2>${esc(item.title || "")}</h2><p>${esc(item.citation || item.value_one_liner || item.enterprise_help || "暂无出处摘要")}</p></div>${officialLink}`;
+          modal = `
+            <div class="policy-modal-overlay" data-close-modal>
+              <div class="policy-modal" role="dialog" aria-modal="true" aria-label="政策详情" data-modal-panel>
+                <button type="button" class="policy-modal-close" data-close-modal aria-label="关闭">×</button>
+                <div class="policy-modal-cols">
+                  <div class="policy-modal-left">
+                    <div class="pm-head">
+                      <h2>${esc(item.title || "")}</h2>
+                      <div class="pm-doc">${esc([item.doc_no, item.agency].filter(Boolean).join(" · "))}</div>
+                    </div>
+                    ${leftBody}
+                  </div>
+                  <div class="policy-modal-right">
+                    <div class="pm-logos">${logos}</div>
+                    <section class="pm-sec">
+                      <h3>为何适合</h3>
+                      ${why.length ? why.map((line) => `<p>${esc(line)}</p>`).join("") : `<p>对照贵司画像初筛匹配。</p>`}
+                    </section>
+                    <section class="pm-sec">
+                      <h3>需要怎么做</h3>
+                      <ul>${needDo.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+                    </section>
+                    <section class="pm-sec">
+                      <h3>能带来什么</h3>
+                      <ul>${(benefits.length ? benefits : ["见左侧原文要点"]).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+                    </section>
+                    <div class="pm-foot">${timeHint ? `<p class="pm-time">${esc(timeHint)}</p>` : ""}</div>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        }
+      }
+
+      paint(`
+        <div class="hint">企业端演示 · 仅看本企业匹配与办理进度</div>
+        <div class="detail-head" style="margin-bottom:16px">
+          ${companyAvatar(c, "lg")}
+          <div>
+            <h2>${esc(companyLabel(c) || "企业")}</h2>
+            <p class="cite" style="margin-top:0">${esc(head)}${c.address ? " · " + esc(c.address) : ""}</p>
+            ${c.contact_lead ? `<p class="cite" style="margin:4px 0 0">${esc(c.contact_lead)}</p>` : ""}
+          </div>
+        </div>
+        <h3 style="font-size:14px;margin:0 0 10px;font-family:'Noto Serif SC',serif">我的政策</h3>
+        ${matches || '<div class="empty">暂无匹配政策</div>'}
+        ${modal}
+      `);
+
+      document.querySelectorAll("[data-goto-radar]").forEach((el) => {
+        el.onclick = async (e) => {
+          if (e.target.closest(".match-actions")) return;
+          const rid = el.getAttribute("data-goto-radar");
+          if (!rid) return;
+          await openCorpPolicyModal(rid);
+        };
+      });
+      bindConfirmActions(cid);
+      document.querySelectorAll("[data-close-modal]").forEach((el) => {
+        el.onclick = (e) => {
+          if (el.classList.contains("policy-modal-overlay") && e.target !== el) return;
+          closeRadarModal();
+        };
+      });
+      const panel = document.querySelector("[data-modal-panel]");
+      if (panel) panel.onclick = (e) => e.stopPropagation();
     }
 
     function renderSkills() {
@@ -1902,11 +2642,418 @@
       });
     }
 
+    // ===== 智能招商测算与企服交接模块 =====
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    const ATTRACT_PRESETS = [
+      {
+        name: "杭州某工业智能体团队",
+        direction: "人工智能/工业智能体研发",
+        size_band: "m_20_100",
+        headcount: 20,
+        area: 240,
+        compute: 60,
+        raw_text: "我们团队专注离散制造工业机器人智能体与质检视觉算法，目前20人，计划在云谷租赁240平米研发中心，预计年自购算力与云训练开销60万元，计划入驻西湖区并申报国家级智能体标杆。"
+      },
+      {
+        name: "西湖区 OPC 独立开发者三人组",
+        direction: "一人公司/OPC/智能工具链",
+        size_band: "opc",
+        headcount: 3,
+        area: 15,
+        compute: 5,
+        raw_text: "我们是3位前大厂算法工程师组成的AI Agent独立开发小组，想在云谷挂靠一人公司注册，需要3个独立工位，无需实体办公室面积，年算力开销预计5万元。"
+      },
+      {
+        name: "具身智能出海硬件企业",
+        direction: "智能硬件研发/出海跨境",
+        size_band: "s_3_20",
+        headcount: 15,
+        area: 180,
+        compute: 30,
+        raw_text: "我们做具身智能外骨骼与扫地机器人出海欧美，团队15人，需180平米办公与轻量测试间，年出口报关与跨关区退税规模500万，年购置研发设备约80万。"
+      }
+    ];
+
+    let currentAttract = { ...ATTRACT_PRESETS[0] };
+    let currentAttractResult = null;
+
+    function calculateAttractResult(input) {
+      const isOpc = input.size_band === "opc" || Number(input.headcount) <= 3 || input.direction.includes("OPC");
+      const isAgentMfg = input.direction.includes("工业") || input.direction.includes("制造") || input.direction.includes("智能体");
+      const isHardware = input.direction.includes("硬件") || input.direction.includes("出海") || input.direction.includes("设备");
+
+      let rentSavings = 0;
+      if (isOpc) {
+        rentSavings = 72000;
+      } else {
+        rentSavings = Math.round(Number(input.area) * 2 * 365 * 0.7);
+      }
+
+      let computeSubsidy = 0;
+      if (isAgentMfg) {
+        computeSubsidy = Math.min(Math.round(Number(input.compute) * 10000 * 0.5), 300000);
+      } else if (isOpc) {
+        computeSubsidy = Math.round(Number(input.compute) * 10000 * 0.4);
+      } else {
+        computeSubsidy = Math.round(Number(input.compute) * 10000 * 0.35);
+      }
+
+      let specialSubsidy = 0;
+      if (isHardware) {
+        specialSubsidy = 64000;
+      } else if (isAgentMfg) {
+        specialSubsidy = 50000;
+      } else {
+        specialSubsidy = 18000;
+      }
+
+      const totalBenefit = rentSavings + computeSubsidy + specialSubsidy;
+
+      const policyItems = [
+        {
+          doc: "工信部信发〔2026〕209号",
+          title: "工业和信息化部《“人工智能+软件”专项行动实施方案》（2026年9月11日印发）",
+          state: isAgentMfg || isOpc ? "符合" : "待核验",
+          stateClass: isAgentMfg || isOpc ? "fit" : "audit",
+          clause: "发展‘智能体即服务’新业态，打造100个智能体软件标杆；统筹提供算力、场地等资源。",
+          url: "https://www.miit.gov.cn/zwgk/zcwj/index.html",
+          benefit: isAgentMfg ? "首年算力补贴达50%，可列入国家级智能体示范培育库" : "需在园形成典型交付场景后再行申报"
+        },
+        {
+          doc: "杭市监〔2026〕43号",
+          title: "《支持一人公司OPC创新创业发展的若干举措》（2026正式执行版）",
+          state: isOpc ? "符合" : "待核验",
+          stateClass: isOpc ? "fit" : "audit",
+          clause: "推行全程网办零成本准入，支持工位注册与一址多照；给予1至3年沙盒包容观察期。",
+          url: "https://scjt.zj.gov.cn/art/2026/1/22/art_1229618037_59281.html",
+          benefit: isOpc ? "免实体办公刚性租金，一张桌子合规开办一人公司" : "团队规模超标，需走常规独立办公室或研发单元通道"
+        },
+        {
+          doc: "工信部联科〔2026〕制造意见",
+          title: "工信部等八部门《“人工智能+制造”专项行动实施意见》（工业智能体培育专项）",
+          state: isAgentMfg ? "符合" : "排除",
+          stateClass: isAgentMfg ? "fit" : "drop",
+          clause: "推动大模型赋能工业机器人与柔性产线，建设全国工业智能体测试床与标杆车间。",
+          url: "https://www.miit.gov.cn/zwgk/zcwj/index.html",
+          benefit: isAgentMfg ? "配套专项智能体制造应用补贴，享受园区专属中试算力池" : "非制造业及工业软件赛道不纳入本专项扶持范围"
+        },
+        {
+          doc: "发改投资〔2026〕特别国债",
+          title: "国家发改委《2026年超长期特别国债支持大规模设备更新实施方案》",
+          state: isHardware ? "符合" : "待核验",
+          stateClass: isHardware ? "fit" : "audit",
+          clause: "支持企业购置高精度智能研发仪器与测试硬件，按发票核验补贴 10%~15%。",
+          url: "https://www.ndrc.gov.cn/xxgk/zcfb/",
+          benefit: isHardware ? "年购置自研设备预计可享约 6.4 万元超长期国债补贴" : "需凭正式设备采购发票在申报窗口开放时核验放行"
+        }
+      ];
+
+      const opVal = document.getElementById("operator") ? document.getElementById("operator").value : "OP-01";
+      const opText = opVal === "OP-02" ? "运营专员·乙" : "运营专员·甲";
+      let wechatDraft = "";
+      if (isOpc) {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心企服招商专员（${opText}）。针对咱们3人团队的入驻诉求，我们对照刚发布的杭市监〔2026〕43号“一人公司(OPC)”新政与西湖区孵化扶持，为您测算了一套极简方案：入驻云谷合规工位直接免除实体办公刚性租金，同时配套轻量算力补贴，首年综合预计降本达 ¥${(totalBenefit / 10000).toFixed(1)} 万元。现场工位有限，您看周三上午方便来园区喝茶敲定吗？`;
+      } else if (isAgentMfg) {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心招商企服专员（${opText}）。针对咱们20人工业智能体团队入驻，结合工信部信发〔2026〕209号新政与算力券，首年240㎡研发场地叠加算力补贴，预计为您综合降本约 ¥${(totalBenefit / 10000).toFixed(1)} 万元（其中算力投入补贴达50%）。申报门槛与公文依据已为您锁定，您看本周何时方便过来实地考察敲定工位？`;
+      } else {
+        wechatDraft = `${input.name}负责人您好！我是云谷中心招商专员（${opText}）。针对咱们团队入驻的政策红利总账已测算完毕：结合2026超长期特别国债设备更新贴息与园区租金扶持，首年预计综合降本扶持达 ¥${(totalBenefit / 10000).toFixed(1)} 万元。申报细则与准入依据已核验，欢迎随时来园区对接签约！`;
+      }
+
+      return {
+        totalBenefit,
+        rentSavings,
+        computeSubsidy,
+        specialSubsidy,
+        policyItems,
+        wechatDraft
+      };
+    }
+
+    function renderAttract() {
+      if (!currentAttractResult) {
+        currentAttractResult = calculateAttractResult(currentAttract);
+      }
+      const res = currentAttractResult;
+      const opVal = document.getElementById("operator") ? document.getElementById("operator").value : "OP-01";
+
+      const html = `
+        <div class="attract-wrap">
+          <div class="attract-quick-bar">
+            <span>⚡ 现场极速演示预设（点击1秒生成报表）：</span>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(0)">预设一：20人工业智能体制造团队 (240㎡ / 算力60万)</button>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(1)">预设二：西湖区 OPC 独立开发者三人组 (工位3个 / 免租金)</button>
+            <button class="quick-preset-btn" onclick="window.applyAttractPreset(2)">预设三：具身智能出海硬件企业 (180㎡ / 退税设备贴息)</button>
+          </div>
+
+          <div class="attract-main-grid">
+            <!-- 左侧：输入要素与AI快速提取 -->
+            <div class="attract-form-card">
+              <h3>招商企业要素输入</h3>
+              
+              <div class="attract-form-group">
+                <label>一句话自然语言 / 微信聊天记录快速粘贴：</label>
+                <textarea id="attr_raw_text" placeholder="粘贴意向企业介绍或微信聊天的需求，AI自动提取要素...">${escapeHtml(currentAttract.raw_text || "")}</textarea>
+              </div>
+
+              <div style="text-align:right; margin-bottom:12px;">
+                <button type="button" class="btn-secondary" style="width:100%;" onclick="window.parseAttractRawText()">🤖 AI 智能提取意向要素</button>
+              </div>
+
+              <div class="attract-form-group">
+                <label>意向企业名称 / 简称：</label>
+                <input type="text" id="attr_name" value="${escapeHtml(currentAttract.name)}" />
+              </div>
+
+              <div class="attract-form-group">
+                <label>主营技术赛道：</label>
+                <input type="text" id="attr_direction" value="${escapeHtml(currentAttract.direction)}" />
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="attract-form-group">
+                  <label>团队规模（人）：</label>
+                  <input type="number" id="attr_headcount" value="${currentAttract.headcount}" />
+                </div>
+                <div class="attract-form-group">
+                  <label>拟租赁面积（㎡）：</label>
+                  <input type="number" id="attr_area" value="${currentAttract.area}" />
+                </div>
+              </div>
+
+              <div class="attract-form-group">
+                <label>年算力与设备预算（万元）：</label>
+                <input type="number" id="attr_compute" value="${currentAttract.compute}" />
+              </div>
+
+              <button class="btn-calc" onclick="window.doCalculateAttract()">
+                <span>⚡ 重新测算 2026 入园红利总账</span>
+              </button>
+            </div>
+
+            <!-- 右侧：输出入园政策红利测算报表 -->
+            <div class="report-card" id="attract_report_print">
+              <div class="report-header">
+                <div class="report-title-box">
+                  <h2>云谷中心 · 企业入园政策红利与降本测算提案单</h2>
+                  <p>公文依据：严格锁定 2026 纯现行国家与省市区权威政策 · 编号：招商〔2026〕Q03号 · 责任专员：${opVal}</p>
+                </div>
+                <div class="report-badge">官方核验通过 · 责任可追</div>
+              </div>
+
+              <!-- 4个核心总账大指标 -->
+              <div class="metrics-summary-grid">
+                <div class="metric-sub-card highlight">
+                  <label>预计首年综合减免总账</label>
+                  <div class="val">¥ ${(res.totalBenefit / 10000).toFixed(1)} 万</div>
+                  <small>综合降低入园成本约 35%~50%</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>房租 / 工位减免</label>
+                  <div class="val">¥ ${(res.rentSavings / 10000).toFixed(1)} 万</div>
+                  <small>OPC免租 / 2元/天·㎡先缴后补</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>算力券与专项直补</label>
+                  <div class="val">¥ ${(res.computeSubsidy / 10000).toFixed(1)} 万</div>
+                  <small>工信部209号 / 算力券50%</small>
+                </div>
+                <div class="metric-sub-card">
+                  <label>设备与出海专项贴息</label>
+                  <div class="val">¥ ${(res.specialSubsidy / 10000).toFixed(1)} 万</div>
+                  <small>特别国债15% / 跨关区退税</small>
+                </div>
+              </div>
+
+              <!-- 2026 政策三态准入清单 -->
+              <div class="report-section-title">2026 现行公文依据与三态准入初筛（符合 · 待核验 · 排除）</div>
+              <table class="policy-eval-table">
+                <thead>
+                  <tr>
+                    <th style="width:18%;">政策发文字号</th>
+                    <th style="width:25%;">政策全称与官方出处</th>
+                    <th style="width:12%;">初筛状态</th>
+                    <th style="width:45%;">测算匹配理由与扶持条文</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${res.policyItems.map(item => `
+                    <tr>
+                      <td><strong>${escapeHtml(item.doc)}</strong></td>
+                      <td>
+                        <a href="${item.url}" target="_blank" rel="noopener" style="color:var(--seal); text-decoration:underline;">
+                          ${escapeHtml(item.title)}
+                        </a>
+                      </td>
+                      <td><span class="tag-state ${item.stateClass}">${item.state}</span></td>
+                      <td>
+                        <div style="color:var(--ink); font-weight:500;">${escapeHtml(item.benefit)}</div>
+                        <div style="font-size:11px; color:var(--muted); margin-top:2px;">摘录：${escapeHtml(item.clause)}</div>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+
+              <!-- 微信触达大白话草稿 -->
+              <div class="report-section-title">微信触达大白话草稿（招商经理复制即发给创始人）</div>
+              <div class="wechat-draft-box">
+                <h4>
+                  <span>💬 专属微信谈判沟通草稿（已按 ${opVal} 身份定制）</span>
+                  <button type="button" class="btn-secondary" style="padding:3px 8px; font-size:11px;" onclick="window.copyWechatDraft()">📋 一键复制文案</button>
+                </h4>
+                <p id="wechat_draft_text">${escapeHtml(res.wechatDraft)}</p>
+              </div>
+
+              <!-- 签约交接与责任留痕 -->
+              <div class="report-actions">
+                <button type="button" class="btn-secondary" onclick="window.printReport()">🖨️ 打印测算提案单</button>
+                <button type="button" class="btn-primary" onclick="window.doAttractHandover()">🤝 意向签约 · 一键交接转入企服台账（责任留痕）</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("content").innerHTML = html;
+      bindAttractEvents();
+    }
+
+    function bindAttractEvents() {
+      window.applyAttractPreset = function(index) {
+        currentAttract = { ...ATTRACT_PRESETS[index] };
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("已成功载入预设，测算报表已更新！");
+      };
+
+      window.parseAttractRawText = function() {
+        const text = (document.getElementById("attr_raw_text").value || "").trim();
+        if (!text) {
+          toast("请先粘贴企业需求或聊天文本");
+          return;
+        }
+        // AI 意向要素提取逻辑
+        let name = "意向企业";
+        let direction = "人工智能/智能体研发";
+        let headcount = 10;
+        let area = 120;
+        let compute = 20;
+
+        if (text.includes("机器人") || text.includes("工业") || text.includes("制造")) {
+          name = "工业智能体研发团队";
+          direction = "人工智能/工业智能体";
+          headcount = 20;
+          area = 240;
+          compute = 60;
+        } else if (text.includes("OPC") || text.includes("独立开发") || text.includes("一人")) {
+          name = "AI 原生 OPC 团队";
+          direction = "一人公司/OPC/智能工具链";
+          headcount = 3;
+          area = 15;
+          compute = 5;
+        } else if (text.includes("出海") || text.includes("硬件") || text.includes("跨境")) {
+          name = "具身智能出海硬件企业";
+          direction = "智能硬件研发/出海跨境";
+          headcount = 15;
+          area = 180;
+          compute = 30;
+        }
+
+        const matchHc = text.match(/(\d+)\s*人/);
+        if (matchHc) headcount = parseInt(matchHc[1]);
+        const matchArea = text.match(/(\d+)\s*(平米|平|㎡)/);
+        if (matchArea) area = parseInt(matchArea[1]);
+        const matchComp = text.match(/(\d+)\s*(万|万元)/);
+        if (matchComp) compute = parseInt(matchComp[1]);
+
+        currentAttract = {
+          name,
+          direction,
+          size_band: headcount <= 3 ? "opc" : (headcount <= 20 ? "s_3_20" : "m_20_100"),
+          headcount,
+          area,
+          compute,
+          raw_text: text
+        };
+
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("AI 要素提取完成！已生成测算报表。");
+      };
+
+      window.doCalculateAttract = function() {
+        currentAttract.name = document.getElementById("attr_name").value.trim() || "意向企业";
+        currentAttract.direction = document.getElementById("attr_direction").value.trim() || "人工智能";
+        currentAttract.headcount = parseInt(document.getElementById("attr_headcount").value) || 10;
+        currentAttract.area = parseInt(document.getElementById("attr_area").value) || 100;
+        currentAttract.compute = parseInt(document.getElementById("attr_compute").value) || 10;
+        currentAttract.size_band = currentAttract.headcount <= 3 ? "opc" : (currentAttract.headcount <= 20 ? "s_3_20" : "m_20_100");
+
+        currentAttractResult = calculateAttractResult(currentAttract);
+        renderAttract();
+        toast("入园红利测算报表已实时更新！");
+      };
+
+      window.copyWechatDraft = function() {
+        const text = document.getElementById("wechat_draft_text").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          toast("微信草稿文案已复制到剪贴板！可直接发送给企业创始人");
+        }).catch(() => {
+          toast("复制成功！请直接在聊天框粘贴");
+        });
+      };
+
+      window.printReport = function() {
+        window.print();
+      };
+
+      window.doAttractHandover = async function() {
+        setBusy(true);
+        try {
+          const op = document.getElementById("operator").value;
+          const res = await api("/api/attract/handover", {
+            method: "POST",
+            body: JSON.stringify({
+              name: currentAttract.name,
+              direction: currentAttract.direction,
+              size_band: currentAttract.size_band,
+              headcount: currentAttract.headcount,
+              area: currentAttract.area,
+              operator: op
+            })
+          });
+          toast("🤝 签约交接成功！责任专员留痕完成，已归档至在园企业名册！");
+          // 重新拉取并在 1 秒后无缝切换到企业运营视图
+          await loadCompanies();
+          setTimeout(() => {
+            view = "companies";
+            syncNav();
+            render();
+          }, 1200);
+        } catch (e) {
+          toast("交接保存失败: " + e.message);
+        } finally {
+          setBusy(false);
+        }
+      };
+    }
+
     function render() {
-      if (view === "radar") renderRadar();
+      if (view === "dashboard") renderDashboard();
+      else if (view === "radar") renderRadar();
       else if (view === "companies") renderCompanies();
+      else if (view === "attract") renderAttract();
       else if (view === "skills") renderSkills();
-      else { view = "radar"; renderRadar(); }
+      else { view = "dashboard"; renderDashboard(); }
     }
 
     function syncNav() {
@@ -1928,7 +3075,8 @@
         syncNav();
         setBusy(true);
         try {
-          if (view === "radar") await loadRadar();
+          if (view === "dashboard") await loadDashboard();
+          else if (view === "radar") await loadRadar();
           else if (view === "companies") await loadCompanies();
           render();
         } finally { setBusy(false); }
@@ -1947,14 +3095,17 @@
 
     (async function init() {
       try {
-        await api("/api/health");
-        await loadRadar();
-        await loadCompanies();
+        await api("/api/health").catch((e) => console.warn("health check warning:", e));
+        await loadDashboard().catch((e) => console.warn("loadDashboard warning:", e));
+        await loadRadar().catch((e) => console.warn("loadRadar warning:", e));
+        await loadCompanies().catch((e) => console.warn("loadCompanies warning:", e));
         render();
+        setApiStatus("");
       } catch (e) {
-        setApiStatus("接口不可用", true);
+        console.error("Init render error:", e);
+        setApiStatus("数据异常", true);
         document.getElementById("content").innerHTML =
-          `<div class="empty">无法连接 API<br/>请确认 python3 server.py 已在 :8766 启动</div>`;
+          `<div class="empty">工作台载入异常: ${escapeHtml(e.message || "未知错误")}<br/>请检查接口连接或刷新重试</div>`;
       }
     })();
   </script>

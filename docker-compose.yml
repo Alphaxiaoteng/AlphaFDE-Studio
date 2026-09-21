@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  ops-console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yungu-policy-radar
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8766}:8766"
+    environment:
+      - PORT=8766
+      - AUTO_CRON=true
+      - TZ=Asia/Shanghai
+    volumes:
+      # 持久化挂载：防止容器销毁后历史底账与审计日志丢失
+      - ./data.json:/app/data.json
+      - ./pipeline_audit.log:/app/pipeline_audit.log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8766/?v=2"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
