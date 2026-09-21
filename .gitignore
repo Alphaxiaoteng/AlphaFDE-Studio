@@ -1,8 +1,5 @@
+.env
 __pycache__/
-*.py[cod]
-*$py.class
-.venv/
-env/
-venv/
+*.pyc
+*.png
 .DS_Store
-*.log

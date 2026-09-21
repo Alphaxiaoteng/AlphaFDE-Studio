@@ -1,1 +1,0 @@
-function e(e,t){return Math.round(e/1e3*t)}export{e as t};
