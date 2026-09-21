@@ -11,7 +11,7 @@ from datetime import date, datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from media_hot import media_hot, media_hotspots
 from public_events import fetch_public_events
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 # urgency 排序：紧急在前
 URGENCY_RANK = {"urgent": 0, "watch": 1, "ok": 2, "expired": 3}
@@ -1983,13 +1983,24 @@ class Handler(BaseHTTPRequestHandler):
             return self._file(
                 os.path.join(ROOT, "CLI_DOCKER_SOP.md"), "text/markdown; charset=utf-8"
             )
-        if path.startswith("/logos/") and ".." not in path:
-            # /logos/foo.svg 或 /logos/platforms/douyin.png
-            rel = path[len("/logos/") :]
+        if path in ("/README.md", "/readme.md"):
+            return self._file(
+                os.path.join(ROOT, "README.md"), "text/markdown; charset=utf-8"
+            )
+        if path in ("/LICENSE", "/license"):
+            return self._file(
+                os.path.join(ROOT, "LICENSE"), "text/plain; charset=utf-8"
+            )
+
+        decoded_path = unquote(path)
+        if (decoded_path.startswith("/logos/") or decoded_path.startswith("/screenshots/")) and ".." not in decoded_path:
+            top_dir = "logos" if decoded_path.startswith("/logos/") else "screenshots"
+            prefix = f"/{top_dir}/"
+            rel = decoded_path[len(prefix) :]
             if rel and all(p and p not in (".", "..") for p in rel.split("/")):
-                logo_path = os.path.join(ROOT, "logos", *rel.split("/"))
-                if os.path.isfile(logo_path):
-                    lower = logo_path.lower()
+                asset_path = os.path.join(ROOT, top_dir, *rel.split("/"))
+                if os.path.isfile(asset_path):
+                    lower = asset_path.lower()
                     if lower.endswith(".svg"):
                         ctype = "image/svg+xml"
                     elif lower.endswith(".png"):
@@ -2002,7 +2013,7 @@ class Handler(BaseHTTPRequestHandler):
                         ctype = "image/x-icon"
                     else:
                         ctype = "application/octet-stream"
-                    return self._file(logo_path, ctype)
+                    return self._file(asset_path, ctype)
         if path == "/api/dashboard":
             self._json(200, dashboard())
             return
