@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import os
 import socket
 import uuid
@@ -282,7 +283,7 @@ def _parse_iso_date(value) -> date | None:
 
 
 def _window_urgency(r: dict, today: date | None = None) -> dict:
-    """由 window_end（或 event_end）派生 days_left / urgency。"""
+    """由 window_end（或 event_end）派生 days_left / urgency。紧急<7天 / 临近<15天；过期单独标记。"""
     today = today or date.today()
     end = _parse_iso_date(r.get("window_end")) or _parse_iso_date(r.get("event_end"))
     if end is None:
@@ -290,9 +291,9 @@ def _window_urgency(r: dict, today: date | None = None) -> dict:
     days = (end - today).days
     if days < 0:
         urgency = "expired"
-    elif days <= 14:
+    elif days < 7:
         urgency = "urgent"
-    elif days <= 45:
+    elif days < 15:
         urgency = "watch"
     else:
         urgency = "ok"
@@ -520,6 +521,132 @@ def policy_match_for(radar_id: str, benefit: str | None = "both"):
         "urgency": win["urgency"],
         "days_left": win["days_left"],
         "items": rows,
+    }
+
+
+
+def _parse_subsidy_demo_wan(text: str) -> float:
+    """从补贴文案抽取演示用「万元」量级；无法解析则 0。标注 demo，非政府库。"""
+    if not text:
+        return 0.0
+    s = str(text)
+    # 取文中出现的数字区间上限或单值，单位按「万」粗算
+    nums = re.findall(r"(\d+(?:\.\d+)?)\s*万", s)
+    if nums:
+        return max(float(x) for x in nums)
+    # 千万元级
+    nums = re.findall(r"(\d+(?:\.\d+)?)\s*千万", s)
+    if nums:
+        return max(float(x) for x in nums) * 1000
+    return 0.0
+
+
+def dashboard():
+    """首页看板聚合：可算则算；成效数字标 demo。"""
+    DATA = load_data()
+    try:
+        from public_events import merge_cached_events_into_radar
+        DATA = merge_cached_events_into_radar(DATA)
+    except Exception:
+        pass
+
+    companies = DATA.get("companies") or []
+    radar_raw = [r for r in (DATA.get("radar") or []) if not _is_coop_radar(r)]
+    match_rules = DATA.get("match_rules") or []
+    cmap = _companies_by_id(DATA)
+
+    active_policies = 0
+    public_events = 0
+    urgent_items = []
+    subsidy_wan = 0.0
+    for r in radar_raw:
+        win = _window_urgency(r)
+        if win["urgency"] == "expired" or r.get("stale") is True:
+            continue
+        ch = _radar_channel(r)
+        if ch == "公开活动":
+            public_events += 1
+        else:
+            active_policies += 1
+        subsidy_wan += _parse_subsidy_demo_wan(r.get("subsidy_detail") or "")
+        if win["urgency"] in ("urgent", "watch") and win["days_left"] is not None:
+            urgent_items.append(
+                {
+                    "id": r.get("id"),
+                    "title": r.get("title"),
+                    "days_left": win["days_left"],
+                    "urgency": win["urgency"],
+                    "doc_no": r.get("doc_no") or "",
+                    "channel": ch,
+                }
+            )
+    urgent_items.sort(
+        key=lambda x: (
+            URGENCY_RANK.get(x["urgency"], 9),
+            x["days_left"] if x["days_left"] is not None else 10**9,
+        )
+    )
+
+    matching = 0
+    for m in match_rules:
+        c = cmap.get(m.get("company_id"))
+        r = _radar_by_id(DATA).get(m.get("radar_id"), {})
+        if c and r and _fits_current(c, r) and m.get("state") in ("符合", "待核验"):
+            matching += 1
+
+    # SOP 漏斗：触达(>=1) / 接受(>=2) / 通过(passed)
+    funnel = {"sent": 0, "accepted": 0, "passed": 0}
+    seen = set()
+    for m in match_rules:
+        mid = m.get("id")
+        if not mid or mid in seen:
+            continue
+        seen.add(mid)
+        st = get_sop_state(mid, m)
+        step = int(st.get("sop_step", 0))
+        status = st.get("sop_status") or "active"
+        if status == "passed" or step >= 5:
+            funnel["passed"] += 1
+            funnel["accepted"] += 1
+            funnel["sent"] += 1
+        elif step >= 2:
+            funnel["accepted"] += 1
+            funnel["sent"] += 1
+        elif step >= 1 or (CONFIRMED.get(mid) or {}).get("action") == "confirm":
+            funnel["sent"] += 1
+
+    # 梯度培育：有匹配进行中的企业数（演示口径）
+    cultivated = len(
+        {
+            m.get("company_id")
+            for m in match_rules
+            if m.get("company_id") in cmap and m.get("state") in ("符合", "待核验")
+        }
+    )
+
+    return {
+        "meta": DATA.get("meta") or {},
+        "demo": True,
+        "demo_note": "管委会成效为脱敏演示口径，非实时政府库",
+        "overview": {
+            "companies": len(companies),
+            "active_policies": active_policies,
+            "public_events": public_events,
+            "matching": matching,
+            "sop_passed": funnel["passed"],
+        },
+        "committee": {
+            "demo": True,
+            "subsidy_wan": round(subsidy_wan, 1),
+            "subsidy_label": "累计撬动扶持（万元·样例汇总）",
+            "cultivated": cultivated,
+            "cultivated_label": "梯度培育入库（家·演示）",
+            "urgent_count": len([u for u in urgent_items if u["urgency"] == "urgent"]),
+            "urgent_label": "窗口紧急件数",
+        },
+        "deadlines": urgent_items[:5],
+        "funnel": funnel,
+        "funnel_labels": {"sent": "本季触达", "accepted": "企业接受", "passed": "已通过"},
     }
 
 
@@ -1086,26 +1213,12 @@ class Handler(BaseHTTPRequestHandler):
             return self._file(
                 os.path.join(ROOT, "index.html"), "text/html; charset=utf-8"
             )
+        if path in ("/invoke", "/initialize"):
+            return self._json(200, {"status": "ok"})
         if path in ("/skills.md",):
-            host = self.headers.get("X-Forwarded-Host") or self.headers.get("Host", f"127.0.0.1:{PORT}")
-            proto = self.headers.get("X-Forwarded-Proto") or ("https" if "ms.show" in host or "modelscope" in host else "http")
-            public_base = f"{proto}://{host}"
-            try:
-                with open(os.path.join(ROOT, "skills.md"), "r", encoding="utf-8") as f:
-                    text = f.read()
-                text = text.replace("http://127.0.0.1:8766", public_base)
-                raw = text.encode("utf-8")
-                self.send_response(200)
-                self.send_header("Content-Type", "text/markdown; charset=utf-8")
-                self._cors()
-                self.send_header("Content-Length", str(len(raw)))
-                self.end_headers()
-                self.wfile.write(raw)
-                return
-            except Exception:
-                return self._file(
-                    os.path.join(ROOT, "skills.md"), "text/markdown; charset=utf-8"
-                )
+            return self._file(
+                os.path.join(ROOT, "skills.md"), "text/markdown; charset=utf-8"
+            )
         if path in ("/POLICY_COLLECTION_SOP.md", "/sop.md"):
             return self._file(
                 os.path.join(ROOT, "POLICY_COLLECTION_SOP.md"), "text/markdown; charset=utf-8"
@@ -1116,6 +1229,9 @@ class Handler(BaseHTTPRequestHandler):
                 logo_path = os.path.join(ROOT, "logos", name)
                 if os.path.isfile(logo_path):
                     return self._file(logo_path, "image/svg+xml")
+        if path == "/api/dashboard":
+            self._json(200, dashboard())
+            return
         if path == "/api/health":
             return self._json(
                 200,
@@ -1213,6 +1329,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        if parsed.path in ("/invoke", "/initialize"):
+            return self._json(200, {"status": "ok"})
         length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(length) or b"{}")
         if parsed.path == "/api/confirm":

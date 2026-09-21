@@ -3,19 +3,20 @@
 ## 一句话接入
 
 公网在线基址：`https://cp1024-alphafde-studio.ms.show`  
+ModelScope 创空间：`https://modelscope.cn/studios/cp1024/AlphaFDE-Studio`  
 本地基址：`http://127.0.0.1:8766`（局域网同 Wi-Fi：浏览器打开「本机 IP:8766」）
 
 把本文件喂给 Agent（Claude Code / Codex / Trae / 豆包 / 千问 / Workbuddy 等）：
 
 ```bash
-# 公网在线直连：
-curl -fsSL https://cp1024-alphafde-studio.ms.show/skills.md
+# 公网在线直连（浏览器直接访问或命令行）：
+curl -fsSL -A "Mozilla/5.0" https://cp1024-alphafde-studio.ms.show/skills.md
 
 # 本地运行：
 curl -fsSL http://127.0.0.1:8766/skills.md
 ```
 
-Agent 按下文 API 调用即可；云谷企服运营台 UI：`https://cp1024-alphafde-studio.ms.show/`（本地：`http://127.0.0.1:8766/`）。
+Agent 按下文 API 调用即可；云谷企服运营台 UI：`https://modelscope.cn/studios/cp1024/AlphaFDE-Studio`（直连：`https://cp1024-alphafde-studio.ms.show/`，本地：`http://127.0.0.1:8766/`）。
 
 样例声明：脱敏虚构企业，非平台数据接入；不读私人微信；专员确认后才出触达草稿。
 
